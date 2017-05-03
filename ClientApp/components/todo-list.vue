@@ -40,7 +40,7 @@ export default {
 
     computed: {
         todos: function () {
-            return this.$store.state.todos;
+            return this.$store.state.Todo.todos;
         },
         user: function () {
             return this.$store.state.user;
