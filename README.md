@@ -58,3 +58,7 @@ To assist with menu highlighting depending on the route, a MenuLinkTagHelper cla
 *   [Publish to Microsoft Azure Web Apps](https://go.microsoft.com/fwlink/?LinkID=398609)
 
 We would love to hear your [feedback](https://go.microsoft.com/fwlink/?LinkId=518015)
+
+## Google Keys
+`dotnet user-secrets set Authentication:Google:ClientID 619488275076-69bcr2pgt2kc8had69hkdo8bbe38r3p4.apps.googleusercontent.com`
+`dotnet user-secrets set Authentication:Google:ClientSecret mrkXQCv3v7SkON2Y8fFVCoF7`
