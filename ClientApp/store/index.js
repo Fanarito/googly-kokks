@@ -50,7 +50,7 @@ const actions = {
         });
     },
     deleteTodo ({ commit, state }, todo) {
-        Vue.prototype.$http.delete('/api/todo/' + todo.key, todo).then(response => {
+        Vue.prototype.$http.delete('/api/todo/' + todo.id, todo).then(response => {
             console.log(response);
             commit('deleteTodo', { todo: todo });
         });
