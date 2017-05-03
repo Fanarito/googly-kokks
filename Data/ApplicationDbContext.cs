@@ -21,6 +21,8 @@ namespace Kokks.Data
         public DbSet<Folder> Folder { get; set;}
         public DbSet<Permission> Permission { get; set;}
         public DbSet<Types> Type { get; set;}
+        public DbSet<TodoItem> TodoItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
