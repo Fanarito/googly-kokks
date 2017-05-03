@@ -43,12 +43,15 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TodoItem item)
+        public async Task<IActionResult> Create([FromBody] TodoItem item)
         {
             if (item == null)
             {
                 return BadRequest();
             }
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            item.UserID = user.Id;
 
             _todoRepository.Add(item);
 

@@ -269,3 +269,6 @@ __pycache__/
 
 # Ignore VSCode files
 .vscode/
+
+# Ignore dist files
+wwwroot/dist/

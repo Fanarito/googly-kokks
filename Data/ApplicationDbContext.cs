@@ -14,7 +14,13 @@ namespace Kokks.Data
             : base(options)
         {
         }
-
+        
+        public DbSet<Collaborator> Collaborator { get; set; }
+        public DbSet<Project> Project { get; set;}
+        public DbSet<File> File { get; set;}
+        public DbSet<Folder> Folder { get; set;}
+        public DbSet<Permission> Permission { get; set;}
+        public DbSet<Types> Type { get; set;}
         public DbSet<TodoItem> TodoItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
