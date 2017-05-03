@@ -8,9 +8,10 @@ using Kokks.Data;
 namespace Kokks.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170503134712_Collaborators")]
+    partial class Collaborators
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3");
@@ -62,94 +63,6 @@ namespace Kokks.Data.Migrations
                         .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Collaborator", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("PermissionId");
-
-                    b.Property<long>("ProjectId");
-
-                    b.Property<long>("UserId");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Collaborator");
-                });
-
-            modelBuilder.Entity("Kokks.Models.File", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("FolderId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<long>("TypeId");
-
-                    b.Property<string>("content");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("File");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Folder", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.Property<long>("ParentId");
-
-                    b.Property<long>("ProjectId");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Folder");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Permission", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("name");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Permission");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Project", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("OwnerId");
-
-                    b.Property<string>("name");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Project");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Types", b =>
-                {
-                    b.Property<long>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("name");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Type");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
