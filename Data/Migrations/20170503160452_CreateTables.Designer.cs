@@ -8,9 +8,10 @@ using Kokks.Data;
 namespace Kokks.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170503160452_CreateTables")]
+    partial class CreateTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.3");
@@ -118,18 +119,6 @@ namespace Kokks.Data.Migrations
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd();
-                });
-                
-            modelBuilder.Entity("Kokks.Models.TodoItem", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("IsComplete");
-
-                    b.Property<string>("OwnerId");
-
-                    b.Property<int>("UserID");
 
                     b.Property<string>("name");
 
@@ -162,10 +151,6 @@ namespace Kokks.Data.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Type");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("TodoItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -273,13 +258,6 @@ namespace Kokks.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("Kokks.Models.TodoItem", b =>
-                {
-                    b.HasOne("Kokks.Models.ApplicationUser", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
