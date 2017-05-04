@@ -19,6 +19,9 @@
                             <span :class="route.style"></span> {{ route.display }}
                         </router-link>
                     </li>
+                    <form action="/Account/LogOut" method="post" id="logoutForm" class="item">
+                        <button type="submit" class="ui button">Log off</button>
+                    </form>
                 </ul>
             </div>
         </div>

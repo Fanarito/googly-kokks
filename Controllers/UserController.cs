@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Kokks.Controllers.Api
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -21,7 +22,6 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
