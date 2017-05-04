@@ -8,10 +8,12 @@ namespace Kokks.Models
 {
     public class File
     {
-        public long ID { get; set;}
-        public string Name { get; set;}
-        public string content {get; set;} 
-        public long FolderId { get; set;}
-        public long TypeId { get; set;}
+        public long Id { get; set; }
+        public long ParentID { get; set; }
+        public long SyntaxID { get; set; }
+        public string Name { get; set; }
+        public string Content { get; set; } 
+        public Syntax Syntax { get; set; }
+        public Folder Parent { get; set; }
     }
 }

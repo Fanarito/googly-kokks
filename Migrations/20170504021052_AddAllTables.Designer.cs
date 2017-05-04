@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Kokks.Data;
 
-namespace Kokks.Data.Migrations
+namespace Kokks.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170503133152_TodoItem")]
-    partial class TodoItem
+    [Migration("20170504021052_AddAllTables")]
+    partial class AddAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -65,24 +65,117 @@ namespace Kokks.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Kokks.Models.Collaborator", b =>
+                {
+                    b.Property<string>("UserID");
+
+                    b.Property<long>("ProjectID");
+
+                    b.Property<long>("PermissionID");
+
+                    b.HasKey("UserID", "ProjectID");
+
+                    b.HasIndex("PermissionID");
+
+                    b.HasIndex("ProjectID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("Collaborator");
+                });
+
+            modelBuilder.Entity("Kokks.Models.File", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("ParentID");
+
+                    b.Property<long>("SyntaxID");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentID");
+
+                    b.HasIndex("SyntaxID");
+
+                    b.ToTable("File");
+                });
+
+            modelBuilder.Entity("Kokks.Models.Folder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("ParentId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Folder");
+                });
+
+            modelBuilder.Entity("Kokks.Models.Permission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permission");
+                });
+
+            modelBuilder.Entity("Kokks.Models.Project", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Project");
+                });
+
+            modelBuilder.Entity("Kokks.Models.Syntax", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Syntax");
+                });
+
             modelBuilder.Entity("Kokks.Models.TodoItem", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<bool>("IsComplete");
 
+                    b.Property<string>("Name");
+
                     b.Property<string>("OwnerId");
 
-                    b.Property<int>("UserID");
+                    b.Property<string>("UserID");
 
-                    b.Property<string>("name");
-
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("TodoItems");
+                    b.ToTable("TodoItem");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
@@ -190,6 +283,44 @@ namespace Kokks.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Kokks.Models.Collaborator", b =>
+                {
+                    b.HasOne("Kokks.Models.Permission", "Permission")
+                        .WithMany()
+                        .HasForeignKey("PermissionID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Kokks.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Kokks.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Kokks.Models.File", b =>
+                {
+                    b.HasOne("Kokks.Models.Folder", "Parent")
+                        .WithMany("Files")
+                        .HasForeignKey("ParentID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Kokks.Models.Syntax", "Syntax")
+                        .WithMany()
+                        .HasForeignKey("SyntaxID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Kokks.Models.Folder", b =>
+                {
+                    b.HasOne("Kokks.Models.Folder", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
                 });
 
             modelBuilder.Entity("Kokks.Models.TodoItem", b =>

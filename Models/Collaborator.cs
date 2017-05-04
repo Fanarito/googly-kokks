@@ -8,10 +8,12 @@ namespace Kokks.Models
 {
     public class Collaborator
     {
-        public long ID { get; set;}
-        public long UserId { get; set;}
-        public long ProjectId { get; set;}
-        public long PermissionId { get; set;}
+        public string UserID { get; set; }
+        public long ProjectID { get; set; }
+        public long PermissionID { get; set; }
+        public ApplicationUser User { get; set; }
+        public Project Project { get; set; }
+        public Permission Permission { get; set; }
     }
 
 }

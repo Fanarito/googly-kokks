@@ -32,12 +32,12 @@ namespace Kokks.Models
 
         public TodoItem Find(int id)
         {
-            return _context.TodoItems.FirstOrDefault(t => t.ID == id);
+            return _context.TodoItems.FirstOrDefault(t => t.Id == id);
         }
 
         public void Remove(int id)
         {
-            var entity = _context.TodoItems.First(t => t.ID == id);
+            var entity = _context.TodoItems.First(t => t.Id == id);
             _context.TodoItems.Remove(entity);
             _context.SaveChanges();
         }

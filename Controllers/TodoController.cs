@@ -55,13 +55,13 @@ namespace Kokks.Controllers.Api
 
             _todoRepository.Add(item);
 
-            return CreatedAtRoute("GetTodo", new { id = item.ID }, item);
+            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody] TodoItem item)
         {
-            if (item == null || item.ID != id)
+            if (item == null || item.Id != id)
             {
                 return BadRequest();
             }
