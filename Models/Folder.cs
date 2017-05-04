@@ -9,10 +9,12 @@ namespace Kokks.Models
     public class Folder
     {
         public long Id { get; set; }
-        public long ProjectID { get; set; }
         public string Name { get; set; }
+        public long? ParentID { get; set; }
+        public long ProjectID { get; set; }
+
         public Folder Parent { get; set; }
-        public IEnumerable<File> Files { get; set; }
         public Project Project { get; set; }
+        public IEnumerable<File> Files { get; set; }
     }
 }
