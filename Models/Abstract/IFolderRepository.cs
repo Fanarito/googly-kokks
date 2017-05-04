@@ -6,7 +6,7 @@ namespace Kokks.Models
     {
         void Add(Folder item);
         IEnumerable<Folder> GetAll();
-        Project Find(long id);
+        Folder Find(long id);
         void Remove(long id);
         void Update(Folder item);
     }

@@ -17,6 +17,7 @@ namespace Kokks.Models
     {
         public string UserID { get; set; }
         public long ProjectID { get; set; }
+
         public ApplicationUser User { get; set; }
         public Project Project { get; set; }
         public Permissions Permission { get; set; }

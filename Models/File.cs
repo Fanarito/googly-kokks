@@ -13,6 +13,7 @@ namespace Kokks.Models
         public long SyntaxID { get; set; }
         public string Name { get; set; }
         public string Content { get; set; } 
+
         public Syntax Syntax { get; set; }
         public Folder Parent { get; set; }
     }

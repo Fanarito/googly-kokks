@@ -23,6 +23,7 @@ namespace Kokks.Models
         {
             var projects = from c in _context.Collaborators
                             join p in _context.Projects on c.ProjectID equals p.Id
+                            where c.UserID == uid
                             select p;
             return projects.ToList();
         }
