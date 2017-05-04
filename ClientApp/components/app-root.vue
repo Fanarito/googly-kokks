@@ -1,14 +1,16 @@
 <template>
-    <div id="app" class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3">
+    <div id="app" class="ui grid container">
+        <div class="ui row">
+            <div class="column">
                 <nav-menu params="route: route"></nav-menu>
-            </div>
-            <div class="col-sm-9">
-                <router-view></router-view>
+
+                <div class="ui segment">
+                    <div class="column">
+                        <router-view></router-view>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 
 </template>

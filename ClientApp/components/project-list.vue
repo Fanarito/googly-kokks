@@ -1,9 +1,12 @@
 <template>
     <div>
-        <input v-model="projectName"
-               v-on:keyup.enter="submit"
-               type="text"
-               placeholder="Project Name">
+        <div class="ui fluid input">
+            <input v-model="projectName"
+                v-on:keyup.enter="submit"
+                type="text"
+                placeholder="Project Name">
+        </div>
+        <div class="ui divider"></div>
         <div v-for="project in projects">
             <project-item :project="project"></project-item>
         </div>

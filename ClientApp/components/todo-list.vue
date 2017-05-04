@@ -1,9 +1,12 @@
 <template>
     <div>
-        <input v-model="todoTitle"
-               v-on:keyup.enter="submit"
-               type="text"
-               placeholder="Todo Title">
+        <div class="ui fluid input">
+            <input v-model="todoTitle"
+                v-on:keyup.enter="submit"
+                type="text"
+                placeholder="Todo Title">
+        </div>
+        <div class="ui divider"></div>
         <div v-for="todo in todos">
             <todo-item :todo="todo"></todo-item>
         </div>
