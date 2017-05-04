@@ -5,9 +5,10 @@ namespace Kokks.Models
     public interface ICollaboratorRepository
     {
         void Add(Collaborator item);
+        void Create(string userId, long projectId, Permissions permissions);
         IEnumerable<Collaborator> GetAll();
-        Collaborator Find(long id);
-        void Remove(long id);
+        IEnumerable<Collaborator> FindForProject(long id);
+        void Remove(string id);
         void Update(Collaborator item);
     }
 }

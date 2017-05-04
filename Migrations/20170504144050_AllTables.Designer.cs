@@ -4,12 +4,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Kokks.Data;
+using Kokks.Models;
 
 namespace Kokks.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170504021052_AddAllTables")]
-    partial class AddAllTables
+    [Migration("20170504144050_AllTables")]
+    partial class AllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -71,11 +72,9 @@ namespace Kokks.Migrations
 
                     b.Property<long>("ProjectID");
 
-                    b.Property<long>("PermissionID");
+                    b.Property<int>("Permission");
 
                     b.HasKey("UserID", "ProjectID");
-
-                    b.HasIndex("PermissionID");
 
                     b.HasIndex("ProjectID");
 
@@ -113,25 +112,17 @@ namespace Kokks.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("ParentId");
+                    b.Property<long?>("ParentID");
+
+                    b.Property<long>("ProjectID");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("ParentID");
+
+                    b.HasIndex("ProjectID");
 
                     b.ToTable("Folder");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Permission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("Kokks.Models.Project", b =>
@@ -287,11 +278,6 @@ namespace Kokks.Migrations
 
             modelBuilder.Entity("Kokks.Models.Collaborator", b =>
                 {
-                    b.HasOne("Kokks.Models.Permission", "Permission")
-                        .WithMany()
-                        .HasForeignKey("PermissionID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Kokks.Models.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectID")
@@ -320,7 +306,12 @@ namespace Kokks.Migrations
                 {
                     b.HasOne("Kokks.Models.Folder", "Parent")
                         .WithMany()
-                        .HasForeignKey("ParentId");
+                        .HasForeignKey("ParentID");
+
+                    b.HasOne("Kokks.Models.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Kokks.Models.TodoItem", b =>

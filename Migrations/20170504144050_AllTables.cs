@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kokks.Migrations
 {
-    public partial class AddAllTables : Migration
+    public partial class AllTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,39 +31,6 @@ namespace Kokks.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Folder",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Autoincrement", true),
-                    Name = table.Column<string>(nullable: true),
-                    ParentId = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Folder", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Folder_Folder_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Folder",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Permission",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Permission", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -189,17 +156,11 @@ namespace Kokks.Migrations
                 {
                     UserID = table.Column<string>(nullable: false),
                     ProjectID = table.Column<long>(nullable: false),
-                    PermissionID = table.Column<long>(nullable: false)
+                    Permission = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Collaborator", x => new { x.UserID, x.ProjectID });
-                    table.ForeignKey(
-                        name: "FK_Collaborator_Permission_PermissionID",
-                        column: x => x.PermissionID,
-                        principalTable: "Permission",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Collaborator_Project_ProjectID",
                         column: x => x.ProjectID,
@@ -215,29 +176,28 @@ namespace Kokks.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "File",
+                name: "Folder",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Autoincrement", true),
-                    Content = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
-                    ParentID = table.Column<long>(nullable: false),
-                    SyntaxID = table.Column<long>(nullable: false)
+                    ParentID = table.Column<long>(nullable: true),
+                    ProjectID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.PrimaryKey("PK_Folder", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_File_Folder_ParentID",
+                        name: "FK_Folder_Folder_ParentID",
                         column: x => x.ParentID,
                         principalTable: "Folder",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_File_Syntax_SyntaxID",
-                        column: x => x.SyntaxID,
-                        principalTable: "Syntax",
+                        name: "FK_Folder_Project_ProjectID",
+                        column: x => x.ProjectID,
+                        principalTable: "Project",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -287,6 +247,34 @@ namespace Kokks.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "File",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    Content = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    ParentID = table.Column<long>(nullable: false),
+                    SyntaxID = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_File_Folder_ParentID",
+                        column: x => x.ParentID,
+                        principalTable: "Folder",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_File_Syntax_SyntaxID",
+                        column: x => x.SyntaxID,
+                        principalTable: "Syntax",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "AspNetUsers",
@@ -297,11 +285,6 @@ namespace Kokks.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Collaborator_PermissionID",
-                table: "Collaborator",
-                column: "PermissionID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Collaborator_ProjectID",
@@ -324,9 +307,14 @@ namespace Kokks.Migrations
                 column: "SyntaxID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Folder_ParentId",
+                name: "IX_Folder_ParentID",
                 table: "Folder",
-                column: "ParentId");
+                column: "ParentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Folder_ProjectID",
+                table: "Folder",
+                column: "ProjectID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TodoItem_OwnerId",
@@ -391,12 +379,6 @@ namespace Kokks.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Permission");
-
-            migrationBuilder.DropTable(
-                name: "Project");
-
-            migrationBuilder.DropTable(
                 name: "Folder");
 
             migrationBuilder.DropTable(
@@ -407,6 +389,9 @@ namespace Kokks.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Project");
         }
     }
 }

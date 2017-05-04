@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Kokks.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kokks.Models
 {
@@ -26,6 +27,12 @@ namespace Kokks.Models
                             where c.UserID == uid
                             select p;
             return projects.ToList();
+        }
+
+        public bool UserHasAccess(long projectId, string userId)
+        {
+            bool hasAccess = _context.Collaborators.Any(c => c.ProjectID == projectId && c.UserID == userId);
+            return hasAccess;
         }
         
         public void Add(Project item)

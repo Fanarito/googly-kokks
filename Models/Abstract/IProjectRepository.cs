@@ -7,6 +7,7 @@ namespace Kokks.Models
         void Add(Project item);
         IEnumerable<Project> GetAll();
         IEnumerable<Project> GetAllForUser(string uid);
+        bool UserHasAccess(long projectId, string userId);
         Project Find(long id);
         void Remove(long id);
         void Update(Project item);

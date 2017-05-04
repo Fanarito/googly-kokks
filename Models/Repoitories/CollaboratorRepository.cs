@@ -14,31 +14,41 @@ namespace Kokks.Models
             _context = context;
         }
 
-         public IEnumerable<Collaborator> GetAll()
+        public IEnumerable<Collaborator> GetAll()
         {
-            return _context.Collaborator.ToList();
+            return _context.Collaborators.ToList();
         }
+
         public void Add(Collaborator item)
         {
-            _context.Collaborator.Add(item);
+            _context.Collaborators.Add(item);
             _context.SaveChanges();
         }
 
-        public Collaborator Find(long id)
+        public void Create(string userId, long projectId, Permissions permission)
         {
-            return _context.Collaborator.FirstOrDefault(c => c.UserId == id);
+            var col = new Collaborator();
+            col.UserID = userId;
+            col.ProjectID = projectId;
+            col.Permission = permission;
+            Add(col);
         }
 
-        public void Remove(long id)
+        public IEnumerable<Collaborator> FindForProject(long id)
         {
-            var entity = _context.Collaborator.First(c => c.UserId == id);
-            _context.Collaborator.Remove(entity);
+            return _context.Collaborators.Where(c => c.ProjectID == id);
+        }
+
+        public void Remove(string id)
+        {
+            var entity = _context.Collaborators.First(c => c.UserID == id);
+            _context.Collaborators.Remove(entity);
             _context.SaveChanges();
         }
 
         public void Update(Collaborator item)
         {
-            _context.Collaborator.Update(item);
+            _context.Collaborators.Update(item);
             _context.SaveChanges();
         }
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Todo from './modules/todo'
+import Project from './modules/project'
 
 Vue.use(Vuex)
 
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     actions,
     getters,
     modules: {
-        Todo
+        Todo,
+        Project
     }
 });
