@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div class="actions">
-                <div class="ui red deny button">
+                <div @click="clearInput" class="ui red deny button">
                     Cancel
                 </div>
                 <div @click="createProject" class="ui green ok button">
@@ -46,6 +46,9 @@ export default {
     methods: {
         showModal() {
             $('.ui.modal').modal('show');
+        },
+        clearInput() {
+            this.projectName = '';
         },
         async createProject() {
             // Show loader
