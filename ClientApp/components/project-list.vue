@@ -1,24 +1,22 @@
 <template>
     <div>
-        <div class="ui fluid input">
-            <input v-model="projectName"
-                v-on:keyup.enter="submit"
-                type="text"
-                placeholder="Project Name">
-        </div>
+        <project-create-new></project-create-new>
         <div class="ui divider"></div>
-        <div v-for="project in projects">
-            <project-item :project="project"></project-item>
+        <div v-if="projects.length > 0" class="ui cards">
+            <project-card v-for="project in projects" :project="project"></project-card>
         </div>
+        <div v-else class="ui header">No projects found</div>
     </div>
 </template>
 
 <script>
-import ProjectItem from './project-item'
+import ProjectCard from './project-card'
+import ProjectCreateNew from './project-create-new'
 
 export default {
     components: {
-        ProjectItem
+        ProjectCard,
+        ProjectCreateNew
     },
 
     data() {
@@ -55,4 +53,4 @@ export default {
 </script>
 
 <style>
-<
+</style>

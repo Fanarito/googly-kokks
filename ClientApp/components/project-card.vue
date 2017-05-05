@@ -1,10 +1,9 @@
 <template>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            {{ project.name }}
-            <button @click="remove" type="button" class="close" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+    <div class="card">
+        <div class="content">
+            <div class="header">{{ project.name }}</div>
+            <div class="meta">Creator {temp}</div>
+            <div class="description">Maybe some test data</div>
         </div>
     </div>
 </template>
