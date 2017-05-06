@@ -52,7 +52,6 @@ export default {
 
     async created() {
         this.$store.dispatch('getAllTodos');
-        this.$store.dispatch('getUser');
     }
 }
 </script>

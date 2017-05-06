@@ -5,12 +5,12 @@
         </h1>
 
         <!-- Project Settings -->
-        <div class="ui segment">
+        <div v-if="permission == 0" class="ui segment">
             <h3 class="ui header">Project Settings</h3>
 
             <div class="ui labeled input">
                 <div class="ui label">
-                    Project Name
+                    Name
                 </div>
                 <input v-model="projectName" type="text" placeholder="Project Name">
             </div>
@@ -26,18 +26,34 @@
         <div class="ui segment">
             <h3 class="ui header">Project Collaborators</h3>
 
-            <collaborator-list :collaborators="project.collaborators"></collaborator-list>
+            <collaborator-list v-if="project.collaborators" :collaborators="project.collaborators"></collaborator-list>
 
             <div class="ui divider"></div>
 
-            <div class="ui action input">
-                <input v-model="newCollaboratorEmail" type="text" placeholder="Email or nick">
-                <select v-model="newCollaboratorPermission" class="ui compact selection dropdown">
-                    <option value="1">Read/Write</option>
-                    <option value="2">Read</option>
-                </select>
+            <div v-if="permission == 0" class="ui form">
+                <h4 class="ui dividing header">Add Collaborator</h4>
+                <div class="field">
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Email</label>
+                            <input @keyup.enter="addCollaborator" v-model="newCollaboratorEmail" type="text" placeholder="Email or nick">
+                        </div>
+                        <div class="field">
+                            <label>Permission</label>
+                            <select v-model="newCollaboratorPermission" class="ui compact selection dropdown">
+                                <option value="1">Read/Write</option>
+                                <option value="2">Read</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
                 <button @click="addCollaborator" class="ui primary button">Add</button>
             </div>
+        </div>
+
+        <!-- Leave or delete project -->
+        <div class="ui segment">
+            <button @click="leaveProject" class="ui negative button">Leave Project</button>
         </div>
     </div>
 
@@ -65,7 +81,15 @@ export default {
     computed: {
         project() {
             return this.$store.getters.getProjectById(this.$route.params.id);
-        }
+        },
+
+        currentCollaborator() {
+            return this.$store.getters.getCurrentProjectCollaborator(this.project);
+        },
+
+        permission() {
+            return this.currentCollaborator.permission;
+        },
     },
 
     methods: {
@@ -100,11 +124,21 @@ export default {
             } else {
                 // error handling
             }
+        },
+
+        async leaveProject() {
+            if (this.permission == 0) {
+                this.$store.dispatch('deleteProject', this.project);
+            } else {
+                this.$store.dispatch('removeCollaborator', this.currentCollaborator);
+            }
+            this.$router.push('/home');
         }
     },
 
     async created() {
         await this.$store.dispatch('getProject', this.$route.params.id);
+
         this.projectName = this.project.name;
     }
 }

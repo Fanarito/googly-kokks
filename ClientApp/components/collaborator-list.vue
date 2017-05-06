@@ -1,8 +1,23 @@
 <template>
-    <div>
-        <div class="ui middle aligned divided list">
-            <collaborator-item v-for="collaborator in collaborators" :collaborator="collaborator"></collaborator-item>
+    <div v-if="currentUser">
+        <div v-if="collaborators.length > 1" class="ui middle aligned celled list">
+            <collaborator-item v-for="collaborator in collaborators"
+                               v-if="collaborator.userID !== currentUser.id"
+                               :collaborator="collaborator"
+                               :canDelete="canRemoveCollaborator">
+            </collaborator-item>
         </div>
+
+        <h5 v-else class="ui header">
+            No collaborators
+        </h5>
+    </div>
+
+    <div v-else class="ui segment">
+        <div class="ui active inverted dimmer">
+            <div class="ui text loader">Loading</div>
+        </div>
+        <p></p>
     </div>
 </template>
 
@@ -18,10 +33,30 @@ export default {
         collaborators: null
     },
 
+    computed: {
+        currentUser() {
+            return this.$store.state.user;
+        },
+
+        canRemoveCollaborator() {
+            let currentCollaborator = this.collaborators.find(c => c.userID === this.currentUser.id);
+
+            if (currentCollaborator.permission === 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    },
+
     data() {
         return {
 
         }
+    },
+
+    async created() {
+        await this.$store.dispatch('getUser');
     }
 }
 </script>

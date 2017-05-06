@@ -56,7 +56,7 @@ namespace Kokks.Controllers.Api
 
             var userId = _userManager.GetUserId(HttpContext.User);
             var collaborator = _collaboratorRepository.Find(item.ProjectID, item.UserID);
-            var currentCollaborator = _collaboratorRepository.Find(collaborator.ProjectID, userId);
+            var currentCollaborator = _collaboratorRepository.Find(item.ProjectID, userId);
 
             if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
             {
@@ -109,7 +109,9 @@ namespace Kokks.Controllers.Api
 
             var currentCollaborator = _collaboratorRepository.Find(collaborator.ProjectID, userId);
 
-            if (currentCollaborator != null && currentCollaborator.Permission == Permissions.Owner)
+            // You can only delete if you exist and are trying to delete yourself
+            // or when you are the owner of the project
+            if (currentCollaborator != null && (currentCollaborator == collaborator || currentCollaborator.Permission == Permissions.Owner))
             {
                 _collaboratorRepository.Remove(id);
                 return NoContent();

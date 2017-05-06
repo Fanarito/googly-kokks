@@ -32,6 +32,19 @@ const mutations = {
         if (index > -1) {
             state.projects.splice(index, 1);
         }
+    },
+
+    removeCollaborator: (state, { collaborator }) => {
+        let projectIndex = state.projects.findIndex(p => p.id === collaborator.projectID);
+
+        let collaboratorIndex = -1;
+        if (projectIndex > -1) {
+            collaboratorIndex = state.projects[projectIndex].collaborators.indexOf(collaborator);
+        }
+
+        if (collaboratorIndex > -1) {
+            state.projects[projectIndex].collaborators.splice(collaboratorIndex, 1);
+        }
     }
 };
 
@@ -70,7 +83,7 @@ const actions = {
     },
 
     async deleteProject ({ commit, state }, project) {
-        let response = await Vue.prototype.$http.delete('/api/project/' + project.id, project);
+        let response = await Vue.prototype.$http.delete('/api/project/' + project.id);
         console.log(response);
 
         if (response.status === 204) {
@@ -96,7 +109,18 @@ const actions = {
         console.log(response);
 
         if (response.status === 201) {
-            await commit('addCollaborator', { collaborator: collaborator});
+
+        } else {
+            // error handling
+        }
+    },
+
+    async removeCollaborator ({ commit, state }, collaborator) {
+        let response = await Vue.prototype.$http.delete('/api/collaborator/' + collaborator.id);
+        console.log(response);
+
+        if (response.status === 204) {
+            await commit('removeCollaborator', { collaborator: collaborator });
         } else {
             // error handling
         }
@@ -107,8 +131,14 @@ const getters = {
     getAllProjects: (state, getters) => {
         return state.projects;
     },
+
     getProjectById: (state, getters) => (id) => {
         return state.projects.find(p => p.id == id);
+    },
+
+    getCurrentProjectCollaborator: (state, getters) => (project) => {
+        let currentCollaborator = project.collaborators.find(c => c.userID === getters.currentUser.id);
+        return currentCollaborator;
     }
 }
 

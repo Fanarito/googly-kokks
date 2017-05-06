@@ -40,6 +40,7 @@ export default {
         projects: function () {
             return this.$store.state.Project.projects;
         },
+
         user: function () {
             return this.$store.state.user;
         }
@@ -47,7 +48,6 @@ export default {
 
     async created() {
         this.$store.dispatch('getAllProjects');
-        this.$store.dispatch('getUser');
     }
 }
 </script>

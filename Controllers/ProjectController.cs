@@ -98,14 +98,40 @@ namespace Kokks.Controllers.Api
                 return NotFound();
             }
 
-            if (_projectRepository.UserHasAccess(project.Id, userId))
+            var currentCollaborator = _collaboratorRepository.Find(project.Id, userId);
+            if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
+            {
+                return Unauthorized();
+            }
+            else
             {
                 project.Name = item.Name;
                 _projectRepository.Update(project);
                 return new NoContentResult();
             }
+        }
 
-            return Unauthorized();
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var project = _projectRepository.Find(id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var currentCollaborator = _collaboratorRepository.Find(project.Id, userId);
+            if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                _projectRepository.Remove(project.Id);
+                return new NoContentResult();
+            }
         }
     }
 }

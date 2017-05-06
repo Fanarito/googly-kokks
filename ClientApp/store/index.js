@@ -25,6 +25,9 @@ const actions = {
 };
 
 const getters = {
+    currentUser: (state, getters) => {
+        return state.user;
+    }
 }
 
 export default new Vuex.Store({

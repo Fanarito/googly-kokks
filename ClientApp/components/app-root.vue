@@ -3,7 +3,7 @@
         <nav-menu params="route: route"></nav-menu>
         <div class="ui container grid">
             <div class="column">
-                <router-view></router-view>
+                <router-view v-if="loaded"></router-view>
             </div>
         </div>
     </div>
@@ -17,7 +17,16 @@ Vue.component('nav-menu', NavMenu);
 
 export default {
     data() {
-        return {}
+        return {
+            loaded: false
+        }
+    },
+
+    async created() {
+        if (this.$store.getters.currentUser === null) {
+            await this.$store.dispatch('getUser');
+        }
+        this.loaded = true;
     }
 }
 </script>

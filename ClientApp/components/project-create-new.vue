@@ -19,7 +19,7 @@
                 <div class="ui form">
                     <div class="field">
                         <label>Name</label>
-                        <input v-model="projectName" placeholder="Name" type="text" />
+                        <input @keyup.enter="createProject" v-model="projectName" placeholder="Name" type="text" />
                     </div>
                 </div>
             </div>
@@ -51,6 +51,8 @@ export default {
             this.projectName = '';
         },
         async createProject() {
+            // Hide modal
+            $('.ui.modal').modal('hide');
             // Show loader
             this.creating = true;
 

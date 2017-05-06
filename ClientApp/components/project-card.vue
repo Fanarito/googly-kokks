@@ -2,7 +2,7 @@
     <div class="card">
         <div class="content">
             <div class="header">{{ project.name }}</div>
-            <div class="meta">Creator {temp}</div>
+            <div v-if="creator.user" class="meta">Creator {{ creator.user.userName }}</div>
             <div class="description">Maybe some test data</div>
         </div>
         <div class="extra content">
@@ -22,6 +22,12 @@ export default {
 
     data() {
         return {
+        }
+    },
+
+    computed: {
+        creator() {
+            return this.project.collaborators.find(c => c.permission === 0);
         }
     },
 
