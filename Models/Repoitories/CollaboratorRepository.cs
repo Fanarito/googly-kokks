@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Kokks.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kokks.Models
 {
@@ -19,6 +20,20 @@ namespace Kokks.Models
             return _context.Collaborators.ToList();
         }
 
+        public IEnumerable<Collaborator> GetAllConnectedToUser(string uid)
+        {
+            var collabs = _context.Collaborators.Where(c => c.UserID == uid)
+                                                .Include(c => c.Project);
+            
+            // Go through all connected projects and return all connected users
+            var connected = new List<Collaborator>();
+            foreach (var collab in collabs)
+            {
+                connected.Concat(collab.Project.Collaborators.Where(c => c.UserID != uid).ToList());
+            }
+            return connected;
+        }
+
         public void Add(Collaborator item)
         {
             _context.Collaborators.Add(item);
@@ -34,14 +49,29 @@ namespace Kokks.Models
             Add(col);
         }
 
+        public Collaborator Find(long id)
+        {
+            return _context.Collaborators.FirstOrDefault(c => c.Id == id);
+        }
+
+        public Collaborator Find(long projectId, string userId)
+        {
+            return _context.Collaborators.FirstOrDefault(c => c.ProjectID == projectId && c.UserID == userId);
+        }
+
         public IEnumerable<Collaborator> FindForProject(long id)
         {
             return _context.Collaborators.Where(c => c.ProjectID == id);
         }
 
-        public void Remove(string id)
+        public bool AlreadyConnected(long projectId, string userId)
         {
-            var entity = _context.Collaborators.First(c => c.UserID == id);
+            return _context.Collaborators.Any(c => c.ProjectID == projectId && c.UserID == userId);
+        }
+
+        public void Remove(long id)
+        {
+            var entity = _context.Collaborators.First(c => c.Id== id);
             _context.Collaborators.Remove(entity);
             _context.SaveChanges();
         }

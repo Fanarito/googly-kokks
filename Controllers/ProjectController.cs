@@ -64,7 +64,7 @@ namespace Kokks.Controllers.Api
             {
                 return new ObjectResult(project);
             }
-            return Unauthorized();
+            return new UnauthorizedResult();
         }
 
         [HttpPost]
@@ -80,6 +80,32 @@ namespace Kokks.Controllers.Api
             _collaboratorRepository.Create(userId, project.Id, Permissions.Owner);
 
             return CreatedAtRoute("GetProject", new { id = project.Id }, project);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody] Project item)
+        {
+            if (item == null || item.Id != id)
+            {
+                return BadRequest();
+            }
+
+            var project = _projectRepository.Find(id);
+            var userId = _userManager.GetUserId(HttpContext.User);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            if (_projectRepository.UserHasAccess(project.Id, userId))
+            {
+                project.Name = item.Name;
+                _projectRepository.Update(project);
+                return new NoContentResult();
+            }
+
+            return Unauthorized();
         }
     }
 }

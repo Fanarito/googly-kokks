@@ -11,6 +11,6 @@ namespace Kokks.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-        public IEnumerable<Collaborator> Collaborations;
+        ICollection<Collaborator> Collaborators { get; set; }
     }
 }

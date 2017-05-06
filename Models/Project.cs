@@ -11,7 +11,7 @@ namespace Kokks.Models
         public long Id { get; set;}
         public string Name { get; set;}
 
-        public IEnumerable<Collaborator> Collaborators;
-        public IEnumerable<Folder> Folders;
+        public ICollection<Collaborator> Collaborators { get; set; }
+        public ICollection<Folder> Folders { get; set; }
     }
 }

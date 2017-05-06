@@ -15,6 +15,6 @@ namespace Kokks.Models
 
         public Folder Parent { get; set; }
         public Project Project { get; set; }
-        public IEnumerable<File> Files { get; set; }
+        public ICollection<File> Files { get; set; }
     }
 }

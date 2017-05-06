@@ -22,10 +22,13 @@ namespace Kokks.Models
 
         public IEnumerable<Project> GetAllForUser(string uid)
         {
-            var projects = from c in _context.Collaborators
+            var projects = (from c in _context.Collaborators
                             join p in _context.Projects on c.ProjectID equals p.Id
                             where c.UserID == uid
-                            select p;
+                            select p)
+                            .Include(p => p.Collaborators)
+                                .ThenInclude(c => c.User)
+                            .AsNoTracking();
             return projects.ToList();
         }
 
@@ -43,7 +46,10 @@ namespace Kokks.Models
 
         public Project Find(long id)
         {
-            return _context.Projects.FirstOrDefault(p => p.Id == id);
+            return _context.Projects
+                .Include(p => p.Collaborators)
+                .ThenInclude(c => c.User)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public void Remove(long id)

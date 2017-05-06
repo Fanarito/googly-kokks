@@ -62,17 +62,9 @@ export default {
             this.projectName = '';
             // Tell the store to add the project and wait for it to finish
             await this.$store.dispatch('addProject', project);
-
             // Hide loader
             this.creating = false;
         }
-    },
-    mounted() {
-        $('.ui.modal').modal({
-            detachable: false,
-            closable: false,
-            offset: 600
-        });
     }
 }
 </script>

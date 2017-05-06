@@ -9,7 +9,7 @@ using Kokks.Models;
 namespace Kokks.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170504144050_AllTables")]
+    [Migration("20170506003344_AllTables")]
     partial class AllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,13 +68,16 @@ namespace Kokks.Migrations
 
             modelBuilder.Entity("Kokks.Models.Collaborator", b =>
                 {
-                    b.Property<string>("UserID");
-
-                    b.Property<long>("ProjectID");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("Permission");
 
-                    b.HasKey("UserID", "ProjectID");
+                    b.Property<long>("ProjectID");
+
+                    b.Property<string>("UserID");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ProjectID");
 
@@ -279,14 +282,13 @@ namespace Kokks.Migrations
             modelBuilder.Entity("Kokks.Models.Collaborator", b =>
                 {
                     b.HasOne("Kokks.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Collaborators")
                         .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Kokks.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("Kokks.Models.File", b =>
@@ -309,7 +311,7 @@ namespace Kokks.Migrations
                         .HasForeignKey("ParentID");
 
                     b.HasOne("Kokks.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("Folders")
                         .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

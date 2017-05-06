@@ -154,13 +154,15 @@ namespace Kokks.Migrations
                 name: "Collaborator",
                 columns: table => new
                 {
-                    UserID = table.Column<string>(nullable: false),
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    Permission = table.Column<int>(nullable: false),
                     ProjectID = table.Column<long>(nullable: false),
-                    Permission = table.Column<int>(nullable: false)
+                    UserID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Collaborator", x => new { x.UserID, x.ProjectID });
+                    table.PrimaryKey("PK_Collaborator", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Collaborator_Project_ProjectID",
                         column: x => x.ProjectID,
@@ -172,7 +174,7 @@ namespace Kokks.Migrations
                         column: x => x.UserID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

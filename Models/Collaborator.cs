@@ -15,6 +15,7 @@ namespace Kokks.Models
 
     public class Collaborator
     {
+        public long Id { get; set; }
         public string UserID { get; set; }
         public long ProjectID { get; set; }
 

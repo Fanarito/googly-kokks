@@ -5,6 +5,12 @@
             <div class="meta">Creator {temp}</div>
             <div class="description">Maybe some test data</div>
         </div>
+        <div class="extra content">
+            <router-link :to="{ name: 'projectSettings', params: { id: project.id }}" class="right floated">
+                <i class="setting icon"></i>
+                Settings
+            </router-link>
+        </div>
     </div>
 </template>
 

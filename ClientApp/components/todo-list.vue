@@ -36,7 +36,7 @@ export default {
                 userId: this.user.id
             };
 
-            this.$store.dispatch('addTodo', todo);
+            await this.$store.dispatch('addTodo', todo);
             this.todoTitle = '';
         }
     },

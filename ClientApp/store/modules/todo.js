@@ -34,24 +34,37 @@ const mutations = {
 };
 
 const actions = {
-    getAllTodos ({ commit }) {
-        Vue.prototype.$http.get('/api/todo').then(response => {
-            console.log(response);
-            commit('setTodos', { todos: response.data });
-        });
+    async getAllTodos ({ commit }) {
+        let response = await Vue.prototype.$http.get('/api/todo');
+        console.log(response);
+
+        if (response.status === 200) {
+            await commit('setTodos', { todos: response.data });
+        } else {
+            // error handling
+        }
     },
-    deleteTodo ({ commit, state }, todo) {
-        Vue.prototype.$http.delete('/api/todo/' + todo.id, todo).then(response => {
-            console.log(response);
-            commit('deleteTodo', { todo: todo });
-        });
+
+    async deleteTodo ({ commit, state }, todo) {
+        let response = await Vue.prototype.$http.delete('/api/todo/' + todo.id, todo);
+        console.log(response);
+
+        if (response.status === 204) {
+            await commit('deleteTodo', { todo: todo });
+        } else {
+            // error handling
+        }
     },
-    addTodo ({ commit, state }, todo) {
-        Vue.prototype.$http.post('/api/todo', todo).then(response => {
-            console.log(response);
-            commit('addTodo', { todo: response.data });
-        });
-    
+
+    async addTodo ({ commit, state }, todo) {
+        let response = await Vue.prototype.$http.post('/api/todo', todo);
+        console.log(response);
+
+        if (response.status === 201) {
+            await commit('addTodo', { todo: response.data });
+        } else {
+            // error handling
+        }
     }
 };
 

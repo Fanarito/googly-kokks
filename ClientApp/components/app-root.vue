@@ -1,14 +1,9 @@
 <template>
-    <div id="app" class="ui grid container">
-        <div class="ui row">
+    <div id="app">
+        <nav-menu params="route: route"></nav-menu>
+        <div class="ui container grid">
             <div class="column">
-                <nav-menu params="route: route"></nav-menu>
-    
-                <div class="ui segment">
-                    <div class="column">
-                        <router-view></router-view>
-                    </div>
-                </div>
+                <router-view></router-view>
             </div>
         </div>
     </div>

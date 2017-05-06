@@ -27,5 +27,18 @@ namespace Kokks.Controllers.Api
             var user = await _userManager.GetUserAsync(HttpContext.User);
             return new ObjectResult(user);
         }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        {
+            var normalizedEmail = _userManager.NormalizeKey(email);
+            var user = await _userManager.FindByEmailAsync(normalizedEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return new ObjectResult(user);
+        }
     }
 }

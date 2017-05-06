@@ -32,9 +32,6 @@ namespace Kokks.Data
             builder.Entity<Syntax>().ToTable("Syntax");
             builder.Entity<TodoItem>().ToTable("TodoItem");
             builder.Entity<Collaborator>().ToTable("Collaborator");
-
-            builder.Entity<Collaborator>()
-                .HasKey(c => new { c.UserID, c.ProjectID });
         }
     }
 }
