@@ -27,7 +27,7 @@ const mutations = {
     },
 
     deleteProject: (state, { project }) => {
-        let index = state.projects.indexOf(project);
+        let index = state.projects.findIndex(p => p.id === project.id);
 
         if (index > -1) {
             state.projects.splice(index, 1);
