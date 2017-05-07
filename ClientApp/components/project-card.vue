@@ -1,7 +1,9 @@
 <template>
     <div class="card">
         <div class="content">
-            <div class="header">{{ project.name }}</div>
+            <router-link :to="{ name: 'openProject', params: { id: project.id }}" class="header">
+                {{ project.name }}
+            </router-link>
             <div v-if="creator.user" class="meta">Creator {{ creator.user.userName }}</div>
             <div class="description">Maybe some test data</div>
         </div>
