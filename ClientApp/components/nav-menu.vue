@@ -1,5 +1,5 @@
 ﻿<template>
-    <div class="ui container tabular menu">
+    <div class="ui tabular menu">
         <router-link v-for="route in routes" v-if="route.show != false" :to="route.path" class="item">{{ route.display }}</router-link>
         <div class="right menu">
             <form action="/Account/LogOut" method="post" id="logoutForm" class="item">

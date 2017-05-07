@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="ui container">
         <project-create-new></project-create-new>
         <div class="ui divider"></div>
         <div v-if="projects.length > 0" class="ui cards">

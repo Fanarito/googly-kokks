@@ -1,5 +1,5 @@
 <template>
-    <div v-if="project">
+    <div v-if="project" class="ui container">
         <h1 class="ui header">
             {{ project.name }}
         </h1>

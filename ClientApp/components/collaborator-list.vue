@@ -4,7 +4,7 @@
             <collaborator-item v-for="collaborator in collaborators"
                                v-if="collaborator.userID !== currentUser.id"
                                :collaborator="collaborator"
-                               :canDelete="canRemoveCollaborator">
+                               :canDelete="canRemoveCollaborator && allowDelete">
             </collaborator-item>
         </div>
 
@@ -30,7 +30,8 @@ export default {
     },
 
     props: {
-        collaborators: null
+        collaborators: null,
+        allowDelete: false
     },
 
     computed: {

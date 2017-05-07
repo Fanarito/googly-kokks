@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <nav-menu params="route: route"></nav-menu>
-        <div class="ui container grid">
+        <div class="ui grid">
             <div class="column">
                 <router-view v-if="loaded"></router-view>
             </div>
