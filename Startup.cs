@@ -61,8 +61,8 @@ namespace Kokks
             services.AddScoped<ITodoRepository, TodoRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ICollaboratorRepository, CollaboratorRepository>();
+            services.AddScoped<IFileRepository, IFileRepository>();
             services.AddScoped<IFolderRepository, FolderRepository>();
-            services.AddScoped<IFileRepository, FileRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
