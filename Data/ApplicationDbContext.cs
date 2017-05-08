@@ -15,20 +15,23 @@ namespace Kokks.Data
         {
         }
         
-        public DbSet<Collaborator> Collaborator { get; set; }
-        public DbSet<Project> Project { get; set;}
-        public DbSet<File> File { get; set;}
-        public DbSet<Folder> Folder { get; set;}
-        public DbSet<Permission> Permission { get; set;}
-        public DbSet<Types> Type { get; set;}
+        public DbSet<Collaborator> Collaborators { get; set; }
+        public DbSet<Project> Projects { get; set;}
+        public DbSet<File> Files { get; set;}
+        public DbSet<Folder> Folders { get; set;}
+        public DbSet<Syntax> Syntaxes { get; set;}
         public DbSet<TodoItem> TodoItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
+
+            builder.Entity<Project>().ToTable("Project");
+            builder.Entity<File>().ToTable("File");
+            builder.Entity<Folder>().ToTable("Folder");
+            builder.Entity<Syntax>().ToTable("Syntax");
+            builder.Entity<TodoItem>().ToTable("TodoItem");
+            builder.Entity<Collaborator>().ToTable("Collaborator");
         }
     }
 }

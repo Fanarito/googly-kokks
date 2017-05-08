@@ -8,9 +8,13 @@ namespace Kokks.Models
 {
     public class Folder
     {
-        public long ID { get; set;}
-        public string Name { get; set;}
-        public long ParentId { get; set;}
-        public long ProjectId { get; set;}
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public long? ParentID { get; set; }
+        public long ProjectID { get; set; }
+
+        public Folder Parent { get; set; }
+        public Project Project { get; set; }
+        public ICollection<File> Files { get; set; }
     }
 }

@@ -271,4 +271,4 @@ __pycache__/
 .vscode/
 
 # Ignore dist files
-wwwroot/dist/
+wwwroot/dist/*

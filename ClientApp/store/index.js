@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Todo from './modules/todo'
+import Project from './modules/project'
 
 Vue.use(Vuex)
 
@@ -24,6 +25,9 @@ const actions = {
 };
 
 const getters = {
+    currentUser: (state, getters) => {
+        return state.user;
+    }
 }
 
 export default new Vuex.Store({
@@ -32,6 +36,7 @@ export default new Vuex.Store({
     actions,
     getters,
     modules: {
-        Todo
+        Todo,
+        Project
     }
 });

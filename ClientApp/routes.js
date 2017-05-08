@@ -1,13 +1,12 @@
-import CounterExample from 'components/counter-example'
-import FetchData from 'components/fetch-data'
-import HomePage from 'components/home-page'
 import TodoList from 'components/todo-list'
-import Login from 'components/login'
+import ProjectList from 'components/project-list'
+import ProjectSettings from 'components/project-settings'
+import ProjectView from 'components/project-view'
 
 export const routes = [
-    { path: '/', component: HomePage, display: 'Home', style: 'glyphicon glyphicon-home' },
-    { path: '/login', component: Login, display: 'Login', style: ''},
-    //{ path: '/counter', component: CounterExample, display: 'Counter', style: 'glyphicon glyphicon-education' },
-    //{ path: '/fetch-data', component: FetchData, display: 'Fetch data', style: 'glyphicon glyphicon-th-list' },
-    { path: '/todo', component: TodoList, display: 'Todos', style: 'glyphicon glyphicon-education'}
+    { path: '/', redirect: '/home', show: false},
+    { path: '/home', component: ProjectList, display: 'Home', style: 'glyphicon glyphicon-home' },
+    { path: '/todo', component: TodoList, display: 'Todos', style: 'glyphicon glyphicon-education'},
+    { path: '/project/:id', component: ProjectView, name: 'openProject'},
+    { path: '/project/:id/settings', component: ProjectSettings, show: false, name: 'projectSettings' }
 ]

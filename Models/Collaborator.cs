@@ -6,12 +6,22 @@ using System.Threading.Tasks;
 
 namespace Kokks.Models
 {
+    public enum Permissions
+    {
+        Owner,
+        ReadWrite,
+        Read
+    }
+
     public class Collaborator
     {
-        public long ID { get; set;}
-        public long UserId { get; set;}
-        public long ProjectId { get; set;}
-        public long PermissionId { get; set;}
+        public long Id { get; set; }
+        public string UserID { get; set; }
+        public long ProjectID { get; set; }
+
+        public ApplicationUser User { get; set; }
+        public Project Project { get; set; }
+        public Permissions Permission { get; set; }
     }
 
 }

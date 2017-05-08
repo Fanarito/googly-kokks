@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace Kokks.Controllers.Api
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -21,10 +22,22 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            return new ObjectResult(user);
+        }
+
+        [HttpGet("email")]
+        public async Task<IActionResult> GetUserByEmail([FromQuery] string email)
+        {
+            var normalizedEmail = _userManager.NormalizeKey(email);
+            var user = await _userManager.FindByEmailAsync(normalizedEmail);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
             return new ObjectResult(user);
         }
     }
