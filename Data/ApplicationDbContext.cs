@@ -19,7 +19,6 @@ namespace Kokks.Data
         public DbSet<Project> Projects { get; set;}
         public DbSet<File> Files { get; set;}
         public DbSet<Folder> Folders { get; set;}
-        public DbSet<Syntax> Syntaxes { get; set;}
         public DbSet<TodoItem> TodoItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,7 +28,6 @@ namespace Kokks.Data
             builder.Entity<Project>().ToTable("Project");
             builder.Entity<File>().ToTable("File");
             builder.Entity<Folder>().ToTable("Folder");
-            builder.Entity<Syntax>().ToTable("Syntax");
             builder.Entity<TodoItem>().ToTable("TodoItem");
             builder.Entity<Collaborator>().ToTable("Collaborator");
         }

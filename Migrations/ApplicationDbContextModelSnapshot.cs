@@ -96,13 +96,13 @@ namespace Kokks.Migrations
 
                     b.Property<long>("ParentID");
 
+                    b.Property<int>("Syntax");
+
                     b.Property<long>("SyntaxID");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ParentID");
-
-                    b.HasIndex("SyntaxID");
 
                     b.ToTable("File");
                 });
@@ -137,18 +137,6 @@ namespace Kokks.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Project");
-                });
-
-            modelBuilder.Entity("Kokks.Models.Syntax", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Syntax");
                 });
 
             modelBuilder.Entity("Kokks.Models.TodoItem", b =>
@@ -295,11 +283,6 @@ namespace Kokks.Migrations
                     b.HasOne("Kokks.Models.Folder", "Parent")
                         .WithMany("Files")
                         .HasForeignKey("ParentID")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Kokks.Models.Syntax", "Syntax")
-                        .WithMany()
-                        .HasForeignKey("SyntaxID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

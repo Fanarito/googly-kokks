@@ -74,7 +74,14 @@ namespace Kokks.Controllers.Api
             }
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            var currentCollaborator = _collaboratorRepository.Find(item.Parent.ProjectID, userId);
+            var file = _fileRepository.Find(id);
+
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            var currentCollaborator = _collaboratorRepository.Find(file.Parent.ProjectID, userId);
 
             if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
                && currentCollaborator.Permission != Permissions.ReadWrite))
@@ -82,18 +89,16 @@ namespace Kokks.Controllers.Api
                 return new UnauthorizedResult();
             }
 
-            if (!_projectRepository.UserHasAccess(item.Parent.ProjectID, userId))
+            if (!_projectRepository.UserHasAccess(file.Parent.ProjectID, userId))
             {
                 return Unauthorized();
             }
 
-            var file = _fileRepository.Find(id);
-            if (file == null)
-            {
-                return NotFound();
-            }
-
-            _fileRepository.Update(item);
+            file.Content = item.Content;
+            file.Name = item.Name;
+            file.ParentID = item.ParentID;
+            file.Syntax = item.Syntax;
+            _fileRepository.Update(file);
             return NoContent();
         }
 

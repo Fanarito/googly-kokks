@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace Kokks.Models
 {
+    public enum Syntax {
+        JavaScript,
+        HTML,
+        CSS,
+        CPlusPlus,
+        C,
+        CSharp
+    }
     public class File
     {
         public long Id { get; set; }

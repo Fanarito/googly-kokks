@@ -48,7 +48,11 @@ namespace Kokks.Models
         {
             return _context.Projects
                 .Include(p => p.Collaborators)
-                .ThenInclude(c => c.User)
+                    .ThenInclude(c => c.User)
+                .Include(p => p.Folders)
+                    .ThenInclude(f => f.Files)
+                .Include(p => p.Folders)
+                    .ThenInclude(f => f.Folders)
                 .FirstOrDefault(p => p.Id == id);
         }
 

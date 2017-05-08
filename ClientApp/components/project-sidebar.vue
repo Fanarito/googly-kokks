@@ -1,6 +1,6 @@
 <template>
     <div v-if="project" class="ui container">
-        <file-browser :folder="project.folders"></file-browser>
+        <file-browser :folders="project.folders"></file-browser>
         
         <div class="ui divider"></div>
 

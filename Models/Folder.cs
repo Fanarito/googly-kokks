@@ -17,6 +17,7 @@ namespace Kokks.Models
         [JsonIgnore]
         public Folder Parent { get; set; }
         public Project Project { get; set; }
+        public ICollection<Folder> Folders { get; set; }
         public ICollection<File> Files { get; set; }
     }
 }

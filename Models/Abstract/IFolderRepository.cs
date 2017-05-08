@@ -5,7 +5,7 @@ namespace Kokks.Models
     public interface IFolderRepository
     {
         void Add(Folder item);
-        void Create(string name, long? parentId, long projectId);
+        Folder Create(string name, long? parentId, long projectId);
         IEnumerable<Folder> GetAll();
         Folder Find(long id);
         void Remove(long id);

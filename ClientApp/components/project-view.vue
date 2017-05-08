@@ -1,6 +1,6 @@
 <template>
     <div class="ui grid">
-        <div class="four wide column">
+        <div v-if="project" class="four wide column">
             <side-bar :project="project"></side-bar>
         </div>
         
@@ -22,13 +22,13 @@ export default {
 
     data() {
         return {
-
+            projectId: parseInt(this.$route.params.id)
         }
     },
 
     computed: {
         project() {
-            return this.$store.getters.getProjectById(this.$route.params.id)
+            return this.$store.getters.getProjectById(this.projectId)
         },
 
         currentCollaborator() {
@@ -41,7 +41,7 @@ export default {
     },
 
     async created() {
-        await this.$store.dispatch('getProject', this.$route.params.id)
+        await this.$store.dispatch('getProject', this.projectId)
     }
 }
 </script>

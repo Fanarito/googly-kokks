@@ -5,7 +5,7 @@ namespace Kokks.Models
     public interface IFileRepository
     {
         void Add(File item);
-        void Create(long parentId, long syntaxId, string name, string content);
+        void Create(long parentId, Syntax syntax, string name, string content);
         IEnumerable<File> GetAll();
         File Find(long id);
         void Remove(long id);

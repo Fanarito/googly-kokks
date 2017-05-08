@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Kokks.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kokks.Models
 {
@@ -25,11 +26,11 @@ namespace Kokks.Models
             _context.SaveChanges();
         }
 
-        public void Create(long parentId, long syntaxId, string name, string content)
+        public void Create(long parentId, Syntax syntax, string name, string content)
         {
             File file = new File();
             file.ParentID = parentId;
-            file.SyntaxID = syntaxId;
+            file.Syntax = syntax;
             file.Name = name;
             file.Content = content;
             Add(file);
@@ -37,7 +38,9 @@ namespace Kokks.Models
 
         public File Find(long id)
         {
-            return _context.Files.FirstOrDefault(p => p.Id == id);
+            return _context.Files
+                .Include(f => f.Parent)
+                .FirstOrDefault(p => p.Id == id);
         }
 
         public void Remove(long id)

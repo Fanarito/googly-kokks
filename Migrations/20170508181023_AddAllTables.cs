@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kokks.Migrations
 {
-    public partial class AllTables : Migration
+    public partial class AddAllTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,19 +44,6 @@ namespace Kokks.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Project", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Syntax",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Autoincrement", true),
-                    Name = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Syntax", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -258,6 +245,7 @@ namespace Kokks.Migrations
                     Content = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     ParentID = table.Column<long>(nullable: false),
+                    Syntax = table.Column<int>(nullable: false),
                     SyntaxID = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
@@ -267,12 +255,6 @@ namespace Kokks.Migrations
                         name: "FK_File_Folder_ParentID",
                         column: x => x.ParentID,
                         principalTable: "Folder",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_File_Syntax_SyntaxID",
-                        column: x => x.SyntaxID,
-                        principalTable: "Syntax",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -302,11 +284,6 @@ namespace Kokks.Migrations
                 name: "IX_File_ParentID",
                 table: "File",
                 column: "ParentID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_File_SyntaxID",
-                table: "File",
-                column: "SyntaxID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Folder_ParentID",
@@ -382,9 +359,6 @@ namespace Kokks.Migrations
 
             migrationBuilder.DropTable(
                 name: "Folder");
-
-            migrationBuilder.DropTable(
-                name: "Syntax");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

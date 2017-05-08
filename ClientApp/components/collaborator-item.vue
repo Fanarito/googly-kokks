@@ -19,7 +19,7 @@ export default {
 
     methods: {
         removeCollaborator () {
-            this.$store.dispatch('removeCollaborator', this.collaborator);
+            this.$store.dispatch('removeCollaborator', this.collaborator)
         }
     }
 }

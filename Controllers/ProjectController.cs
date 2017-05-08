@@ -17,12 +17,14 @@ namespace Kokks.Controllers.Api
         private readonly IProjectRepository _projectRepository;
         private readonly ICollaboratorRepository _collaboratorRepository;
         private readonly IFolderRepository _folderRepository;
+        private readonly IFileRepository _fileRepository;
         private readonly ILogger _logger;
 
         public ProjectController(
             IProjectRepository projectRepository,
             ICollaboratorRepository collaboratorRepository,
             IFolderRepository folderRepository,
+            IFileRepository fileRepository,
             UserManager<ApplicationUser> userManager,
             ILoggerFactory logger
         )
@@ -31,6 +33,7 @@ namespace Kokks.Controllers.Api
             _projectRepository = projectRepository;
             _collaboratorRepository = collaboratorRepository;
             _folderRepository = folderRepository;
+            _fileRepository = fileRepository;
             _logger = logger.CreateLogger<ProjectController>();
         }
 
@@ -81,7 +84,8 @@ namespace Kokks.Controllers.Api
             var userId = _userManager.GetUserId(HttpContext.User);
             _projectRepository.Add(project);
             _collaboratorRepository.Create(userId, project.Id, Permissions.Owner);
-            _folderRepository.Create("src", null, project.Id);
+            Folder folder = _folderRepository.Create("src", null, project.Id);
+            _fileRepository.Create(folder.Id, Syntax.JavaScript, "index.js", "console.log('hello world');");
 
             return CreatedAtRoute("GetProject", new { id = project.Id }, project);
         }

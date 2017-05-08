@@ -1,7 +1,8 @@
 import Vue from 'vue'
 
 const state = {
-    projects: []
+    projects: [],
+    currentFile: null
 }
 
 const mutations = {
@@ -45,6 +46,13 @@ const mutations = {
         if (collaboratorIndex > -1) {
             state.projects[projectIndex].collaborators.splice(collaboratorIndex, 1)
         }
+    },
+
+    setCurrentFile: (state, { file }) => {
+        state.currentFile = file
+    },
+
+    setFile: (state, { file, projectId }) => {
     }
 }
 
@@ -124,6 +132,19 @@ const actions = {
         } else {
             // error handling
         }
+    },
+
+    async selectFile ({ commit, state }, file) {
+        const response = await Vue.prototype.$http.get('/api/file/' + file.id)
+        console.log(response)
+
+        await commit('setCurrentFile', { file: response.data })
+    },
+
+    async updateFile ({ commit, state }, file) {
+        console.log(file)
+        const response = await Vue.prototype.$http.put('/api/file/' + file.id, file)
+        console.log(response)
     }
 }
 
