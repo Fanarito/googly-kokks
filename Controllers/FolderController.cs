@@ -114,8 +114,8 @@ namespace Kokks.Controllers.Api
 
             var currentCollaborator = _collaboratorRepository.Find(folder.ProjectID, userId);
 
-            // You can only delete if you exist and are trying to delete yourself
-            // or when you are the owner of the project
+            // You can only delete if you are a collaborator 
+            // and own the project or have readWrite permission
             if (currentCollaborator != null || (currentCollaborator.Permission == Permissions.Owner
                 || currentCollaborator.Permission == Permissions.ReadWrite))
             {
