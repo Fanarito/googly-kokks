@@ -47,6 +47,12 @@
                         </div>
                     </div>
                 </div>
+                <div class="ui negative message" id="colaboratorerror">
+                    <div class="header">
+                        We're sorry we cannot add this collaborator
+                    </div>
+                    <p>This collaborator does not exist</p>                    
+                </div>
                 <button @click="addCollaborator" class="ui primary button">Add</button>
             </div>
         </div>
@@ -104,14 +110,22 @@ export default {
         },
 
         async addCollaborator () {
-            const response = await this.$http.get('/api/user/email', {
+            document.getElementById("colaboratorerror").style.display = "none"
+            try
+            {
+                const response = await this.$http.get('/api/user/email', {
                 params: {
-                    email: this.newCollaboratorEmail
-                }
-            })
+                        email: this.newCollaboratorEmail
+                        }
+                })
+            } catch (err) {//display error message
+                document.getElementById("colaboratorerror").style.display = "block"
+            }
+            
             console.log(response)
-
+            alert("add colaboroator 2");
             if (response.status === 200) {
+                alert("if response status = 200");
                 const newCollaborator = {
                     projectId: this.project.id,
                     userId: response.data.id,
@@ -123,7 +137,7 @@ export default {
                 // reset email
                 this.newCollaboratorEmail = ''
             } else {
-                // error handling
+                //error handling
             }
         },
 
@@ -145,5 +159,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
+#colaboratorerror{display: none;}
 </style>
