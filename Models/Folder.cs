@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Kokks.Models
 {
@@ -13,6 +14,7 @@ namespace Kokks.Models
         public long? ParentID { get; set; }
         public long ProjectID { get; set; }
 
+        [JsonIgnore]
         public Folder Parent { get; set; }
         public Project Project { get; set; }
         public ICollection<File> Files { get; set; }
