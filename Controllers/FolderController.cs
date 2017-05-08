@@ -11,43 +11,45 @@ namespace Kokks.Controllers.Api
 {
     [Route("api/[controller]")]
     [Authorize]
-    public class CollaboratorController : Controller 
+    public class FolderController : Controller 
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
-        private readonly ICollaboratorRepository _collaboratorRepository;
         private readonly ILogger _logger;
+        private readonly IFolderRepository _folderRepository;
+        private readonly ICollaboratorRepository _collaboratorRepository;
 
-        public CollaboratorController(
+        public FolderController(
             IProjectRepository projectRepository,
-            ICollaboratorRepository collaboratorRepository,
             UserManager<ApplicationUser> userManager,
-            ILoggerFactory logger
+            ILoggerFactory logger,
+            IFolderRepository folderRepository,
+            ICollaboratorRepository collaboratorRepository
         )
         {
             _userManager = userManager;
             _projectRepository = projectRepository;
-            _collaboratorRepository = collaboratorRepository;
             _logger = logger.CreateLogger<ProjectController>();
+            _folderRepository = folderRepository;
+            _collaboratorRepository = collaboratorRepository;
         }
 
         [HttpGet]
-        public IEnumerable<Collaborator> GetAll()
+        public IEnumerable<Folder> GetAll()
         {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var collaborators = _collaboratorRepository.GetAllConnectedToUser(userId);
-            return collaborators;
+            // ?
+            return _folderRepository.GetAll();
         }
 
-        [HttpGet("{id}", Name = "GetCollaborator")]
+        [HttpGet("{id}", Name = "GetFolder")]
         public IActionResult GetById(long id)
         {
-            var collaborator = _collaboratorRepository.Find(id);
-            return new ObjectResult(collaborator);
+            var folder = _folderRepository.Find(id);
+            return new ObjectResult(folder);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Collaborator item)
+        public IActionResult Create([FromBody] Folder item)
         {
             if (item == null)
             {
@@ -55,24 +57,20 @@ namespace Kokks.Controllers.Api
             }
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            var collaborator = _collaboratorRepository.Find(item.ProjectID, item.UserID);
             var currentCollaborator = _collaboratorRepository.Find(item.ProjectID, userId);
 
-            if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
+            if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
+               && currentCollaborator.Permission != Permissions.ReadWrite))
             {
                 return new UnauthorizedResult();
             }
-            else if (collaborator != null)
-            {
-                return CreatedAtRoute("GetCollaborator", new { id = collaborator.Id }, item);
-            }
 
-            _collaboratorRepository.Add(item);
-            return CreatedAtAction("GetCollaborator", new { id = item.Id }, item);
+            _folderRepository.Add(item);
+            return CreatedAtAction("GetFolder", new { id = item.Id }, item);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] Collaborator item)
+        public IActionResult Update(long id, [FromBody] Folder item)
         {
             if (item == null || item.Id != id)
             {
@@ -82,7 +80,8 @@ namespace Kokks.Controllers.Api
             var userId = _userManager.GetUserId(HttpContext.User);
             var currentCollaborator = _collaboratorRepository.Find(item.ProjectID, userId);
 
-            if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
+            if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
+               && currentCollaborator.Permission != Permissions.ReadWrite))
             {
                 return new UnauthorizedResult();
             }
@@ -92,14 +91,13 @@ namespace Kokks.Controllers.Api
                 return Unauthorized();
             }
 
-            var collaborator = _collaboratorRepository.Find(id);
-            if (collaborator == null)
+            var folder = _folderRepository.Find(id);
+            if (folder == null)
             {
                 return NotFound();
             }
 
-            collaborator.Permission = item.Permission;
-            _collaboratorRepository.Update(collaborator);
+            _folderRepository.Update(folder);
             return NoContent();
         }
 
@@ -107,20 +105,21 @@ namespace Kokks.Controllers.Api
         public IActionResult Delete(long id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
-            var collaborator = _collaboratorRepository.Find(id);
-            if (collaborator == null)
+            var folder = _folderRepository.Find(id);
+            if (folder == null)
             {
                 return NotFound();
             }
 
 
-            var currentCollaborator = _collaboratorRepository.Find(collaborator.ProjectID, userId);
+            var currentCollaborator = _collaboratorRepository.Find(folder.ProjectID, userId);
 
             // You can only delete if you exist and are trying to delete yourself
             // or when you are the owner of the project
-            if (currentCollaborator != null && (currentCollaborator == collaborator || currentCollaborator.Permission == Permissions.Owner))
+            if (currentCollaborator != null || (currentCollaborator.Permission == Permissions.Owner
+                || currentCollaborator.Permission == Permissions.ReadWrite))
             {
-                _collaboratorRepository.Remove(id);
+                _folderRepository.Remove(id);
                 return NoContent();
             }
 
