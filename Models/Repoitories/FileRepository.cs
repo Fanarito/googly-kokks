@@ -25,6 +25,16 @@ namespace Kokks.Models
             _context.SaveChanges();
         }
 
+        public void Create(long parentId, long syntaxId, string name, string content)
+        {
+            File file = new File();
+            file.ParentID = parentId;
+            file.SyntaxID = syntaxId;
+            file.Name = name;
+            file.Content = content;
+            Add(file);
+        }
+
         public File Find(long id)
         {
             return _context.Files.FirstOrDefault(p => p.Id == id);

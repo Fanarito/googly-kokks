@@ -16,11 +16,13 @@ namespace Kokks.Controllers.Api
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
         private readonly ICollaboratorRepository _collaboratorRepository;
+        private readonly IFolderRepository _folderRepository;
         private readonly ILogger _logger;
 
         public ProjectController(
             IProjectRepository projectRepository,
             ICollaboratorRepository collaboratorRepository,
+            IFolderRepository folderRepository,
             UserManager<ApplicationUser> userManager,
             ILoggerFactory logger
         )
@@ -28,6 +30,7 @@ namespace Kokks.Controllers.Api
             _userManager = userManager;
             _projectRepository = projectRepository;
             _collaboratorRepository = collaboratorRepository;
+            _folderRepository = folderRepository;
             _logger = logger.CreateLogger<ProjectController>();
         }
 
@@ -78,6 +81,7 @@ namespace Kokks.Controllers.Api
             var userId = _userManager.GetUserId(HttpContext.User);
             _projectRepository.Add(project);
             _collaboratorRepository.Create(userId, project.Id, Permissions.Owner);
+            _folderRepository.Create("src", null, project.Id);
 
             return CreatedAtRoute("GetProject", new { id = project.Id }, project);
         }

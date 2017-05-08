@@ -25,6 +25,15 @@ namespace Kokks.Models
             _context.SaveChanges();
         }
 
+        public void Create(string name, long? parentId, long projectId)
+        {
+            Folder folder = new Folder();
+            folder.Name = name;
+            folder.ParentID = parentId;
+            folder.ProjectID = projectId;
+            Add(folder);
+        }
+
         public Folder Find(long id)
         {
             return _context.Folders.FirstOrDefault(p => p.Id == id);
