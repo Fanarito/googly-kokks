@@ -111,6 +111,7 @@ export default {
 
         async addCollaborator () {
             document.getElementById("colaboratorerror").style.display = "none"
+            
             try
             {
                 const response = await this.$http.get('/api/user/email', {
@@ -118,27 +119,27 @@ export default {
                         email: this.newCollaboratorEmail
                         }
                 })
+
+                console.log(response)
+                if (response.status === 200) {
+                    const newCollaborator = {
+                        projectId: this.project.id,
+                        userId: response.data.id,
+                        permission: this.newCollaboratorPermission
+                    }
+                    // add collaborator then fetch project again
+                    await this.$store.dispatch('addCollaborator', newCollaborator)
+                    await this.$store.dispatch('getProject', this.$route.params.id)
+                    // reset email
+                    this.newCollaboratorEmail = ''
+                } else {
+                    //error handling
+                }
             } catch (err) {//display error message
                 document.getElementById("colaboratorerror").style.display = "block"
             }
             
-            console.log(response)
-            alert("add colaboroator 2");
-            if (response.status === 200) {
-                alert("if response status = 200");
-                const newCollaborator = {
-                    projectId: this.project.id,
-                    userId: response.data.id,
-                    permission: this.newCollaboratorPermission
-                }
-                // add collaborator then fetch project again
-                await this.$store.dispatch('addCollaborator', newCollaborator)
-                await this.$store.dispatch('getProject', this.$route.params.id)
-                // reset email
-                this.newCollaboratorEmail = ''
-            } else {
-                //error handling
-            }
+            
         },
 
         async leaveProject () {
