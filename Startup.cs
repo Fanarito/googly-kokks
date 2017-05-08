@@ -61,7 +61,7 @@ namespace Kokks
             services.AddScoped<ITodoRepository, TodoRepository>();
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<ICollaboratorRepository, CollaboratorRepository>();
-            services.AddScoped<IFileRepository, IFileRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IFolderRepository, FolderRepository>();
         }
 
