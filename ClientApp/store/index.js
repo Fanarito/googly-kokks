@@ -7,26 +7,26 @@ Vue.use(Vuex)
 
 const state = {
     user: null
-};
+}
 
 const mutations = {
     setUser: (state, { user }) => {
-        state.user = user;
+        state.user = user
     }
-};
+}
 
 const actions = {
     getUser ({ commit }) {
         Vue.prototype.$http.get('/api/user').then(response => {
-            console.log(response);
+            console.log(response)
             commit('setUser', { user: response.data })
-        });
+        })
     }
-};
+}
 
 const getters = {
     currentUser: (state, getters) => {
-        return state.user;
+        return state.user
     }
 }
 
@@ -39,4 +39,4 @@ export default new Vuex.Store({
         Todo,
         Project
     }
-});
+})

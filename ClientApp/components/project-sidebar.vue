@@ -26,7 +26,7 @@ export default {
         project: null
     },
 
-    data() {
+    data () {
         return {
 
         }

@@ -36,6 +36,7 @@
     "eslint-config-airbnb": "^14.1.0",
     "eslint-config-vue": "^2.0.2",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-vue": "^2.0.1",
     "event-source-polyfill": "^0.0.7",
     "extract-text-webpack-plugin": "^2.0.0-rc",
