@@ -11,7 +11,7 @@
 
 <div class="ui one column middle aligned very relaxed stackable grid" style="position:relative">
     <div class="center aligned column">
-        <h3 class="ui header centered">Login using</h3>
+        <h2 class="ui header centered" style="padding:5px;">Login using</h2>
         @{
             var loginProviders = SignInManager.GetExternalAuthenticationSchemes().ToList();
             if (loginProviders.Count == 0)
@@ -31,7 +31,7 @@
                             @foreach (var provider in loginProviders)
                             {
 
-                                <button type="submit" class="ui @provider.AuthenticationScheme.ToLower() button" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account"><i class="@provider.AuthenticationScheme.ToLower() icon"></i> @provider.AuthenticationScheme</button>
+                                <button type="submit" class="ui huge @provider.AuthenticationScheme.ToLower() button" name="provider" value="@provider.AuthenticationScheme" title="Log in using your @provider.DisplayName account"><i class="@provider.AuthenticationScheme.ToLower() icon"></i> @provider.AuthenticationScheme</button>
                             }
                         </p>
                     </div>
@@ -40,6 +40,8 @@
         }
     </div>
 </div>
+
+<img class="ui centered large image" src="/images/googlykokkslogo.png" style="padding:50px 30px 30px 30px;"/>
 
     @section Scripts {
         @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
