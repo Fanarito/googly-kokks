@@ -47,7 +47,21 @@ namespace Kokks.Controllers.Api
         [HttpPost]
         public IActionResult Create([FromBody] File item)
         {
-            //_fileRepository.Create(item.ParentID, item.SyntaxID);
+            if (item == null)
+            {
+                return BadRequest();
+            }
+
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var currentCollaborator = _collaboratorRepository.Find(item.Parent.ProjectID, userId);
+
+            if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
+               && currentCollaborator.Permission != Permissions.ReadWrite))
+            {
+                return new UnauthorizedResult();
+            }
+
+            _fileRepository.Add(item);
             return CreatedAtAction("GetFile", new { id = item.Id }, item);
         }
 
