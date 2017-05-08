@@ -4,8 +4,12 @@
             <div @click="saveFile" class="ui link icon item">
                 <i class="save icon"></i>
             </div>
+            <div class="menu right">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}">
+                    <i class="setting icon"></i>
+                </router-link>
+            </div>
         </div>
-
         <div class="ui bottom attached segment">
             <div id="editor"></div>
         </div>
@@ -14,6 +18,10 @@
 
 <script>
     export default {
+        props: {
+            project: null
+        },
+
         data () {
             return {
                 editor: null,
@@ -44,6 +52,7 @@
 
         mounted () {
             this.editor = ace.edit('editor')
+            var modelist = ace.require("ace/ext/modelist")
             this.editor.setTheme('ace/theme/chaos')
             this.editor.getSession().setMode('ace/mode/javascript')
             this.editor.setOptions({
