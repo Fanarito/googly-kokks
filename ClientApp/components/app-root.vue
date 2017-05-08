@@ -16,17 +16,17 @@ import NavMenu from './nav-menu'
 Vue.component('nav-menu', NavMenu);
 
 export default {
-    data() {
+    data () {
         return {
             loaded: false
         }
     },
 
-    async created() {
+    async created () {
         if (this.$store.getters.currentUser === null) {
             await this.$store.dispatch('getUser');
         }
-        this.loaded = true;
+        this.loaded = true
     }
 }
 </script>

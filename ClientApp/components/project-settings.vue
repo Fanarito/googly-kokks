@@ -70,76 +70,77 @@ export default {
         CollaboratorList
     },
 
-    data() {
+    data () {
         return {
             projectName: '',
             newCollaboratorEmail: '',
-            newCollaboratorPermission: 1
+            newCollaboratorPermission: 1,
+            projectId: parseInt(this.$route.params.id)
         }
     },
 
     computed: {
-        project() {
-            return this.$store.getters.getProjectById(this.$route.params.id);
+        project () {
+            return this.$store.getters.getProjectById(this.projectId)
         },
 
-        currentCollaborator() {
-            return this.$store.getters.getCurrentProjectCollaborator(this.project);
+        currentCollaborator () {
+            return this.$store.getters.getCurrentProjectCollaborator(this.project)
         },
 
-        permission() {
-            return this.currentCollaborator.permission;
-        },
+        permission () {
+            return this.currentCollaborator.permission
+        }
     },
 
     methods: {
-        updateProject() {
-            let updatedProject = {
+        updateProject () {
+            const updatedProject = {
                 id: this.project.id,
                 name: this.projectName,
                 collaborators: this.project.collaborators
             }
-            this.$store.dispatch('updateProject', updatedProject);
+            this.$store.dispatch('updateProject', updatedProject)
         },
 
-        async addCollaborator() {
-            let response = await this.$http.get('/api/user/email', {
+        async addCollaborator () {
+            const response = await this.$http.get('/api/user/email', {
                 params: {
                     email: this.newCollaboratorEmail
                 }
-            });
-            console.log(response);
+            })
+            console.log(response)
 
             if (response.status === 200) {
-                let newCollaborator = {
+                const newCollaborator = {
                     projectId: this.project.id,
                     userId: response.data.id,
                     permission: this.newCollaboratorPermission
-                };
+                }
                 // add collaborator then fetch project again
-                await this.$store.dispatch('addCollaborator', newCollaborator);
-                await this.$store.dispatch('getProject', this.$route.params.id);
+                await this.$store.dispatch('addCollaborator', newCollaborator)
+                await this.$store.dispatch('getProject', this.$route.params.id)
                 // reset email
-                this.newCollaboratorEmail = '';
+                this.newCollaboratorEmail = ''
             } else {
                 // error handling
             }
         },
 
-        async leaveProject() {
-            if (this.permission == 0) {
-                this.$store.dispatch('deleteProject', this.project);
+        async leaveProject () {
+            if (this.permission === 0) {
+                this.$store.dispatch('deleteProject', this.project)
             } else {
-                this.$store.dispatch('removeCollaborator', this.currentCollaborator);
+                this.$store.dispatch('removeCollaborator', this.currentCollaborator)
             }
-            this.$router.push('/home');
+            this.$router.push('/home')
         }
     },
 
-    async created() {
-        await this.$store.dispatch('getProject', this.$route.params.id);
-
-        this.projectName = this.project.name;
+    async created () {
+        await this.$store.dispatch('getProject', this.projectId)
+        console.log(this.project)
+        this.projectName = this.project.name
     }
 }
 </script>

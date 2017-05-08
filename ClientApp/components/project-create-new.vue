@@ -37,35 +37,35 @@
 
 <script>
 export default {
-    data() {
+    data () {
         return {
             creating: false,
             projectName: ''
         }
     },
     methods: {
-        showModal() {
-            $('.ui.modal').modal('show');
+        showModal () {
+            $('.ui.modal').modal('show')
         },
-        clearInput() {
-            this.projectName = '';
+        clearInput () {
+            this.projectName = ''
         },
-        async createProject() {
+        async createProject () {
             // Hide modal
-            $('.ui.modal').modal('hide');
+            $('.ui.modal').modal('hide')
             // Show loader
-            this.creating = true;
+            this.creating = true
 
-            let project = {
+            const project = {
                 name: this.projectName
-            };
+            }
 
             // Clear text box
-            this.projectName = '';
+            this.projectName = ''
             // Tell the store to add the project and wait for it to finish
-            await this.$store.dispatch('addProject', project);
+            await this.$store.dispatch('addProject', project)
             // Hide loader
-            this.creating = false;
+            this.creating = false
         }
     }
 }

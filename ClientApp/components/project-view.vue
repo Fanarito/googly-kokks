@@ -28,20 +28,20 @@ export default {
 
     computed: {
         project() {
-            return this.$store.getters.getProjectById(this.$route.params.id);
+            return this.$store.getters.getProjectById(this.$route.params.id)
         },
 
         currentCollaborator() {
-            return this.$store.getters.getCurrentProjectCollaborator(this.project);
+            return this.$store.getters.getCurrentProjectCollaborator(this.project)
         },
 
         permission() {
-            return this.currentCollaborator.permission;
+            return this.currentCollaborator.permission
         },
     },
 
     async created() {
-        await this.$store.dispatch('getProject', this.$route.params.id);
+        await this.$store.dispatch('getProject', this.$route.params.id)
     }
 }
 </script>

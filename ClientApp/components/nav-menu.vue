@@ -28,14 +28,14 @@
 import { routes } from '../routes'
 
 export default {
-    data() {
+    data () {
         return {
             routes
         }
     },
 
-    mounted() {
-        $('.ui.dropdown').dropdown();
+    mounted () {
+        $('.ui.dropdown').dropdown()
     }
 }
 </script>

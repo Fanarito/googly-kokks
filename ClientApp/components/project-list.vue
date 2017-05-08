@@ -19,35 +19,35 @@ export default {
         ProjectCreateNew
     },
 
-    data() {
+    data () {
         return {
             projectName: ''
         }
     },
 
     methods: {
-        async submit() {
-            let project = {
+        async submit () {
+            const project = {
                 name: this.projectName
-            };
+            }
 
-            this.$store.dispatch('addProject', project);
-            this.projectName = '';
+            this.$store.dispatch('addProject', project)
+            this.projectName = ''
         }
     },
 
     computed: {
         projects: function () {
-            return this.$store.state.Project.projects;
+            return this.$store.state.Project.projects
         },
 
         user: function () {
-            return this.$store.state.user;
+            return this.$store.state.user
         }
     },
 
-    async created() {
-        this.$store.dispatch('getAllProjects');
+    async created () {
+        this.$store.dispatch('getAllProjects')
     }
 }
 </script>

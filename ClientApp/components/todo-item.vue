@@ -15,14 +15,14 @@ export default {
         todo: null
     },
 
-    data() {
+    data () {
         return {
         }
     },
 
     methods: {
-        remove() {
-            this.$store.dispatch('deleteTodo', this.todo);
+        remove () {
+            this.$store.dispatch('deleteTodo', this.todo)
         }
     }
 }

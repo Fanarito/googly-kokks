@@ -22,20 +22,20 @@ export default {
         project: null
     },
 
-    data() {
+    data () {
         return {
         }
     },
 
     computed: {
-        creator() {
-            return this.project.collaborators.find(c => c.permission === 0);
+        creator () {
+            return this.project.collaborators.find(c => c.permission === 0)
         }
     },
 
     methods: {
-        remove() {
-            this.$store.dispatch('deleteProject', this.project);
+        remove () {
+            this.$store.dispatch('deleteProject', this.project)
         }
     }
 }

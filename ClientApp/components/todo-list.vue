@@ -21,37 +21,37 @@ export default {
         TodoItem
     },
 
-    data() {
+    data () {
         return {
             todoTitle: ''
         }
     },
 
     methods: {
-        async submit() {
-            let todo = {
+        async submit () {
+            const todo = {
                 name: this.todoTitle,
                 description: null,
                 isComplete: false,
                 userId: this.user.id
-            };
+            }
 
-            await this.$store.dispatch('addTodo', todo);
-            this.todoTitle = '';
+            await this.$store.dispatch('addTodo', todo)
+            this.todoTitle = ''
         }
     },
 
     computed: {
         todos: function () {
-            return this.$store.state.Todo.todos;
+            return this.$store.state.Todo.todos
         },
         user: function () {
-            return this.$store.state.user;
+            return this.$store.state.user
         }
     },
 
-    async created() {
-        this.$store.dispatch('getAllTodos');
+    async created () {
+        this.$store.dispatch('getAllTodos')
     }
 }
 </script>

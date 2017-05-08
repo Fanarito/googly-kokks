@@ -35,28 +35,28 @@ export default {
     },
 
     computed: {
-        currentUser() {
-            return this.$store.state.user;
+        currentUser () {
+            return this.$store.state.user
         },
 
-        canRemoveCollaborator() {
-            let currentCollaborator = this.collaborators.find(c => c.userID === this.currentUser.id);
+        canRemoveCollaborator () {
+            const currentCollaborator = this.collaborators.find(c => c.userID === this.currentUser.id)
 
             if (currentCollaborator.permission === 0) {
-                return true;
+                return true
             } else {
-                return false;
+                return false
             }
         }
     },
 
-    data() {
+    data () {
         return {
 
         }
     },
 
-    async created() {
+    async created () {
         await this.$store.dispatch('getUser');
     }
 }

@@ -9,15 +9,20 @@
 
 <script>
     export default {
-        mounted() {
-            console.log("calling ace");
-            let editor = ace.edit("editor");
-            editor.setTheme("ace/theme/chaos");
-            editor.getSession().setMode("ace/mode/javascript");
-            editor.setOptions({
+        data () {
+            return {
+                editor: null
+            }
+        },
+
+        mounted () {
+            this.editor = ace.edit("editor")
+            this.editor.setTheme("ace/theme/chaos")
+            this.editor.getSession().setMode("ace/mode/javascript")
+            this.editor.setOptions({
                 maxLines: 35,
                 minLines: 35
-            });
+            })
         }
     }
 </script>

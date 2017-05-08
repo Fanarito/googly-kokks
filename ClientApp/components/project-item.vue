@@ -15,14 +15,14 @@ export default {
         project: null
     },
 
-    data() {
+    data () {
         return {
         }
     },
 
     methods: {
-        remove() {
-            this.$store.dispatch('deleteProject', this.project);
+        remove () {
+            this.$store.dispatch('deleteProject', this.project)
         }
     }
 }
