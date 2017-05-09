@@ -7,6 +7,11 @@
             <div @click="saveFile" class="ui link icon item">
                 <i class="save icon"></i>
             </div>
+            <div class="menu right">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}">
+                    <i class="setting icon"></i>
+                </router-link>
+            </div>
         </div>
 
         <div class="ui bottom attached segment pushable">
