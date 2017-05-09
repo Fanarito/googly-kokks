@@ -3,7 +3,9 @@
         <nav-menu params="route: route"></nav-menu>
         <div class="ui grid">
             <div class="column">
-                <router-view v-if="loaded"></router-view>
+                <transition name="slide-fade" mode="out-in">
+                    <router-view v-if="loaded"></router-view>
+                </transition>
             </div>
         </div>
     </div>
@@ -32,4 +34,15 @@ export default {
 </script>
 
 <style>
+.slide-fade-enter-active {
+  transition: all .2s ease;
+}
+.slide-fade-leave-active {
+  transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for <2.1.8 */ {
+  transform: translateY(10px);
+  opacity: 0;
+}
 </style>

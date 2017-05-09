@@ -85,6 +85,26 @@ const mutations = {
             const parentFolder = findFolderById(state.projects[index].folders, folder.parentID)
             parentFolder.folders.push(folder)
         }
+    },
+
+    removeFolder: (state, { folder }) => {
+        const index = state.projects.findIndex(p => p.id === folder.projectID)
+
+        if (index > -1) {
+            const parentFolder = findFolderById(state.projects[index].folders, folder.parentID)
+            const folIndex = parentFolder.folders.indexOf(folder)
+            parentFolder.folders.splice(folIndex, 1)
+        }
+    },
+
+    removeFile: (state, { file, projectID }) => {
+        const index = state.projects.findIndex(p => p.id === projectID)
+
+        if (index > -1) {
+            const parentFolder = findFolderById(state.projects[index].folders, file.parentID)
+            const fileIndex = parentFolder.files.indexOf(file)
+            parentFolder.files.splice(fileIndex, 1)
+        }
     }
 }
 
@@ -192,6 +212,20 @@ const actions = {
         console.log(response)
 
         await commit('addFolder', { folder: response.data })
+    },
+
+    async deleteFolder ({ commit, state }, folder) {
+        const response = await Vue.prototype.$http.delete('/api/folder/' + folder.id)
+        console.log(response)
+
+        await commit('removeFolder', { folder })
+    },
+
+    async deleteFile ({ commit, state }, { file, projectID }) {
+        const response = await Vue.prototype.$http.delete('/api/file/' + file.id)
+        console.log(response)
+
+        await commit('removeFile', { file, projectID })
     }
 }
 

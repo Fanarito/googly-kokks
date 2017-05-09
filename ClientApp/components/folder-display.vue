@@ -2,17 +2,29 @@
     <div class="link item">
         <i class="folder icon"></i>
         <div class="content">
-            <div @contextmenu.prevent="toggleFolderContext" class="header" v-bind:class="[folderClass]" data-position="bottom left">
+            <div @contextmenu.prevent="toggleContext" class="header" v-bind:class="[folderClass]" data-position="bottom left">
                 {{ folder.name }}
                 <i @click="toggleExpanded" v-bind:class="{ minus: expanded, plus: !expanded }" class="icon"></i>
             </div>
             
             <div v-if="contextMenuVisible" class="ui vertical context menu">
-                <file-create-new v-on:hideContext="toggleFolderContext" :parent="folder"></file-create-new>
-                <folder-create-new v-on:hideContext="toggleFolderContext" :parent="folder"></folder-create-new>
-                <a class="item">
-                    <i class="remove icon"></i>
+                <file-create-new v-on:hideContext="toggleContext" :parent="folder"></file-create-new>
+                <folder-create-new v-on:hideContext="toggleContext" :parent="folder"></folder-create-new>
+                <a @click="renameFolder" class="item">
+                    Rename Folder
+
+                    <i class="right icons">
+                        <i class="folder icon"></i>
+                        <i class="corner yellow radio icon"></i>
+                    </i>
+                </a>
+                <a @click="confirmFolderDeletion" class="item">
                     Delete Folder
+
+                    <i class="right icons">
+                        <i class="folder icon"></i>
+                        <i class="corner red remove icon"></i>
+                    </i>
                 </a>
             </div>
 
@@ -51,12 +63,8 @@ export default {
     },
 
     methods: {
-        toggleFolderContext () {
+        toggleContext () {
             this.contextMenuVisible = !this.contextMenuVisible
-        },
-
-        toggleFileContext () {
-
         },
 
         toggleExpanded () {
@@ -64,6 +72,24 @@ export default {
         },
 
         newFile () {
+        },
+
+        async confirmFolderDeletion () {
+            const answer = confirm('Are you sure you want to delete "' + this.folder.name + '"?')
+            this.toggleContext()
+
+            if (answer) {
+                await this.$store.dispatch('deleteFolder', this.folder)
+            }
+        },
+
+        async renameFolder () {
+            const answer = prompt('Input new name')
+            this.toggleContext()
+
+            if (answer.length > 0) {
+                await this.$store.dispatch('updateFolder', this.folder)
+            }
         }
     }
 }

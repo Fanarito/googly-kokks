@@ -46,10 +46,8 @@ namespace Kokks.Models
 
         public Project Find(long id)
         {
-            var project = (from p in _context.Projects
-                           join f in _context.Folders on p.Id equals f.ProjectID
-                           where f.Parent == null
-                           select p)
+            var project = _context.Projects
+                .Where(p => p.Id == id)
                 .Include(p => p.Collaborators)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Folders)

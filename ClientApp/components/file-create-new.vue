@@ -33,6 +33,9 @@
                                 <option value="0">JavaScript</option>
                                 <option value="1">HTML</option>
                                 <option value="2">CSS</option>
+                                <option value="3">CPlusPlus</option>
+                                <option value="4">CSharp</option>
+                                <option value="5">Python</option>
                             </select>
                         </div>
                     </div>

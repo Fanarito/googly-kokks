@@ -12,9 +12,9 @@ namespace Kokks.Models
         JavaScript,
         HTML,
         CSS,
-        CPlusPlus,
-        C,
-        CSharp
+        CPP,
+        CSharp,
+        Python
     }
     public class File
     {

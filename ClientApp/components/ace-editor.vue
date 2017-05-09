@@ -87,7 +87,6 @@ export default {
                 return 'ace/mode/javascript'
             }
             const syntaxString = this.file.syntax
-
             switch (syntaxString) {
             case 'JavaScript':
                 return 'ace/mode/javascript'
@@ -95,6 +94,12 @@ export default {
                 return 'ace/mode/html'
             case 'CSS':
                 return 'ace/mode/css'
+            case 'Python':
+                return 'ace/mode/python'
+            case 'CPP':
+                return 'ace/mode/c_cpp'
+            case 'CSharp':
+                return 'ace/mode/csharp'
             }
         },
 
