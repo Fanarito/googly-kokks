@@ -21,7 +21,22 @@ const actions = {
             console.log(response)
             commit('setUser', { user: response.data })
         })
+    },
+
+    async updateUser ({commit, state}, user)    {
+        const response = await Vue.prototype.$http.put('/api/user/' + user.id, user)
+        console.log(response)
+
+        if (response.status === 204) {
+            await commit('addUser', { user: user })
+        } else {
+            // error handling
+        }
+
     }
+
+
+    
 }
 
 const getters = {
