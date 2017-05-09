@@ -16,12 +16,8 @@
 
         <div class="ui bottom attached segment pushable">
             <div v-if="project" class="ui sidebar">
-                <div class="ui container">
-                    <file-browser :folders="project.folders"></file-browser>
-                    
-                    <div class="ui divider"></div>
-
-                    <collaborator-list :collaborators="project.collaborators"></collaborator-list>
+                <div>
+                    <side-bar :project="project"></side-bar>
                 </div>
             </div>
 
