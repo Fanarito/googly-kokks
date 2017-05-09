@@ -4,7 +4,7 @@
             <a class="item active" data-tab="filesTab">Files</a>
             <a class="item" data-tab="todoTab">Todo</a>
         </div>
-        <div class="ui bottom attached tab segment active" data-tab="filesTab">
+        <div id="file-browser-segment" class="ui bottom attached tab segment active" data-tab="filesTab">
             <file-browser :folders="project.folders"></file-browser>
         </div>
         <div class="ui bottom attached tab segment" data-tab="todoTab">
@@ -51,5 +51,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+#file-browser-segment {
+    max-height: 500px;
+    overflow: auto;
+}
 </style>

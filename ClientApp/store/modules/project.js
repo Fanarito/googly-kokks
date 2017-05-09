@@ -78,9 +78,9 @@ const mutations = {
         }
     },
 
-    addFolder: (state, { folder, projectId }) => {
-        const index = state.projects.findIndex(p => p.id === projectId)
-        
+    addFolder: (state, { folder }) => {
+        const index = state.projects.findIndex(p => p.id === folder.projectID)
+
         if (index > -1) {
             const parentFolder = findFolderById(state.projects[index].folders, folder.parentID)
             parentFolder.folders.push(folder)
@@ -191,7 +191,7 @@ const actions = {
         const response = await Vue.prototype.$http.post('/api/folder', folder)
         console.log(response)
 
-        await commit('addFolder', { folder: response.data, projectId: folder.projectId })
+        await commit('addFolder', { folder: response.data })
     }
 }
 

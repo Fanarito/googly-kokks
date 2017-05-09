@@ -66,6 +66,8 @@ export default {
         async createFolder () {
             // Hide modal
             $('.ui.modal').modal('hide')
+            // Hide parent context menu
+            this.$emit('hideContext')
 
             const sameName = this.parent.folders.some(p => p.name === this.folderName)
             if (sameName) {
@@ -79,7 +81,9 @@ export default {
             const folder = {
                 name: this.folderName,
                 parentID: this.parent.id,
-                projectID: this.projectId
+                projectID: this.projectId,
+                folders: [],
+                files: []
             }
 
             // Clear text box

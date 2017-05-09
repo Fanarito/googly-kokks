@@ -77,6 +77,8 @@ export default {
         async createFile () {
             // Hide modal
             $('.ui.modal' + '.' + this.modalClass).modal('hide')
+            // Hide parent context menu
+            this.$emit('hideContext')
 
             const sameName = this.parent.files.some(f => f.name === this.fileName)
             if (sameName) {
