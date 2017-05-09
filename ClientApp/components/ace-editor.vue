@@ -7,8 +7,8 @@
             <div @click="saveFile" class="ui link icon item">
                 <i class="save icon"></i>
             </div>
-            <div class="menu right">
-                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}">
+            <div class="right menu">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}" class="ui link icon item">
                     <i class="setting icon"></i>
                 </router-link>
             </div>
