@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kokks.Migrations
 {
-    public partial class AddAllTables : Migration
+    public partial class CreateTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -72,28 +72,6 @@ namespace Kokks.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TodoItem",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Autoincrement", true),
-                    IsComplete = table.Column<bool>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    OwnerId = table.Column<string>(nullable: true),
-                    UserID = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TodoItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TodoItem_AspNetUsers_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +163,35 @@ namespace Kokks.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Folder_Project_ProjectID",
+                        column: x => x.ProjectID,
+                        principalTable: "Project",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TodoItem",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Autoincrement", true),
+                    IsComplete = table.Column<bool>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    OwnerId = table.Column<string>(nullable: true),
+                    ProjectID = table.Column<long>(nullable: false),
+                    UserID = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodoItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TodoItem_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TodoItem_Project_ProjectID",
                         column: x => x.ProjectID,
                         principalTable: "Project",
                         principalColumn: "Id",
@@ -299,6 +306,11 @@ namespace Kokks.Migrations
                 name: "IX_TodoItem_OwnerId",
                 table: "TodoItem",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TodoItem_ProjectID",
+                table: "TodoItem",
+                column: "ProjectID");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",

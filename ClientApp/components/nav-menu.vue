@@ -8,9 +8,15 @@
             <div class="ui icon top dropdown item">
                 <i class="user icon"></i>
                 <div class="menu">
-                    <form action="/Account/LogOut" method="post" id="asdasd">
-                            <div class="link item">Settings</div>
-                    </form> 
+
+                    
+                        <form action="/Account/LogOut" method="post" id="asdasd">
+                            <router-link :to="{ name: 'userSettings'}">
+                                <div class="link item">Settings</div>
+                            </router-link>
+                        </form> 
+                    
+                    
 
                     <form action="/Account/LogOut" method="post" id="logoutForm">
                         <div class="link item" onclick="javascript:document.getElementById('logoutForm').submit();">Log out

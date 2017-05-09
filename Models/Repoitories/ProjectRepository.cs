@@ -54,6 +54,7 @@ namespace Kokks.Models
                     .ThenInclude(f => f.Files)
                 .Include(p => p.Folders)
                     .ThenInclude(f => f.Folders)
+                .Include(p => p.TodoItems)
                 .FirstOrDefault(p => p.Id == id);
 
             // Remove folders that are not top level

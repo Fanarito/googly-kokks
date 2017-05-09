@@ -13,5 +13,6 @@ namespace Kokks.Models
 
         public ICollection<Collaborator> Collaborators { get; set; }
         public ICollection<Folder> Folders { get; set; }
+        public ICollection<TodoItem> TodoItems { get; set; }
     }
 }
