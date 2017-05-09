@@ -23,14 +23,23 @@ namespace Kokks.Controllers.Api
             _todoRepository = todoRepository;
             _userManager = userManager;
         }
-
+        
         [HttpGet]
         public async Task<IEnumerable<TodoItem>> GetAll()
         {
             var userId = await _userManager.GetUserAsync(HttpContext.User);
             return _todoRepository.GetAllForUser(userId.Id);
         }
-
+        /*
+        [HttpGet("project/{id}", Name = "GetTodoForProject")]
+        public async Task<IEnumerable<TodoItem>> GetAllForProject(int id)
+        {
+            var item = _todoRepository.Find(id);
+            var pid = item.ProjectID;
+            return _todoRepository.GetAllForProject(pid);
+        }
+         */
+        
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(int id)
         {

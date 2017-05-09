@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="project">
         <div class="ui fluid input">
             <input v-model="todoTitle"
                 v-on:keyup.enter="submit"
@@ -7,9 +7,15 @@
                 placeholder="Todo Title">
         </div>
         <div class="ui divider"></div>
+        <!-->
         <div v-for="todo in todos">
             <todo-item :todo="todo"></todo-item>
         </div>
+        <!-->
+        <todo-item v-for="todo in project.TodoItems" :todo="todo"></todo-item>
+    </div>
+    <div v-else>
+        loading project
     </div>
 </template>
 
@@ -23,8 +29,13 @@ export default {
 
     data () {
         return {
-            todoTitle: ''
+            todoTitle: '',
+            projectId: parseInt(this.$route.params.id)
         }
+    },
+    
+    props: {
+        TodoItem: null
     },
 
     methods: {
@@ -33,7 +44,8 @@ export default {
                 name: this.todoTitle,
                 description: null,
                 isComplete: false,
-                userId: this.user.id
+                userID: this.user.id,
+                projectID: this.projectId
             }
 
             await this.$store.dispatch('addTodo', todo)
@@ -45,14 +57,16 @@ export default {
         todos: function () {
             return this.$store.state.Todo.todos
         },
+
         user: function () {
             return this.$store.state.user
-        }
-    },
+        },
 
-    async created () {
-        this.$store.dispatch('getAllTodos')
+        project () {
+            return this.$store.getters.getProjectById(this.projectId)
+        }
     }
+    
 }
 </script>
 

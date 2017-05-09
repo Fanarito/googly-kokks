@@ -150,11 +150,15 @@ namespace Kokks.Migrations
 
                     b.Property<string>("OwnerId");
 
+                    b.Property<long>("ProjectID");
+
                     b.Property<string>("UserID");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("ProjectID");
 
                     b.ToTable("TodoItem");
                 });
@@ -289,7 +293,7 @@ namespace Kokks.Migrations
             modelBuilder.Entity("Kokks.Models.Folder", b =>
                 {
                     b.HasOne("Kokks.Models.Folder", "Parent")
-                        .WithMany()
+                        .WithMany("Folders")
                         .HasForeignKey("ParentID");
 
                     b.HasOne("Kokks.Models.Project", "Project")
@@ -303,6 +307,11 @@ namespace Kokks.Migrations
                     b.HasOne("Kokks.Models.ApplicationUser", "Owner")
                         .WithMany()
                         .HasForeignKey("OwnerId");
+
+                    b.HasOne("Kokks.Models.Project", "Project")
+                        .WithMany("TodoItems")
+                        .HasForeignKey("ProjectID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

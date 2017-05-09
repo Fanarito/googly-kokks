@@ -10,7 +10,9 @@ namespace Kokks.Models
         public string Name { get; set; }
         public bool IsComplete { get; set; }
         public string UserID { get; set; }
+        public long ProjectID { get; set; }
 
         public ApplicationUser Owner { get; set; }
+        public Project Project { get; set; }
     }
 }

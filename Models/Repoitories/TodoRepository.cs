@@ -23,7 +23,10 @@ namespace Kokks.Models
         {
             return _context.TodoItems.Where(t => t.UserID == uid).ToList();
         }
-
+        public IEnumerable<TodoItem> GetAllForProject(long pid)
+        {
+            return _context.TodoItems.Where(t => t.ProjectID == pid).ToList();
+        }
         public void Add(TodoItem item)
         {
             _context.TodoItems.Add(item);
