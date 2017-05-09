@@ -5,7 +5,7 @@
         </h1>
 
         <!-- Project Settings -->
-        <div v-if="permission == 0" class="ui segment">
+        <div v-if="permission == 'Owner'" class="ui segment">
             <h3 class="ui header">Project Settings</h3>
 
             <div class="ui labeled input">
@@ -26,11 +26,11 @@
         <div class="ui segment">
             <h3 class="ui header">Project Collaborators</h3>
 
-            <collaborator-list v-if="project.collaborators" :collaborators="project.collaborators"></collaborator-list>
+            <collaborator-list v-if="project.collaborators" :collaborators="project.collaborators" :allowDelete="true"></collaborator-list>
 
             <div class="ui divider"></div>
 
-            <div v-if="permission == 0" class="ui form">
+            <div v-if="permission == 'Owner'" class="ui form">
                 <h4 class="ui dividing header">Add Collaborator</h4>
                 <div class="field">
                     <div class="two fields">
@@ -110,40 +110,35 @@ export default {
         },
 
         async addCollaborator () {
-            document.getElementById("colaboratorerror").style.display = "none"
-            
-            try
-            {
-                const response = await this.$http.get('/api/user/email', {
-                params: {
-                        email: this.newCollaboratorEmail
-                        }
-                })
+            document.getElementById('colaboratorerror').style.display = 'none'
 
-                console.log(response)
-                if (response.status === 200) {
-                    const newCollaborator = {
-                        projectId: this.project.id,
-                        userId: response.data.id,
-                        permission: this.newCollaboratorPermission
+            try {
+                const response = await this.$http.get('/api/user/email', {
+                    params: {
+                        email: this.newCollaboratorEmail
                     }
-                    // add collaborator then fetch project again
-                    await this.$store.dispatch('addCollaborator', newCollaborator)
-                    await this.$store.dispatch('getProject', this.$route.params.id)
-                    // reset email
-                    this.newCollaboratorEmail = ''
-                } else {
-                    //error handling
+                })
+                console.log(response)
+
+                const newCollaborator = {
+                    projectId: this.project.id,
+                    userId: response.data.id,
+                    permission: this.newCollaboratorPermission
                 }
-            } catch (err) {//display error message
-                document.getElementById("colaboratorerror").style.display = "block"
+                // add collaborator then fetch project again
+                await this.$store.dispatch('addCollaborator', newCollaborator)
+                await this.$store.dispatch('getProject', this.$route.params.id)
+                // reset email
+                this.newCollaboratorEmail = ''
+            } catch (err) {
+                console.log(err)
+                // display error message
+                document.getElementById('colaboratorerror').style.display = 'block'
             }
-            
-            
         },
 
         async leaveProject () {
-            if (this.permission === 0) {
+            if (this.permission === 'Owner') {
                 this.$store.dispatch('deleteProject', this.project)
             } else {
                 this.$store.dispatch('removeCollaborator', this.currentCollaborator)
@@ -162,5 +157,8 @@ export default {
 
 <style scoped>
 
-#colaboratorerror{display: none;}
+#colaboratorerror 
+{
+    display: none;
+}
 </style>

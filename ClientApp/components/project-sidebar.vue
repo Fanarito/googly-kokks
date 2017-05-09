@@ -1,5 +1,5 @@
 <template>
-    <div v-if="project" class="ui container">
+    <div v-if="project" class="ui vertical sidebar menu">
         <file-browser :folders="project.folders"></file-browser>
         
         <div class="ui divider"></div>
@@ -23,13 +23,33 @@ export default {
     },
 
     props: {
-        project: null
+        project: null,
+        visible: true
+    },
+
+    watch: {
+        visible (val) {
+            console.log(val)
+            /*if (val) {
+                $('.ui.sidebar').sidebar('show')
+            } else {
+                $('.ui.sidebar').sidebar('hide')
+            }*/
+        }
     },
 
     data () {
         return {
 
         }
+    },
+
+    mounted () {
+        $('.ui.sidebar')
+        .sidebar({
+            context: $('.ui.bottom.attached.segment.pushable')
+        })
+        .sidebar('attach events', '#sidebarToggler')
     }
 }
 </script>

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Kokks.Models
 {
@@ -21,6 +23,7 @@ namespace Kokks.Models
 
         public ApplicationUser User { get; set; }
         public Project Project { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public Permissions Permission { get; set; }
     }
 

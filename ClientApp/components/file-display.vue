@@ -1,27 +1,25 @@
 <template>
-    <div class="link item">
-        <i class="folder icon"></i>
+    <a @click="displayFile(file)" v-bind:class="{ active: currentlySelected }" class="item">
+        <i class="file icon"></i>
         <div class="content">
-            <div class="header">{{ folder.name }}</div>
-            <div class="list">
-                <file-display v-for="folder in folder.folders" :folder="folder"></file-display>
-                <a v-for="file in folder.files" @click="displayFile(file)" class="item">
-                    <i class="file icon"></i>
-                    <div class="content">
-                        <div class="header">{{ file.name }}</div>
-                    </div>
-                </a>
-            </div>
+            <div class="header">{{ file.name }}</div>
         </div>
-    </div>
+    </a>
 </template>
 
 <script>
 export default {
-    name: 'file-display',
-
     props: {
-        folder: null
+        file: null
+    },
+
+    computed: {
+        currentlySelected () {
+            if (this.$store.state.Project.currentFile) {
+                return this.$store.state.Project.currentFile.id === this.file.id
+            }
+            return false
+        }
     },
 
     methods: {
@@ -33,4 +31,7 @@ export default {
 </script>
 
 <style scoped>
+    .active.item {
+        background-color: lightblue;
+    }
 </style>

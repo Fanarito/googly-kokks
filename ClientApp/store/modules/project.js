@@ -5,6 +5,16 @@ const state = {
     currentFile: null
 }
 
+function findById (data, id) {
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].id === id) {
+            return data[i]
+        } else if (data[i].children && data[i].children.length && typeof data[i].children === 'object') {
+            findById(data[i].children, id)
+        }
+    }
+}
+
 const mutations = {
     setProjects: (state, { projects }) => {
         state.projects = projects
@@ -53,6 +63,22 @@ const mutations = {
     },
 
     setFile: (state, { file, projectId }) => {
+        const index = state.projects.findIndex(p => p.id === projectId)
+        const folder = findById(state.projects[index].folders, file.parentID)
+        const fileIndex = folder.files.findIndex(f => f.id === file.id)
+        Vue.set(folder.files, fileIndex, file)
+    },
+
+    addFile: (state, { file, projectId }) => {
+        const index = state.projects.findIndex(p => p.id === projectId)
+        const folder = findById(state.projects[index].folders, file.parentID)
+        folder.files.push(file)
+    },
+
+    addFolder: (state, { folder, projectId }) => {
+        const index = state.projects.findIndex(p => p.id === projectId)
+        const parentFolder = findById(state.projects[index].folders, folder.parentID)
+        parentFolder.folders.push(folder)
     }
 }
 
@@ -141,10 +167,25 @@ const actions = {
         await commit('setCurrentFile', { file: response.data })
     },
 
-    async updateFile ({ commit, state }, file) {
-        console.log(file)
+    async updateFile ({ commit, state }, { file, projectId }) {
         const response = await Vue.prototype.$http.put('/api/file/' + file.id, file)
         console.log(response)
+
+        await commit('setFile', { file: file, projectId })
+    },
+
+    async addFile ({ commit, state }, { file, projectId }) {
+        const response = await Vue.prototype.$http.post('/api/file', file)
+        console.log(response)
+
+        await commit('addFile', { file: response.data, projectId })
+    },
+
+    async addFolder ({ commit, state }, folder) {
+        const response = await Vue.prototype.$http.post('/api/folder', folder)
+        console.log(response)
+
+        await commit('addFolder', { folder: response.data, projectId: folder.projectId })
     }
 }
 

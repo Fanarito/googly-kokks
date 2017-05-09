@@ -1,15 +1,15 @@
 <template>
   <div class="ui link list">
-      <file-display v-for="folder in folders" :folder="folder"></file-display>
+      <folder-display v-for="folder in folders" :folder="folder"></folder-display>
   </div>
 </template>
 
 <script>
-import FileDisplay from 'components/file-display'
+import FolderDisplay from 'components/folder-display'
 
 export default {
     components: {
-        FileDisplay
+        FolderDisplay
     },
 
     props: {
@@ -17,7 +17,6 @@ export default {
     },
 
     created () {
-        console.log(this.folders)
     }
 }
 </script>

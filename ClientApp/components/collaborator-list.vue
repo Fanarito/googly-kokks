@@ -42,7 +42,7 @@ export default {
         canRemoveCollaborator () {
             const currentCollaborator = this.collaborators.find(c => c.userID === this.currentUser.id)
 
-            if (currentCollaborator.permission === 0) {
+            if (currentCollaborator.permission === 'Owner') {
                 return true
             } else {
                 return false
@@ -54,10 +54,6 @@ export default {
         return {
 
         }
-    },
-
-    async created () {
-        await this.$store.dispatch('getUser');
     }
 }
 </script>

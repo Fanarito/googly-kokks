@@ -29,7 +29,7 @@ export default {
 
     computed: {
         creator () {
-            return this.project.collaborators.find(c => c.permission === 0)
+            return this.project.collaborators.find(c => c.permission === 'Owner')
         }
     },
 

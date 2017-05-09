@@ -46,7 +46,10 @@ namespace Kokks.Models
 
         public Project Find(long id)
         {
-            return _context.Projects
+            var project = (from p in _context.Projects
+                           join f in _context.Folders on p.Id equals f.ProjectID
+                           where f.Parent == null
+                           select p)
                 .Include(p => p.Collaborators)
                     .ThenInclude(c => c.User)
                 .Include(p => p.Folders)
@@ -54,6 +57,10 @@ namespace Kokks.Models
                 .Include(p => p.Folders)
                     .ThenInclude(f => f.Folders)
                 .FirstOrDefault(p => p.Id == id);
+
+            // Remove folders that are not top level
+            project.Folders = project.Folders.Where(f => f.Parent == null).ToList();
+            return project;
         }
 
         public void Remove(long id)

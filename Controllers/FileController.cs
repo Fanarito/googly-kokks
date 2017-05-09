@@ -52,8 +52,13 @@ namespace Kokks.Controllers.Api
                 return BadRequest();
             }
 
+            var parent = _folderRepository.Find(item.ParentID);
+            if (parent == null)
+            {
+                return BadRequest();
+            }
             var userId = _userManager.GetUserId(HttpContext.User);
-            var currentCollaborator = _collaboratorRepository.Find(item.Parent.ProjectID, userId);
+            var currentCollaborator = _collaboratorRepository.Find(parent.ProjectID, userId);
 
             if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
                && currentCollaborator.Permission != Permissions.ReadWrite))

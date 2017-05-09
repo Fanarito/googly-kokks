@@ -1,10 +1,6 @@
 <template>
-    <div class="ui grid">
-        <div v-if="project" class="four wide column">
-            <side-bar :project="project"></side-bar>
-        </div>
-        
-        <div class="twelve wide column">
+    <div class="ui grid">      
+        <div id="editor-view" class="sixteen wide stretched column">
             <ace-editor></ace-editor>
         </div>
     </div>
@@ -12,35 +8,33 @@
 
 <script>
 import AceEditor from 'components/ace-editor'
-import SideBar from 'components/project-sidebar'
 
 export default {
     components: {
-        AceEditor,
-        SideBar
+        AceEditor
     },
 
-    data() {
+    data () {
         return {
             projectId: parseInt(this.$route.params.id)
         }
     },
 
     computed: {
-        project() {
+        project () {
             return this.$store.getters.getProjectById(this.projectId)
         },
 
-        currentCollaborator() {
+        currentCollaborator () {
             return this.$store.getters.getCurrentProjectCollaborator(this.project)
         },
 
-        permission() {
+        permission () {
             return this.currentCollaborator.permission
-        },
+        }
     },
 
-    async created() {
+    async created () {
         await this.$store.dispatch('getProject', this.projectId)
     }
 }
