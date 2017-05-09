@@ -24,7 +24,7 @@ export default {
 
     async created () {
         if (this.$store.getters.currentUser === null) {
-            await this.$store.dispatch('getUser');
+            await this.$store.dispatch('getUser')
         }
         this.loaded = true
     }

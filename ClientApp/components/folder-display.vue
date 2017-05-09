@@ -8,6 +8,7 @@
                 <file-create-new :parent="folder"></file-create-new>
                 <folder-create-new :parent="folder"></folder-create-new>
                 <a class="item">
+                    <i class="remove icon"></i>
                     Delete Folder
                 </a>
             </div>

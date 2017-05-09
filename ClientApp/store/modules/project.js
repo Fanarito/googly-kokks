@@ -5,12 +5,12 @@ const state = {
     currentFile: null
 }
 
-function findById (data, id) {
-    for (var i = 0; i < data.length; i++) {
-        if (data[i].id === id) {
-            return data[i]
-        } else if (data[i].children && data[i].children.length && typeof data[i].children === 'object') {
-            findById(data[i].children, id)
+function findFolderById (folders, id) {
+    for (var i = 0; i < folders.length; i++) {
+        if (folders[i].id === id) {
+            return folders[i]
+        } else if (folders[i].folders && folders[i].folders.length && typeof folders[i].folders === 'object') {
+            return findFolderById(folders[i].folders, id)
         }
     }
 }
@@ -64,21 +64,27 @@ const mutations = {
 
     setFile: (state, { file, projectId }) => {
         const index = state.projects.findIndex(p => p.id === projectId)
-        const folder = findById(state.projects[index].folders, file.parentID)
+        const folder = findFolderById(state.projects[index].folders, file.parentID)
         const fileIndex = folder.files.findIndex(f => f.id === file.id)
         Vue.set(folder.files, fileIndex, file)
     },
 
     addFile: (state, { file, projectId }) => {
         const index = state.projects.findIndex(p => p.id === projectId)
-        const folder = findById(state.projects[index].folders, file.parentID)
-        folder.files.push(file)
+
+        if (index > -1) {
+            const folder = findFolderById(state.projects[index].folders, file.parentID)
+            folder.files.push(file)
+        }
     },
 
     addFolder: (state, { folder, projectId }) => {
         const index = state.projects.findIndex(p => p.id === projectId)
-        const parentFolder = findById(state.projects[index].folders, folder.parentID)
-        parentFolder.folders.push(folder)
+        
+        if (index > -1) {
+            const parentFolder = findFolderById(state.projects[index].folders, folder.parentID)
+            parentFolder.folders.push(folder)
+        }
     }
 }
 
