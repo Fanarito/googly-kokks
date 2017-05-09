@@ -21,6 +21,8 @@ namespace Kokks.Controllers.Api
             _userManager = userManager;
         }
 
+        
+
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
