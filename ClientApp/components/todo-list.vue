@@ -7,12 +7,7 @@
                 placeholder="Todo Title">
         </div>
         <div class="ui divider"></div>
-        <!-->
-        <div v-for="todo in todos">
-            <todo-item :todo="todo"></todo-item>
-        </div>
-        <!-->
-        <todo-item v-for="todo in project.TodoItems" :todo="todo"></todo-item>
+        <todo-item v-for="todo in project.todoItems" :todo="todo"></todo-item>
     </div>
     <div v-else>
         loading project
@@ -54,10 +49,6 @@ export default {
     },
 
     computed: {
-        todos: function () {
-            return this.$store.state.Todo.todos
-        },
-
         user: function () {
             return this.$store.state.user
         },
@@ -66,7 +57,6 @@ export default {
             return this.$store.getters.getProjectById(this.projectId)
         }
     }
-    
 }
 </script>
 

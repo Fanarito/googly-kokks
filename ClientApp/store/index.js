@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Todo from './modules/todo'
 import Project from './modules/project'
 
 Vue.use(Vuex)
@@ -23,7 +22,7 @@ const actions = {
         })
     },
 
-    async updateUser ({commit, state}, user)    {
+    async updateUser ({ commit, state }, user)    {
         const response = await Vue.prototype.$http.put('/api/user/' + user.id, user)
         console.log(response)
 
@@ -34,9 +33,6 @@ const actions = {
         }
 
     }
-
-
-    
 }
 
 const getters = {
@@ -51,7 +47,6 @@ export default new Vuex.Store({
     actions,
     getters,
     modules: {
-        Todo,
         Project
     }
 })

@@ -105,6 +105,23 @@ const mutations = {
             const fileIndex = parentFolder.files.indexOf(file)
             parentFolder.files.splice(fileIndex, 1)
         }
+    },
+
+    deleteTodo: (state, { todo }) => {
+        const project = state.projects.find(p => p.id === todo.projectID)
+
+        if (project) {
+            const todoIndex = project.todoItems.indexOf(todo)
+            project.todoItems.splice(todoIndex, 1)
+        }
+    },
+
+    addTodo: (state, { todo }) => {
+        const project = state.projects.find(p => p.id === todo.projectID)
+
+        if (project) {
+            project.todoItems.push(todo)
+        }
     }
 }
 
@@ -226,6 +243,28 @@ const actions = {
         console.log(response)
 
         await commit('removeFile', { file, projectID })
+    },
+
+    async deleteTodo ({ commit, state }, todo) {
+        const response = await Vue.prototype.$http.delete('/api/todo/' + todo.id, todo)
+        console.log(response)
+
+        if (response.status === 204) {
+            await commit('deleteTodo', { todo: todo })
+        } else {
+            // error handling
+        }
+    },
+
+    async addTodo ({ commit, state }, todo) {
+        const response = await Vue.prototype.$http.post('/api/todo', todo)
+        console.log(response)
+
+        if (response.status === 201) {
+            await commit('addTodo', { todo: response.data })
+        } else {
+            // error msg
+        }
     }
 }
 
