@@ -5,10 +5,16 @@
                 <i class="sidebar icon"></i>
             </div>
             <div @click="saveFile" class="ui link icon item">
-                <i class="save icon"></i>
+                <i v-bind:class="[savingIcon]" class="icon"></i>
+                <span class="pad-right" v-if="saving">
+                    Saving
+                </span>
+                <span class="pad-right" v-if="recentlySaved">
+                    Saved...
+                </span>
             </div>
-            <div class="menu right">
-                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}">
+            <div class="right menu">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}" class="ui link icon item">
                     <i class="setting icon"></i>
                 </router-link>
             </div>
@@ -16,12 +22,8 @@
 
         <div class="ui bottom attached segment pushable">
             <div v-if="project" class="ui sidebar">
-                <div class="ui container">
-                    <file-browser :folders="project.folders"></file-browser>
-                    
-                    <div class="ui divider"></div>
-
-                    <collaborator-list :collaborators="project.collaborators"></collaborator-list>
+                <div>
+                    <side-bar :project="project"></side-bar>
                 </div>
             </div>
 
@@ -39,6 +41,7 @@
 import FileBrowser from 'components/file-browser'
 import CollaboratorList from 'components/collaborator-list'
 import SideBar from 'components/project-sidebar'
+import _ from 'lodash'
 
 export default {
     components: {
@@ -50,8 +53,11 @@ export default {
     data () {
         return {
             editor: null,
+            editorContent: '',
             projectId: parseInt(this.$route.params.id),
-            sidebarVisible: true
+            sidebarVisible: false,
+            saving: false,
+            recentlySaved: false
         }
     },
 
@@ -90,6 +96,14 @@ export default {
             case 'CSS':
                 return 'ace/mode/css'
             }
+        },
+
+        savingIcon () {
+            if (this.saving) {
+                return 'spinner loading'
+            } else {
+                return 'save'
+            }
         }
     },
 
@@ -109,15 +123,37 @@ export default {
         // Whenever syntax update ace syntax highlighting
         syntax (val) {
             this.editor.getSession().setMode(val)
+        },
+
+        editorContent () {
+            this.debounceSaveFile()
         }
     },
 
     methods: {
-        saveFile (e) {
+        async saveFile () {
+            // If the user does not have write privileges just ignore the save request
+            if (this.currentCollaborator.permission === 'Read') {
+                return
+            }
+
+            this.saving = true
             const updatedFile = this.file
-            updatedFile.content = this.editor.getSession().getValue()
-            this.$store.dispatch('updateFile', { file: updatedFile, projectId: this.projectId })
+            updatedFile.content = this.editorContent
+            await this.$store.dispatch('updateFile', { file: updatedFile, projectId: this.projectId })
+            this.saving = false
+
+            // Changes Saving text to Saved...
+            this.recentlySaved = true
+            const self = this
+            setTimeout(function () {
+                self.recentlySaved = false
+            }, 2000)
         },
+
+        debounceSaveFile: _.debounce(function () {
+            this.saveFile()
+        }, 2000),
 
         toggleSidebar () {
             $('.ui.sidebar').sidebar({
@@ -133,9 +169,15 @@ export default {
         this.editor = ace.edit('editor')
         this.editor.setTheme('ace/theme/xcode')
         this.editor.getSession().setMode('ace/mode/javascript')
+        this.editor.$blockScrolling = Infinity
         this.editor.setOptions({
             maxLines: 50,
             minLines: 50
+        })
+
+        const self = this
+        this.editor.on('change', function () {
+            self.editorContent = self.editor.getSession().getValue()
         })
 
         this.toggleSidebar()
@@ -154,5 +196,9 @@ export default {
 
     .ui.bottom.attached.segment {
         min-height: 600px;
+    }
+
+    .pad-right {
+        padding-left: 5px;
     }
 </style>

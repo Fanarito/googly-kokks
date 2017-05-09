@@ -1,7 +1,12 @@
 <template>
     <div>
         <a @click="showModal" class="item">
-            <i class="plus icon"></i> New File
+            New File
+            
+            <i class="right icons">
+                <i class="file icon"></i>
+                <i class="corner green plus icon"></i>
+            </i>
         </a>
     
         <!-- Dimmer while the project is being created -->
@@ -118,5 +123,9 @@ export default {
     min-height: 100%;
     min-width: 100%;
     z-index: 1000;
+}
+
+.right.icons {
+    float: right;
 }
 </style>

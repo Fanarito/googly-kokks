@@ -3,9 +3,9 @@ import VueRouter from 'vue-router'
 
 import { routes } from './routes'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
-let router = new VueRouter({
+const router = new VueRouter({
     linkActiveClass: 'active',
     routes
 })

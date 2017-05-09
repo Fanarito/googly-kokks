@@ -1,6 +1,15 @@
 <template>
-    <div v-if="project" class="ui vertical sidebar menu">
-        <file-browser :folders="project.folders"></file-browser>
+    <div v-if="project">
+        <div class="ui top attached tabular menu">
+            <a class="item active" data-tab="filesTab">Files</a>
+            <a class="item" data-tab="todoTab">Todo</a>
+        </div>
+        <div class="ui bottom attached tab segment active" data-tab="filesTab">
+            <file-browser :folders="project.folders"></file-browser>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="todoTab">
+            <todo-list></todo-list>
+        </div>
         
         <div class="ui divider"></div>
 
@@ -15,27 +24,17 @@
 <script>
 import FileBrowser from 'components/file-browser'
 import CollaboratorList from 'components/collaborator-list'
+import TodoList from 'components/todo-list'
 
 export default {
     components: {
         FileBrowser,
-        CollaboratorList
+        CollaboratorList,
+        TodoList
     },
 
     props: {
-        project: null,
-        visible: true
-    },
-
-    watch: {
-        visible (val) {
-            console.log(val)
-            /*if (val) {
-                $('.ui.sidebar').sidebar('show')
-            } else {
-                $('.ui.sidebar').sidebar('hide')
-            }*/
-        }
+        project: null
     },
 
     data () {
@@ -45,11 +44,9 @@ export default {
     },
 
     mounted () {
-        $('.ui.sidebar')
-        .sidebar({
-            context: $('.ui.bottom.attached.segment.pushable')
-        })
-        .sidebar('attach events', '#sidebarToggler')
+        $('.menu .item')
+        .tab()
+        ;
     }
 }
 </script>
