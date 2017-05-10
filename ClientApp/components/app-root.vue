@@ -12,12 +12,13 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import NavMenu from './nav-menu'
-
-Vue.component('nav-menu', NavMenu);
+import NavMenu from 'components/nav-menu'
 
 export default {
+    components: {
+        NavMenu
+    },
+
     data () {
         return {
             loaded: false

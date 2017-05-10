@@ -54,7 +54,6 @@ export default {
         return {
             editor: null,
             editorContent: '',
-            projectId: parseInt(this.$route.params.id),
             sidebarVisible: false,
             saving: false,
             recentlySaved: false
@@ -62,6 +61,10 @@ export default {
     },
 
     computed: {
+        projectId () {
+            return parseInt(this.$route.params.id)
+        },
+
         currentUser () {
             return this.$store.state.user
         },

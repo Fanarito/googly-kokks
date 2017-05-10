@@ -9,19 +9,16 @@
                 <i class="user icon"></i>
                 <div class="menu">
 
+                    <router-link :to="{ name: 'userSettings'}" class="link item">
+                        Settings
+                    </router-link>
                     
-                        <form action="/Account/LogOut" method="post" id="asdasd">
-                            <router-link :to="{ name: 'userSettings'}">
-                                <div class="link item">Settings</div>
-                            </router-link>
-                        </form> 
-                    
-                    
-
                     <form action="/Account/LogOut" method="post" id="logoutForm">
-                        <div class="link item" onclick="javascript:document.getElementById('logoutForm').submit();">Log out
+                        <div class="link item" type="submit" onclick="javascript:document.getElementById('logoutForm').submit();">
+                            Log out
                         </div>
-                    </form>               
+                    </form>   
+            
                 </div>
             </div>
             

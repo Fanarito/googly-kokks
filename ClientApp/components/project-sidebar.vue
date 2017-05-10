@@ -44,9 +44,7 @@ export default {
     },
 
     mounted () {
-        $('.menu .item')
-        .tab()
-        ;
+        $('.menu .item').tab()
     }
 }
 </script>
