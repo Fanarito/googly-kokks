@@ -30,6 +30,19 @@ export default {
             await this.$store.dispatch('getUser')
         }
         this.loaded = true
+    },
+
+    mounted () {
+        // Sadly vue events don't work for this context
+        // so we add a listener to the window that closes the
+        // context menu when the user presses the escape key anywhere
+        var vm = this
+        window.addEventListener('keyup', function (event) {
+            // If down arrow was pressed...
+            if (event.keyCode === 27) {
+                vm.$store.dispatch('setContextObject', null)
+            }
+        })
     }
 }
 </script>

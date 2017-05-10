@@ -4,6 +4,12 @@
     </div>
 
     <div v-else class="ui center aligned container">
+        <div class="ui small centered header">
+            {{ slotText }}
+        </div>
+        
+        <div class="ui divider"></div>
+
         <div class="ui action input">
             <input @keyup.enter="validate" v-focus type="text" v-model="inputData">
         </div>
@@ -38,7 +44,8 @@ export default {
         return {
             confirm: false,
             inputData: '',
-            error: false
+            error: false,
+            slotText: null
         }
     },
 
@@ -52,6 +59,10 @@ export default {
                 this.error = true
             }
         }
+    },
+
+    mounted () {
+        this.slotText = $(this.$el).text()
     }
 }
 </script>

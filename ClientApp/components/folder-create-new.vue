@@ -24,7 +24,7 @@
                 <div class="ui form">
                     <div class="field">
                         <label>Name</label>
-                        <input @keyup.enter="createFolder" v-model="folderName" placeholder="Name" type="text" />
+                        <input v-focus @keyup.enter="createFolder" v-model="folderName" placeholder="Name" type="text" />
                     </div>
                 </div>
             </div>
@@ -56,7 +56,11 @@ export default {
     },
     methods: {
         showModal () {
-            $('.ui.modal' + '.' + this.modalClass).modal('show')
+            $('.ui.modal' + '.' + this.modalClass)
+                .modal({
+                    detachable: false
+                })
+                .modal('show')
         },
 
         clearInput () {

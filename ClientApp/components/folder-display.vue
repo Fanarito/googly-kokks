@@ -7,9 +7,24 @@
                 <i @click="toggleExpanded" v-bind:class="{ minus: expanded, plus: !expanded }" class="icon"></i>
             </div>
             
-            <div v-if="contextMenuVisible" class="ui vertical context menu">
-                <file-create-new v-on:hideContext="toggleContext" :parent="folder"></file-create-new>
-                <folder-create-new v-on:hideContext="toggleContext" :parent="folder"></folder-create-new>
+            <div v-if="contextMenuObject == folder" class="ui vertical context menu">
+                <dialog-input class="link item" :func="createFile">
+                    New File
+
+                    <i class="right icons">
+                        <i class="file icon"></i>
+                        <i class="corner green plus icon"></i>
+                    </i>
+                </dialog-input>
+
+                <dialog-input class="link item" :func="createFolder">
+                    New Folder
+
+                    <i class="right icons">
+                        <i class="folder icon"></i>
+                        <i class="corner green plus icon"></i>
+                    </i>
+                </dialog-input>
 
                 <dialog-input class="link item" :func="renameFolder">
                     Rename Folder
@@ -28,6 +43,12 @@
                         <i class="corner red remove icon"></i>
                     </i>
                 </dialog-confirm>
+
+                <div @click="toggleContext" class="link item">
+                    Cancel
+
+                    <i class="cancel icon"></i>
+                </div>
             </div>
 
             <div v-if="expanded" class="list">
@@ -63,14 +84,23 @@ export default {
     data () {
         return {
             folderClass: 'folderItem' + this.folder.id,
-            contextMenuVisible: false,
             expanded: true
+        }
+    },
+
+    computed: {
+        contextMenuObject () {
+            return this.$store.state.Project.contextObject
         }
     },
 
     methods: {
         toggleContext () {
-            this.contextMenuVisible = !this.contextMenuVisible
+            if (this.contextMenuObject === this.folder) {
+                this.$store.dispatch('setContextObject', null)
+            } else {
+                this.$store.dispatch('setContextObject', this.folder)
+            }
         },
 
         toggleExpanded () {
@@ -90,6 +120,47 @@ export default {
             const newFolder = this.folder
             newFolder.name = name
             await this.$store.dispatch('updateFolder', newFolder)
+        },
+
+        async createFile (name) {
+            this.toggleContext()
+
+            const sameName = this.folder.files.some(f => f.name === name)
+            if (sameName) {
+                alert('File by that name already exists, ignoring')
+                return
+            }
+
+            const file = {
+                name: name,
+                parentID: this.folder.id,
+                content: '',
+                syntax: 0
+            }
+
+            // Tell the store to add the project and wait for it to finish
+            await this.$store.dispatch('addFile', { file, projectID: this.folder.projectID })
+        },
+
+        async createFolder (name) {
+            this.toggleContext()
+
+            const sameName = this.folder.folders.some(p => p.name === name)
+            if (sameName) {
+                alert('Folder by that name already exists, ignoring')
+                return
+            }
+
+            const folder = {
+                name: name,
+                parentID: this.folder.id,
+                projectID: this.folder.projectID,
+                folders: [],
+                files: []
+            }
+
+            // Tell the store to add the project and wait for it to finish
+            await this.$store.dispatch('addFolder', folder)
         }
     }
 }

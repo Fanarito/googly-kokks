@@ -25,7 +25,7 @@
                     <div class="two fields">
                         <div class="field">
                             <label>Name</label>
-                            <input @keyup.enter="createFile" v-model="fileName" placeholder="Name" type="text" />
+                            <input v-focus @keyup.enter="createFile" v-model="fileName" placeholder="Name" type="text" />
                         </div>
                         <div class="field">
                             <label>Syntax</label>
@@ -70,7 +70,11 @@ export default {
     },
     methods: {
         showModal() {
-            $('.ui.modal' + '.' + this.modalClass).modal('show')
+            $('.ui.modal' + '.' + this.modalClass)
+                .modal({
+                    detachable: false
+                })
+                .modal('show')
         },
 
         clearInput() {

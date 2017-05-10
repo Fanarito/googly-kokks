@@ -6,10 +6,10 @@
             </div>
             <div @click="saveFile" class="ui link icon item">
                 <i v-bind:class="[savingIcon]" class="icon"></i>
-                <span class="pad-right" v-if="saving">
-                    Saving
+                <span class="pad-left" v-if="saving">
+                    Saving...
                 </span>
-                <span class="pad-right" v-if="recentlySaved">
+                <span class="pad-left" v-if="recentlySaved">
                     Saved...
                 </span>
             </div>
@@ -222,7 +222,7 @@ export default {
         min-height: 600px;
     }
 
-    .pad-right {
+    .pad-left {
         padding-left: 5px;
     }
 </style>

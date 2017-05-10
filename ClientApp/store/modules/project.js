@@ -2,7 +2,8 @@ import Vue from 'vue'
 
 const state = {
     projects: [],
-    currentFile: null
+    currentFile: null,
+    contextObject: null
 }
 
 function findFolderById (folders, id) {
@@ -157,6 +158,10 @@ const mutations = {
         if (project) {
             project.todoItems.push(todo)
         }
+    },
+
+    setContextObject: (state, { object }) => {
+        state.contextObject = object
     }
 }
 
@@ -319,6 +324,10 @@ const actions = {
         } else {
             // error msg
         }
+    },
+
+    async setContextObject ({ commit, state }, object) {
+        await commit('setContextObject', { object })
     }
 }
 

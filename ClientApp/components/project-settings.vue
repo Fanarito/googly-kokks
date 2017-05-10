@@ -60,8 +60,12 @@
         </div>
 
         <!-- Leave or delete project -->
-        <div class="ui segment">
-            <button @click="leaveProject" class="ui negative button">Leave Project</button>
+        <div class="ui center aligned segment">
+            <dialog-confirm :func="leaveProject">
+                <button class="ui red button">
+                    Leave/Delete Project
+                </button>
+            </dialog-confirm>
         </div>
     </div>
 
@@ -73,11 +77,13 @@
 <script>
 import CollaboratorList from './collaborator-list'
 import PermissionInput from './collaborator-permission-input'
+import DialogConfirm from 'components/dialog-confirm'
 
 export default {
     components: {
         CollaboratorList,
-        PermissionInput
+        PermissionInput,
+        DialogConfirm
     },
 
     data () {

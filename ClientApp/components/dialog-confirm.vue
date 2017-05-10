@@ -1,9 +1,15 @@
 <template>
     <div v-if="!confirm" @click.stop="confirm = !confirm">
-        <slot></slot>
+        <slot class="slot"></slot>
     </div>
 
     <div v-else>
+        <div class="ui small centered header">
+            {{ slotText }}
+        </div>
+
+        <div class="ui divider"></div>
+
         <span :class="sureClass">
             Sure?
         </span>
@@ -28,8 +34,13 @@ export default {
 
     data () {
         return {
-            confirm: false
+            confirm: false,
+            slotText: null
         }
+    },
+
+    mounted () {
+        this.slotText = $(this.$el).text()
     }
 }
 </script>

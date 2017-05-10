@@ -1,11 +1,11 @@
 <template>
     <div v-bind:class="{ active: currentlySelected }" class="item">
         <i class="file icon"></i>
-        <a @click="displayFile(file)" @contextmenu.prevent="toggleContext" class="content">
+        <a @click="displayFile" @contextmenu.prevent="toggleContext" class="content">
             <div class="header">{{ file.name }}</div>
         </a>
 
-        <div v-if="contextMenuVisible" class="ui vertical context menu">
+        <div v-if="file == contextMenuObject" class="ui vertical context menu">
             <dialog-input class="link item" :func="renameFile">
                 Rename File
 
@@ -22,6 +22,12 @@
                     <i class="corner red remove icon"></i>
                 </i>
             </dialog-confirm>
+
+            <div @click="toggleContext" class="link item">
+                Cancel
+
+                <i class="cancel icon"></i>
+            </div>
         </div>
     </div>
 </template>
@@ -42,7 +48,6 @@ export default {
 
     data () {
         return {
-            contextMenuVisible: false,
             projectID: parseInt(this.$route.params.id)
         }
     },
@@ -53,16 +58,24 @@ export default {
                 return this.$store.state.Project.currentFile.id === this.file.id
             }
             return false
+        },
+
+        contextMenuObject () {
+            return this.$store.state.Project.contextObject
         }
     },
 
     methods: {
-        displayFile (file) {
-            this.$store.dispatch('selectFile', file)
+        displayFile () {
+            this.$store.dispatch('selectFile', this.file)
         },
 
         toggleContext () {
-            this.contextMenuVisible = !this.contextMenuVisible
+            if (this.contextMenuObject === this.file) {
+                this.$store.dispatch('setContextObject', null)
+            } else {
+                this.$store.dispatch('setContextObject', this.file)
+            }
         },
 
         async deleteFile () {
