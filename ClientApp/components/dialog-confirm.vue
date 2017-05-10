@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!confirm" @click.prevent="confirm = !confirm">
+    <div v-if="!confirm" @click.stop="confirm = !confirm">
         <slot></slot>
     </div>
 
@@ -9,9 +9,9 @@
         </span>
 
         <div class="ui buttons">
-            <div @click.prevent="func()" class="ui red button">Yes</div>
+            <div @click.stop="func()" class="ui red button">Yes</div>
             <div class="or"></div>
-            <div @click.prevent="confirm = !confirm" class="ui button">No</div>
+            <div @click.stop="confirm = !confirm" class="ui button">No</div>
         </div>
     </div>
 </template>

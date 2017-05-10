@@ -20,14 +20,14 @@ export default {
 
     data () {
         return {
-            projectId: parseInt(this.$route.params.id),
+            projectID: parseInt(this.$route.params.id),
             loading: true
         }
     },
 
     computed: {
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         },
 
         currentCollaborator () {
@@ -41,7 +41,7 @@ export default {
 
     async created () {
         this.loading = true
-        await this.$store.dispatch('getProject', this.projectId)
+        await this.$store.dispatch('getProject', this.projectID)
         this.loading = false
     }
 }

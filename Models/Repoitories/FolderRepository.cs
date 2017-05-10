@@ -25,12 +25,12 @@ namespace Kokks.Models
             _context.SaveChanges();
         }
 
-        public Folder Create(string name, long? parentId, long projectId)
+        public Folder Create(string name, long? parentId, long projectID)
         {
             Folder folder = new Folder();
             folder.Name = name;
             folder.ParentID = parentId;
-            folder.ProjectID = projectId;
+            folder.ProjectID = projectID;
             Add(folder);
             return folder;
         }

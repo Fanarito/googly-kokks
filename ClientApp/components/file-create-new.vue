@@ -63,7 +63,7 @@ export default {
         return {
             creating: false,
             fileName: '',
-            projectId: parseInt(this.$route.params.id),
+            projectID: parseInt(this.$route.params.id),
             modalClass: 'fileModal' + this.parent.id,
             syntax: 0
         }
@@ -102,7 +102,7 @@ export default {
             // Clear text box
             this.fileName = ''
             // Tell the store to add the project and wait for it to finish
-            await this.$store.dispatch('addFile', { file, projectId: this.projectId })
+            await this.$store.dispatch('addFile', { file, projectID: this.projectID })
             // Hide loader
             this.creating = false
         }

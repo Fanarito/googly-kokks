@@ -6,24 +6,34 @@
         </a>
 
         <div v-if="contextMenuVisible" class="ui vertical context menu">
-            <confirm-button class="link item" :func="deleteFile">
+            <dialog-input class="link item" :func="renameFile">
+                Rename File
+
+                <i class="right icons">
+                    <i class="file icon"></i>
+                    <i class="corner yellow radio icon"></i>
+                </i>
+            </dialog-input>
+            <dialog-confirm class="link item" :func="deleteFile">
                 Delete File
 
                 <i class="right icons">
                     <i class="file icon"></i>
                     <i class="corner red remove icon"></i>
                 </i>
-            </confirm-button>
+            </dialog-confirm>
         </div>
     </div>
 </template>
 
 <script>
-import ConfirmButton from 'components/confirm-button'
+import DialogConfirm from 'components/dialog-confirm'
+import DialogInput from 'components/dialog-input'
 
 export default {
     components: {
-        ConfirmButton
+        DialogConfirm,
+        DialogInput
     },
 
     props: {
@@ -33,7 +43,7 @@ export default {
     data () {
         return {
             contextMenuVisible: false,
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
 
@@ -57,7 +67,14 @@ export default {
 
         async deleteFile () {
             this.toggleContext()
-            await this.$store.dispatch('deleteFile', { file: this.file, projectID: this.projectId })
+            await this.$store.dispatch('deleteFile', { file: this.file, projectID: this.projectID })
+        },
+
+        renameFile (name) {
+            this.toggleContext()
+            const updatedFile = this.file
+            updatedFile.name = name
+            this.$store.dispatch('updateFile', { file: updatedFile, projectID: this.projectID })
         }
     }
 }

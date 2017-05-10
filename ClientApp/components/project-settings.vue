@@ -85,13 +85,13 @@ export default {
             projectName: '',
             newCollaboratorEmail: '',
             newCollaboratorPermission: 1,
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
 
     computed: {
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         },
 
         currentCollaborator () {
@@ -125,7 +125,7 @@ export default {
                 console.log(response)
 
                 const newCollaborator = {
-                    projectId: this.project.id,
+                    projectID: this.project.id,
                     userId: response.data.id,
                     permission: this.newCollaboratorPermission
                 }
@@ -152,7 +152,7 @@ export default {
     },
 
     async created () {
-        await this.$store.dispatch('getProject', this.projectId)
+        await this.$store.dispatch('getProject', this.projectID)
         this.projectName = this.project.name
     }
 }

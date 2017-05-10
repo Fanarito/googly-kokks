@@ -14,7 +14,7 @@
                 </span>
             </div>
             <div class="right menu">
-                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}" class="ui link icon item">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectID }}" class="ui link icon item">
                     <i class="setting icon"></i>
                 </router-link>
             </div>
@@ -61,7 +61,7 @@ export default {
     },
 
     computed: {
-        projectId () {
+        projectID () {
             return parseInt(this.$route.params.id)
         },
 
@@ -70,7 +70,7 @@ export default {
         },
 
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         },
 
         file () {
@@ -154,7 +154,7 @@ export default {
             this.saving = true
             const updatedFile = this.file
             updatedFile.content = this.editorContent
-            await this.$store.dispatch('updateFile', { file: updatedFile, projectId: this.projectId })
+            await this.$store.dispatch('updateFile', { file: updatedFile, projectID: this.projectID })
             this.saving = false
 
             // Changes Saving text to Saved...

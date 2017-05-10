@@ -10,22 +10,24 @@
             <div v-if="contextMenuVisible" class="ui vertical context menu">
                 <file-create-new v-on:hideContext="toggleContext" :parent="folder"></file-create-new>
                 <folder-create-new v-on:hideContext="toggleContext" :parent="folder"></folder-create-new>
-                <a @click="renameFolder" class="item">
+
+                <dialog-input class="link item" :func="renameFolder">
                     Rename Folder
 
                     <i class="right icons">
                         <i class="folder icon"></i>
                         <i class="corner yellow radio icon"></i>
                     </i>
-                </a>
-                <confirm-button class="link item" :func="deleteFolder">
+                </dialog-input>
+
+                <dialog-confirm class="link item" :func="deleteFolder">
                     Delete Folder
 
                     <i class="right icons">
                         <i class="folder icon"></i>
                         <i class="corner red remove icon"></i>
                     </i>
-                </confirm-button>
+                </dialog-confirm>
             </div>
 
             <div v-if="expanded" class="list">
@@ -40,7 +42,8 @@
 import FileCreateNew from 'components/file-create-new'
 import FolderCreateNew from 'components/folder-create-new'
 import FileDisplay from 'components/file-display'
-import ConfirmButton from 'components/confirm-button'
+import DialogConfirm from 'components/dialog-confirm'
+import DialogInput from 'components/dialog-input'
 
 export default {
     name: 'folder-display',
@@ -49,7 +52,8 @@ export default {
         FileCreateNew,
         FolderCreateNew,
         FileDisplay,
-        ConfirmButton
+        DialogConfirm,
+        DialogInput
     },
 
     props: {
@@ -81,13 +85,11 @@ export default {
             await this.$store.dispatch('deleteFolder', this.folder)
         },
 
-        async renameFolder () {
-            const answer = prompt('Input new name')
+        async renameFolder (name) {
             this.toggleContext()
-
-            if (answer.length > 0) {
-                await this.$store.dispatch('updateFolder', this.folder)
-            }
+            const newFolder = this.folder
+            newFolder.name = name
+            await this.$store.dispatch('updateFolder', newFolder)
         }
     }
 }

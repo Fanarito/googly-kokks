@@ -90,6 +90,8 @@ namespace Kokks.Controllers.Api
                 return NotFound();
             }
 
+            folder.Name = item.Name;
+
             _folderRepository.Update(folder);
             return NoContent();
         }

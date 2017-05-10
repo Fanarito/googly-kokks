@@ -25,7 +25,7 @@ export default {
     data () {
         return {
             todoTitle: '',
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
     
@@ -40,7 +40,7 @@ export default {
                 description: null,
                 isComplete: false,
                 userID: this.user.id,
-                projectID: this.projectId
+                projectID: this.projectID
             }
 
             await this.$store.dispatch('addTodo', todo)
@@ -54,7 +54,7 @@ export default {
         },
 
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         }
     }
 }

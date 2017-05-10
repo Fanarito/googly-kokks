@@ -50,7 +50,7 @@ export default {
         return {
             creating: false,
             folderName: '',
-            projectId: parseInt(this.$route.params.id),
+            projectID: parseInt(this.$route.params.id),
             modalClass: 'folderModal' + this.parent.id
         }
     },
@@ -81,7 +81,7 @@ export default {
             const folder = {
                 name: this.folderName,
                 parentID: this.parent.id,
-                projectID: this.projectId,
+                projectID: this.projectID,
                 folders: [],
                 files: []
             }

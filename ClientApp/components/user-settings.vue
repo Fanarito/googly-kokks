@@ -53,7 +53,7 @@ export default {
             userName: '',
             newCollaboratorEmail: '',
             newCollaboratorPermission: 1,
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
 

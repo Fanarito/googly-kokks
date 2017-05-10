@@ -15,6 +15,13 @@ const app = new Vue({
     ...App
 })
 
+Vue.directive('focus', {
+    // Using v-focus on an input focuses it when rendered
+    inserted: function (el) {
+        el.focus()
+    }
+})
+
 export {
     app,
     router,
