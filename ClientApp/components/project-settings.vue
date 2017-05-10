@@ -4,6 +4,11 @@
             {{ project.name }}
         </h1>
 
+        <router-link :to="{ name: 'openProject', params: { id: project.id }}" class="ui right labeled icon button">
+            <i class="right arrow icon"></i>
+            Go to project
+        </router-link>
+
         <!-- Project Settings -->
         <div v-if="permission == 'Owner'" class="ui segment">
             <h3 class="ui header">Project Settings</h3>
