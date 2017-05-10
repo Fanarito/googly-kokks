@@ -147,7 +147,9 @@ export default {
     methods: {
         async saveFile () {
             // If the user does not have write privileges just ignore the save request
-            if (this.currentCollaborator.permission === 'Read') {
+            // or if the file has not loaded
+            // or if the user has recently saved
+            if (this.currentCollaborator.permission === 'Read' || this.file === null || this.recentlySaved === true) {
                 return
             }
 
@@ -167,7 +169,7 @@ export default {
 
         debounceSaveFile: _.debounce(function () {
             this.saveFile()
-        }, 2000),
+        }, 1500),
 
         toggleSidebar () {
             $('.ui.sidebar').sidebar({
