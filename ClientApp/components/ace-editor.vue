@@ -114,7 +114,7 @@ export default {
             case 'CSharp':
                 return 'ace/mode/csharp'
             default:
-                return 'ace/mode/text'
+                return 'ace/mode/plain_text'
             }
         },
 

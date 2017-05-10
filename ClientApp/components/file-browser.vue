@@ -1,7 +1,7 @@
 <template>
-  <div class="ui link list">
-      <folder-display v-for="folder in folders" :folder="folder"></folder-display>
-  </div>
+    <div class="ui link list">
+        <folder-display v-for="folder in folders" :folder="folder"></folder-display>
+    </div>
 </template>
 
 <script>

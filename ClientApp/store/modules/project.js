@@ -15,6 +15,17 @@ function findFolderById (folders, id) {
     }
 }
 
+function permissionToString (collaborator) {
+    switch (collaborator.permission) {
+    case 0:
+        return 'Owner'
+    case 1:
+        return 'ReadWrite'
+    case 2:
+        return 'Read'
+    }
+}
+
 const mutations = {
     setProjects: (state, { projects }) => {
         state.projects = projects
@@ -42,6 +53,25 @@ const mutations = {
 
         if (index > -1) {
             state.projects.splice(index, 1)
+        }
+    },
+
+    addCollaborator: (state, { collaborator }) => {
+        const project = state.projects.find(p => p.id === collaborator.projectID)
+
+        if (typeof collaborator.permission !== 'string') {
+            collaborator.permission = permissionToString(collaborator)
+        }
+
+        let collaboratorIndex = -1
+        if (project !== null) {
+            collaboratorIndex = project.collaborators.indexOf(collaborator)
+        }
+
+        if (collaboratorIndex > -1) {
+            Vue.set(project.collaborators, collaboratorIndex, collaborator)
+        } else {
+            project.collaborators.push(collaborator)
         }
     },
 
@@ -186,10 +216,17 @@ const actions = {
         console.log(response)
 
         if (response.status === 201) {
-
+            await commit('addCollaborator', { collaborator: response.data })
         } else {
             // error handling
         }
+    },
+
+    async updateCollaborator ({ commit, state }, collaborator) {
+        const response = await Vue.prototype.$http.put('/api/collaborator/' + collaborator.id, collaborator)
+        console.log(response)
+
+        await commit('addCollaborator', { collaborator })
     },
 
     async removeCollaborator ({ commit, state }, collaborator) {

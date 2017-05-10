@@ -1,6 +1,6 @@
 <template>
     <div v-if="currentUser">
-        <div v-if="collaborators.length > 1" class="ui middle aligned celled list">
+        <div v-if="collaborators.length > 1" class="ui middle aligned divided list">
             <collaborator-item v-for="collaborator in collaborators"
                                v-if="collaborator.userID !== currentUser.id"
                                :collaborator="collaborator"

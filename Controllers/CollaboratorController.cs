@@ -64,11 +64,12 @@ namespace Kokks.Controllers.Api
             }
             else if (collaborator != null)
             {
-                return CreatedAtRoute("GetCollaborator", new { id = collaborator.Id }, item);
+                return CreatedAtRoute("GetCollaborator", new { id = collaborator.Id }, collaborator);
             }
 
             _collaboratorRepository.Add(item);
-            return CreatedAtAction("GetCollaborator", new { id = item.Id }, item);
+            var newCollaborator = _collaboratorRepository.Find(item.Id);
+            return CreatedAtAction("GetCollaborator", new { id = item.Id }, newCollaborator);
         }
 
         [HttpPut("{id}")]

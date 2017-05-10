@@ -87,7 +87,8 @@ namespace Kokks.Controllers.Api
             Folder folder = _folderRepository.Create("src", null, project.Id);
             _fileRepository.Create(folder.Id, Syntax.JavaScript, "index.js", "console.log('hello world');");
 
-            return CreatedAtRoute("GetProject", new { id = project.Id }, project);
+            var newProject = _projectRepository.Find(project.Id);
+            return CreatedAtRoute("GetProject", new { id = project.Id }, newProject);
         }
 
         [HttpPut("{id}")]

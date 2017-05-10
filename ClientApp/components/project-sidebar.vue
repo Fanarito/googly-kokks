@@ -13,7 +13,9 @@
         
         <div class="ui divider"></div>
 
-        <collaborator-list :collaborators="project.collaborators"></collaborator-list>
+        <div class="ui container">
+            <collaborator-list :collaborators="project.collaborators"></collaborator-list>
+        </div>
     </div>
 
     <div v-else>

@@ -51,7 +51,9 @@ namespace Kokks.Models
 
         public Collaborator Find(long id)
         {
-            return _context.Collaborators.FirstOrDefault(c => c.Id == id);
+            return _context.Collaborators
+                .Include(c => c.User)
+                .FirstOrDefault(c => c.Id == id);
         }
 
         public Collaborator Find(long projectId, string userId)

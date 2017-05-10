@@ -45,10 +45,7 @@
                         </div>
                         <div class="field">
                             <label>Permission</label>
-                            <select v-model="newCollaboratorPermission" class="ui compact selection dropdown">
-                                <option value="1">Read/Write</option>
-                                <option value="2">Read</option>
-                            </select>
+                            <permission-input v-model="newCollaboratorPermission"></permission-input>
                         </div>
                     </div>
                 </div>
@@ -75,10 +72,12 @@
 
 <script>
 import CollaboratorList from './collaborator-list'
+import PermissionInput from './collaborator-permission-input'
 
 export default {
     components: {
-        CollaboratorList
+        CollaboratorList,
+        PermissionInput
     },
 
     data () {
@@ -154,7 +153,6 @@ export default {
 
     async created () {
         await this.$store.dispatch('getProject', this.projectId)
-        console.log(this.project)
         this.projectName = this.project.name
     }
 }
