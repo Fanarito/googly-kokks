@@ -1,7 +1,7 @@
 <template>
     <div v-if="currentUser" class="ui container">
         <h1 class="ui header">
-            {{ currentUser.name }}
+            {{ currentUser.userName }}
         </h1>
 
         <!-- User Settings -->
@@ -13,6 +13,13 @@
                     Name
                 </div>
                 <input v-model="userName" type="text" placeholder="User Name">
+            </div>
+            <br>
+            <br>
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="newsletter">
+                <label>Dyslexia mode (<i class="stop icon" id="dyslexiaicon"></i> colored background)</label>
+                
             </div>
 
             <div class="ui divider"></div>
@@ -76,5 +83,6 @@ export default {
 </script>
 
 <style scoped>
+#dyslexiaicon{color:#FAFAC8;}
 
 </style>
