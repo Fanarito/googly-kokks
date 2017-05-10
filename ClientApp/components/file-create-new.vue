@@ -2,7 +2,7 @@
     <div>
         <a @click="showModal" class="item">
             New File
-            
+    
             <i class="right icons">
                 <i class="file icon"></i>
                 <i class="corner green plus icon"></i>
@@ -59,7 +59,7 @@ export default {
         parent: null
     },
 
-    data () {
+    data() {
         return {
             creating: false,
             fileName: '',
@@ -69,15 +69,15 @@ export default {
         }
     },
     methods: {
-        showModal () {
+        showModal() {
             $('.ui.modal' + '.' + this.modalClass).modal('show')
         },
 
-        clearInput () {
+        clearInput() {
             this.fileName = ''
         },
 
-        async createFile () {
+        async createFile() {
             // Hide modal
             $('.ui.modal' + '.' + this.modalClass).modal('hide')
             // Hide parent context menu
@@ -114,8 +114,7 @@ export default {
 /* Fix for the modal being stuck to bottom */
 
 .modal {
-    bottom: auto !important;
-}
+    bottom: auto !important;}
 
 .ui.fullpage.segment {
     position: fixed;

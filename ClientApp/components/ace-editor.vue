@@ -1,7 +1,7 @@
 <template>
     <div class="ui fluid container">
         <div class="ui top attached menu">
-            <div @click="toggleSidebar" id="sidebarToggler" class="ui link icon item">
+            <div @click="toggleSidebar" id="sidebarToggler" :class="{ active: sidebarVisible }" class="ui link icon item">
                 <i class="sidebar icon"></i>
             </div>
             <div @click="saveFile" class="ui link icon item">
@@ -178,6 +178,7 @@ export default {
                 closable: false
             })
             .sidebar('toggle')
+            this.sidebarVisible = !this.sidebarVisible
         },
 
         startEditor () {

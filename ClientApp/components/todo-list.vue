@@ -28,7 +28,7 @@ export default {
             projectID: parseInt(this.$route.params.id)
         }
     },
-    
+
     props: {
         TodoItem: null
     },

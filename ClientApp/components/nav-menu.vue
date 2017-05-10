@@ -3,8 +3,6 @@
         
         <router-link v-for="route in routes" v-if="route.show != false" :to="route.path" class="item">{{ route.display }}</router-link>
         <div class="right menu">
-            
-
             <div class="ui icon top dropdown item">
                 <i class="user icon"></i>
                 <div class="menu">
@@ -18,12 +16,10 @@
                             Log out
                         </div>
                     </form>   
-            
                 </div>
             </div>
-            
         </div>
-        
+
     </div>
 </template>
         

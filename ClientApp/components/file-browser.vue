@@ -14,9 +14,6 @@ export default {
 
     props: {
         folders: null
-    },
-
-    created () {
     }
 }
 </script>
