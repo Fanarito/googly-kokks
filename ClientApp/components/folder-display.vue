@@ -18,14 +18,14 @@
                         <i class="corner yellow radio icon"></i>
                     </i>
                 </a>
-                <a @click="confirmFolderDeletion" class="item">
+                <confirm-button class="link item" :func="deleteFolder">
                     Delete Folder
 
                     <i class="right icons">
                         <i class="folder icon"></i>
                         <i class="corner red remove icon"></i>
                     </i>
-                </a>
+                </confirm-button>
             </div>
 
             <div v-if="expanded" class="list">
@@ -40,6 +40,7 @@
 import FileCreateNew from 'components/file-create-new'
 import FolderCreateNew from 'components/folder-create-new'
 import FileDisplay from 'components/file-display'
+import ConfirmButton from 'components/confirm-button'
 
 export default {
     name: 'folder-display',
@@ -47,7 +48,8 @@ export default {
     components: {
         FileCreateNew,
         FolderCreateNew,
-        FileDisplay
+        FileDisplay,
+        ConfirmButton
     },
 
     props: {
@@ -74,13 +76,9 @@ export default {
         newFile () {
         },
 
-        async confirmFolderDeletion () {
-            const answer = confirm('Are you sure you want to delete "' + this.folder.name + '"?')
+        async deleteFolder () {
             this.toggleContext()
-
-            if (answer) {
-                await this.$store.dispatch('deleteFolder', this.folder)
-            }
+            await this.$store.dispatch('deleteFolder', this.folder)
         },
 
         async renameFolder () {

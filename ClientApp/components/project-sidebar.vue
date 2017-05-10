@@ -54,6 +54,5 @@ export default {
 <style scoped>
 #file-browser-segment {
     max-height: 500px;
-    overflow: auto;
 }
 </style>

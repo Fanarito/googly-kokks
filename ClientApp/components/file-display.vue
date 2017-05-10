@@ -1,25 +1,31 @@
 <template>
-    <a @click="displayFile(file)" @contextmenu.prevent="toggleContext" v-bind:class="{ active: currentlySelected }" class="item">
+    <div v-bind:class="{ active: currentlySelected }" class="item">
         <i class="file icon"></i>
-        <div class="content">
+        <a @click="displayFile(file)" @contextmenu.prevent="toggleContext" class="content">
             <div class="header">{{ file.name }}</div>
-        </div>
+        </a>
 
         <div v-if="contextMenuVisible" class="ui vertical context menu">
-            <a @click="confirmDeletion" class="item">
+            <confirm-button class="link item" :func="deleteFile">
                 Delete File
 
                 <i class="right icons">
                     <i class="file icon"></i>
                     <i class="corner red remove icon"></i>
                 </i>
-            </a>
+            </confirm-button>
         </div>
-    </a>
+    </div>
 </template>
 
 <script>
+import ConfirmButton from 'components/confirm-button'
+
 export default {
+    components: {
+        ConfirmButton
+    },
+
     props: {
         file: null
     },
@@ -49,13 +55,9 @@ export default {
             this.contextMenuVisible = !this.contextMenuVisible
         },
 
-        async confirmDeletion () {
-            const answer = confirm('Are you sure you want to delete "' + this.file.name + '"?')
+        async deleteFile () {
             this.toggleContext()
-
-            if (answer) {
-                await this.$store.dispatch('deleteFile', { file: this.file, projectID: this.projectId })
-            }
+            await this.$store.dispatch('deleteFile', { file: this.file, projectID: this.projectId })
         }
     }
 }
