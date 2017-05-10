@@ -29,4 +29,7 @@ export default {
 </script>
 
 <style>
+.panel-body {
+    border:1px solid grey;
+}
 </style>
