@@ -204,6 +204,11 @@ const actions = {
     },
 
     async selectFile ({ commit, state }, file) {
+        if (file === null) {
+            await commit('setCurrentFile', { file: null })
+            return
+        }
+
         const response = await Vue.prototype.$http.get('/api/file/' + file.id)
         console.log(response)
 
@@ -280,6 +285,17 @@ const getters = {
     getCurrentProjectCollaborator: (state, getters) => (project) => {
         const currentCollaborator = project.collaborators.find(c => c.userID === getters.currentUser.id)
         return currentCollaborator
+    },
+
+    getFirstFileInProject: (state, getters) => (project) => {
+        if (!project) {
+            return null
+        }
+        for (let i = 0; i < project.folders.length; i++) {
+            if (project.folders[i].files.length > 0) {
+                return project.folders[i].files[0]
+            }
+        }
     }
 }
 

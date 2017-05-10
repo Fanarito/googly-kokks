@@ -66,18 +66,28 @@ export default {
             return this.$store.state.user
         },
 
-        file () {
-            return this.$store.state.Project.currentFile
-        },
-
         project () {
             return this.$store.getters.getProjectById(this.projectId)
         },
 
+        file () {
+            return this.$store.state.Project.currentFile
+        },
+
         currentCollaborator () {
             if (this.project) {
-                return this.$store.getters.getCurrentProjectCollaborator(this.project)
+                // Fetch the currentCollaborator for the project
+                const collaborator = this.$store.getters.getCurrentProjectCollaborator(this.project)
+                // Check permissions and set the editor readonly if needed
+                if (collaborator.permission === 'Read') {
+                    this.editor.setReadOnly(true)
+                } else {
+                    this.editor.setReadOnly(false)
+                }
+                return collaborator
             } else {
+                // Assume editor readonly
+                this.editor.setReadOnly(true)
                 return null
             }
         },
@@ -100,6 +110,8 @@ export default {
                 return 'ace/mode/c_cpp'
             case 'CSharp':
                 return 'ace/mode/csharp'
+            default:
+                return 'ace/mode/text'
             }
         },
 
@@ -114,18 +126,12 @@ export default {
 
     watch: {
         file (val) {
-            this.editor.getSession().setValue(val.content)
-        },
-
-        currentCollaborator (val) {
-            if (val !== null && (val.permission === 'Owner' || val.permission === 'ReadWrite')) {
-                this.editor.setReadOnly(false)
-            } else {
-                this.editor.setReadOnly(true)
+            if (val !== null) {
+                this.editor.getSession().setValue(val.content)
             }
         },
 
-        // Whenever syntax update ace syntax highlighting
+        // Whenever syntax updated, update ace syntax highlighting
         syntax (val) {
             this.editor.getSession().setMode(val)
         },
@@ -167,25 +173,32 @@ export default {
                 closable: false
             })
             .sidebar('toggle')
+        },
+
+        startEditor () {
+            this.editor = ace.edit('editor')
+            this.editor.setTheme('ace/theme/xcode')
+            this.editor.getSession().setMode('ace/mode/javascript')
+            this.editor.$blockScrolling = Infinity
+            this.editor.setOptions({
+                maxLines: 50,
+                minLines: 50
+            })
+
+            const self = this
+            this.editor.on('change', function () {
+                self.editorContent = self.editor.getSession().getValue()
+            })
         }
     },
 
     mounted () {
-        this.editor = ace.edit('editor')
-        this.editor.setTheme('ace/theme/xcode')
-        this.editor.getSession().setMode('ace/mode/javascript')
-        this.editor.$blockScrolling = Infinity
-        this.editor.setOptions({
-            maxLines: 50,
-            minLines: 50
-        })
-
-        const self = this
-        this.editor.on('change', function () {
-            self.editorContent = self.editor.getSession().getValue()
-        })
-
+        this.startEditor()
         this.toggleSidebar()
+    },
+
+    beforeDestroy () {
+        this.$store.dispatch('selectFile', null)
     }
 }
 </script>
