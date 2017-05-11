@@ -1,9 +1,9 @@
 <template>
-    <div v-if="!confirm" @click.stop="confirm = !confirm">
+    <span v-if="!confirm" @click.stop="confirm = !confirm">
         <slot class="slot"></slot>
-    </div>
+    </span>
 
-    <div v-else>
+    <span v-else>
         <div class="ui small centered header">
             {{ slotText }}
         </div>
@@ -19,7 +19,7 @@
             <div class="or"></div>
             <div @click.stop="confirm = !confirm" class="ui button">No</div>
         </div>
-    </div>
+    </span>
 </template>
 
 <script>

@@ -1,17 +1,15 @@
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Kokks.Models;
-using Kokks.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Kokks.Models;
+using Kokks.Services;
 
 namespace Kokks.Controllers.Api
 {
     [Route("api/[controller]")]
     [Authorize]
-    public class FileController : Controller 
+    public class FileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
@@ -19,6 +17,7 @@ namespace Kokks.Controllers.Api
         private readonly IFolderRepository _folderRepository;
         private readonly ICollaboratorRepository _collaboratorRepository;
         private readonly IFileRepository _fileRepository;
+        private readonly PermissionServices _permissionServices;
 
         public FileController(
             IProjectRepository projectRepository,
@@ -26,7 +25,8 @@ namespace Kokks.Controllers.Api
             ILoggerFactory logger,
             IFolderRepository folderRepository,
             ICollaboratorRepository collaboratorRepository,
-            IFileRepository fileRepository
+            IFileRepository fileRepository,
+            PermissionServices permissionServices
         )
         {
             _userManager = userManager;
@@ -35,6 +35,7 @@ namespace Kokks.Controllers.Api
             _folderRepository = folderRepository;
             _collaboratorRepository = collaboratorRepository;
             _fileRepository = fileRepository;
+            _permissionServices = permissionServices;
         }
 
         [HttpGet("{id}", Name = "GetFile")]
@@ -57,11 +58,9 @@ namespace Kokks.Controllers.Api
             {
                 return BadRequest();
             }
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var currentCollaborator = _collaboratorRepository.Find(parent.ProjectID, userId);
 
-            if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
-               && currentCollaborator.Permission != Permissions.ReadWrite))
+            var userId = _userManager.GetUserId(HttpContext.User);
+            if (_permissionServices.HasWriteAccess(parent, userId))
             {
                 return new UnauthorizedResult();
             }
@@ -85,18 +84,9 @@ namespace Kokks.Controllers.Api
             {
                 return NotFound();
             }
-
-            var currentCollaborator = _collaboratorRepository.Find(file.Parent.ProjectID, userId);
-
-            if (currentCollaborator == null || (currentCollaborator.Permission != Permissions.Owner
-               && currentCollaborator.Permission != Permissions.ReadWrite))
+            else if (!_permissionServices.HasWriteAccess(file, userId))
             {
                 return new UnauthorizedResult();
-            }
-
-            if (!_projectRepository.UserHasAccess(file.Parent.ProjectID, userId))
-            {
-                return Unauthorized();
             }
 
             file.Content = item.Content;
@@ -117,13 +107,7 @@ namespace Kokks.Controllers.Api
                 return NotFound();
             }
 
-
-            var currentCollaborator = _collaboratorRepository.Find(file.Parent.ProjectID, userId);
-
-            // You can only delete if you are a collaborator 
-            // and own the project or have readWrite permission
-            if (currentCollaborator != null || (currentCollaborator.Permission == Permissions.Owner
-                || currentCollaborator.Permission == Permissions.ReadWrite))
+            if (_permissionServices.HasWriteAccess(file, userId))
             {
                 _fileRepository.Remove(id);
                 return NoContent();

@@ -3,13 +3,13 @@
         <div class="right floated content">
             <permission-input v-if="canDelete" v-model="permission"></permission-input>
             <dialog-confirm v-if="canDelete" :func="removeCollaborator">
-                <button class="ui red button">Remove</button>
+                <button class="ui right floated red button">Remove</button>
             </dialog-confirm>
         </div>
-        <div class="middle aligned content">
-            <div class="header">
+        <div class="content">
+            <h3 class="header">
                 {{ collaborator.user.email }}
-            </div>
+            </h3>
         </div>
         <div class="bottom aligned content">
         </div>
