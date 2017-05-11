@@ -56,6 +56,7 @@ namespace Kokks
 
             services.AddCors();
             /*
+            //possible fix for returning to the right url when not logged in
             services.Configure<IdentityOptions>(opt =>
             {
                 opt.Cookies.ApplicationCookie.LoginPath = new PathString("/aa");
