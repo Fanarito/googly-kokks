@@ -91,6 +91,12 @@ namespace Kokks
 
             app.UseIdentity();
 
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+{
+         LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login"),
+         AutomaticChallenge = true
+});
+
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseGoogleAuthentication(new GoogleOptions()

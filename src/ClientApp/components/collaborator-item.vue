@@ -2,7 +2,9 @@
     <div class="item">
         <div class="right floated content">
             <permission-input v-if="canDelete" v-model="permission"></permission-input>
-            <button v-if="canDelete" @click="removeCollaborator" class="ui red button">Remove</button>
+            <dialog-confirm v-if="canDelete" :func="removeCollaborator">
+                <button class="ui red button">Remove</button>
+            </dialog-confirm>
         </div>
         <div class="middle aligned content">
             <div class="header">
@@ -16,10 +18,12 @@
 
 <script>
 import PermissionInput from './collaborator-permission-input'
+import DialogConfirm from './dialog-confirm'
 
 export default {
     components: {
-        PermissionInput
+        PermissionInput,
+        DialogConfirm
     },
 
     props: {

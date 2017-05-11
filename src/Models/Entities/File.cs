@@ -20,7 +20,6 @@ namespace Kokks.Models
     {
         public long Id { get; set; }
         public long ParentID { get; set; }
-        public long SyntaxID { get; set; }
         public string Name { get; set; }
         public string Content { get; set; }
 
