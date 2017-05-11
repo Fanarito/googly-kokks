@@ -14,6 +14,7 @@ using Kokks.Models;
 using Kokks.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
+using Microsoft.AspNetCore.Http;
 
 namespace Kokks
 {
@@ -54,6 +55,13 @@ namespace Kokks
                     .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddCors();
+            /*
+            services.Configure<IdentityOptions>(opt =>
+            {
+                opt.Cookies.ApplicationCookie.LoginPath = new PathString("/aa");
+                opt.Cookies.ApplicationCookie.AccessDeniedPath = new PathString("/home  ");
+                opt.Cookies.ApplicationCookie.LogoutPath = new PathString("/");
+            }); */
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -90,6 +98,11 @@ namespace Kokks
             app.UseStaticFiles();
 
             app.UseIdentity();
+            
+            app.UseCookieAuthentication(new CookieAuthenticationOptions{
+                LoginPath = new Microsoft.AspNetCore.Http.PathString("/home"),
+                AutomaticChallenge = true
+            });
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 
