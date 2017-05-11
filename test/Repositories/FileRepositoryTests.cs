@@ -42,6 +42,7 @@ namespace Tests
                             Content=$"Content{i}",
                             ParentID=folder.Id
                         });
+
             context.AddRange(files);
             int changed = context.SaveChanges();
             _context = context;
@@ -75,7 +76,7 @@ namespace Tests
         }
 
         [Fact]
-        public void Remove()
+        public void RemoveRemovedFile()
         {
             const int itemId = 1;
             const int expectedLength = fileCount - 1;
@@ -83,6 +84,55 @@ namespace Tests
             repo.Remove(itemId);
             var res = repo.GetAll();
             Assert.Equal(expectedLength, res.Count());
+        }
+
+        [Fact]
+        public void CreateCorrectlyAddedFile()
+        {
+            const long parentId = 1;
+            const Syntax syntax = Syntax.JavaScript;
+            const string name = "NewFileTest";
+            const string content = "NewFileTestContent";
+            const int expectedLength = fileCount + 1;
+            
+            var repo = new FileRepository(_context);
+            repo.Create(parentId, syntax, name, content);
+            var res = repo.GetAll();
+            Assert.Equal(expectedLength, res.Count());
+        }
+
+        [Fact]
+        public void AddCorrectlyAddedFile()
+        {
+            var file = new File {
+                ParentID = 1,
+                Syntax = Syntax.JavaScript,
+                Name = "NewTestFile",
+                Content = "NewTestFileContent"
+            };
+
+            var repo = new FileRepository(_context);
+            repo.Add(file);
+            var res = repo.Find(file.Id);
+            Assert.Equal(file, res);
+        }
+
+        [Fact]
+        public void UpdateUpdatesFile()
+        {
+            const long fileId = 4;
+            const string updatedName = "UpdatedName";
+            const string updatedContent = "UpdatedContent";
+            var repo = new FileRepository(_context);
+
+            var file = repo.Find(fileId);
+            file.Name = updatedName;
+            file.Content = updatedContent;
+            repo.Update(file);
+
+            var updatedFile = repo.Find(fileId);
+
+            Assert.Equal(file, updatedFile);
         }
     }
 }
