@@ -5,7 +5,6 @@
                 {{ project.name }}
             </router-link>
             <div v-if="creator.user" class="meta">Creator {{ creator.user.userName }}</div>
-            <div class="description">Maybe some test data</div>
         </div>
         <div class="extra content">
             <router-link :to="{ name: 'projectSettings', params: { id: project.id }}" class="right floated">
