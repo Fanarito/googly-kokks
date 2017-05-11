@@ -42,7 +42,20 @@ namespace Kokks.Controllers.Api
         public IActionResult GetById(long id)
         {
             var file = _fileRepository.Find(id);
-            return new ObjectResult(file);
+            if (file == null)
+            {
+                return BadRequest();
+            }
+
+            var userId = _userManager.GetUserId(HttpContext.User);
+            if (_projectRepository.UserHasAccess(file.Parent.ProjectID, userId))
+            {
+                return new ObjectResult(file);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost]

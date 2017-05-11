@@ -1,6 +1,6 @@
 <template>
-    <div class="panel panel-default">
-        <div class="panel-body">
+    <div class="ui segment">
+        <div class="content">
             {{ todo.name }}
             <button @click="remove" type="button" class="close" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

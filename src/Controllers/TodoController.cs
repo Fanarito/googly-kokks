@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Kokks.Models;
-using Kokks.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
@@ -13,48 +12,65 @@ namespace Kokks.Controllers.Api
     public class TodoController : Controller
     {
         private readonly ITodoRepository _todoRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public TodoController(
             ITodoRepository todoRepository,
+            IProjectRepository projectRepository,
             UserManager<ApplicationUser> userManager
         )
         {
             _todoRepository = todoRepository;
+            _projectRepository = projectRepository;
             _userManager = userManager;
         }
-        
+
         [HttpGet]
         public async Task<IEnumerable<TodoItem>> GetAll()
         {
             var userId = await _userManager.GetUserAsync(HttpContext.User);
             return _todoRepository.GetAllForUser(userId.Id);
         }
-        
+
         [HttpGet("{id}", Name = "GetTodo")]
         public IActionResult GetById(int id)
         {
             var item = _todoRepository.Find(id);
+            var userId = _userManager.GetUserId(HttpContext.User);
             if (item == null)
             {
                 return NotFound();
             }
-            return new ObjectResult(item);
+
+            if (_projectRepository.UserHasAccess(item.ProjectID, userId))
+            {
+                return new ObjectResult(item);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TodoItem item)
+        public IActionResult Create([FromBody] TodoItem item)
         {
             if (item == null)
             {
                 return BadRequest();
             }
 
-            var user = await _userManager.GetUserAsync(HttpContext.User);
-            item.UserID = user.Id;
-
-            _todoRepository.Add(item);
-            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            if (_projectRepository.UserHasAccess(item.ProjectID, userId))
+            {
+                _todoRepository.Add(item);
+                return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPut("{id}")]
@@ -66,29 +82,43 @@ namespace Kokks.Controllers.Api
             }
 
             var todo = _todoRepository.Find(id);
+            var userId = _userManager.GetUserId(HttpContext.User);
             if (todo == null)
             {
                 return NotFound();
             }
+            else if (_projectRepository.UserHasAccess(item.ProjectID, userId))
+            {
+                todo.IsComplete = item.IsComplete;
+                todo.Name = item.Name;
 
-            todo.IsComplete = item.IsComplete;
-            todo.Name = item.Name;
-
-            _todoRepository.Update(todo);
-            return new NoContentResult();
+                _todoRepository.Update(todo);
+                return new NoContentResult();
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var todo = _todoRepository.Find(id);
+            var userId = _userManager.GetUserId(HttpContext.User);
             if (todo == null)
             {
                 return NotFound();
             }
+            else if (_projectRepository.UserHasAccess(todo.ProjectID, userId))
+            {
+                _todoRepository.Remove(id);
+                return new NoContentResult();
+            }
+            else {
+                return Unauthorized();
+            }
 
-            _todoRepository.Remove(id);
-            return new NoContentResult();
         }
     }
 }
