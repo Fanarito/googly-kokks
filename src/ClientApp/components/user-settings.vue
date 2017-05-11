@@ -18,7 +18,8 @@
             <br>
             <div class="ui slider checkbox">
                 <input type="checkbox" name="newsletter">
-                <label>Dyslexia mode (<i class="stop icon" id="dyslexiaicon"></i> colored background)</label>
+                <label id="dyslexialabel">Dyslexia mode </label>
+                (<i class="stop icon" id="dyslexiaicon"></i> colored background)
                 
             </div>
 
@@ -76,6 +77,7 @@ export default {
 </script>
 
 <style scoped>
+
 #dyslexiaicon{
     color:#FAFAC8;
 }
