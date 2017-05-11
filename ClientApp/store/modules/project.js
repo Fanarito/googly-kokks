@@ -16,17 +16,6 @@ function findFolderById (folders, id) {
     }
 }
 
-function permissionToString (collaborator) {
-    switch (collaborator.permission) {
-    case 0:
-        return 'Owner'
-    case 1:
-        return 'ReadWrite'
-    case 2:
-        return 'Read'
-    }
-}
-
 const mutations = {
     setProjects: (state, { projects }) => {
         state.projects = projects
@@ -59,10 +48,6 @@ const mutations = {
 
     addCollaborator: (state, { collaborator }) => {
         const project = state.projects.find(p => p.id === collaborator.projectID)
-
-        if (typeof collaborator.permission !== 'string') {
-            collaborator.permission = permissionToString(collaborator)
-        }
 
         let collaboratorIndex = -1
         if (project !== null) {

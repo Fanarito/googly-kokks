@@ -4,8 +4,8 @@
         <i class="dropdown icon"></i>
         <div class="default text">Permission</div>
         <div class="menu">
-            <div class="item" data-value="1">Read/Write</div>
-            <div class="item" data-value="2">Read</div>
+            <div class="item" data-value="ReadWrite">Read/Write</div>
+            <div class="item" data-value="Read">Read</div>
         </div>
     </div>
 </template>

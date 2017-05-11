@@ -4,6 +4,13 @@
             <div @click="toggleSidebar" id="sidebarToggler" :class="{ active: sidebarVisible }" class="ui link icon item">
                 <i class="sidebar icon"></i>
             </div>
+
+            <div v-if="file" class="item fileName">
+                {{ file.name }}
+            </div>
+
+            <dropdown-syntax v-model="syntax"></dropdown-syntax>
+
             <div @click="saveFile" class="ui link icon item">
                 <i v-bind:class="[savingIcon]" class="icon"></i>
                 <span class="pad-left" v-if="saving">
@@ -13,6 +20,7 @@
                     Saved...
                 </span>
             </div>
+
             <div class="right menu">
                 <router-link :to="{ name: 'projectSettings', params: { id: projectID }}" class="ui link icon item">
                     <i class="setting icon"></i>
@@ -41,13 +49,15 @@
 import FileBrowser from 'components/file-browser'
 import CollaboratorList from 'components/collaborator-list'
 import SideBar from 'components/project-sidebar'
+import DropdownSyntax from 'components/dropdown-syntax'
 import _ from 'lodash'
 
 export default {
     components: {
         FileBrowser,
         CollaboratorList,
-        SideBar
+        SideBar,
+        DropdownSyntax
     },
 
     data () {
@@ -56,7 +66,8 @@ export default {
             editorContent: '',
             sidebarVisible: false,
             saving: false,
-            recentlySaved: false
+            recentlySaved: false,
+            syntax: 'JavaScript'
         }
     },
 
@@ -95,7 +106,7 @@ export default {
             }
         },
 
-        syntax () {
+        aceSyntax () {
             if (!this.file) {
                 return 'ace/mode/javascript'
             }
@@ -130,17 +141,22 @@ export default {
     watch: {
         file (val) {
             if (val !== null) {
+                this.syntax = val.syntax
                 this.editor.getSession().setValue(val.content)
             }
         },
 
         // Whenever syntax updated, update ace syntax highlighting
-        syntax (val) {
+        aceSyntax (val) {
             this.editor.getSession().setMode(val)
         },
 
         editorContent () {
             this.debounceSaveFile()
+        },
+
+        syntax (val) {
+            this.saveFile()
         }
     },
 
@@ -149,13 +165,14 @@ export default {
             // If the user does not have write privileges just ignore the save request
             // or if the file has not loaded
             // or if the user has recently saved
-            if (this.currentCollaborator.permission === 'Read' || this.file === null || this.recentlySaved === true) {
+            if (this.currentCollaborator.permission === 'Read' || this.file === null) {
                 return
             }
 
             this.saving = true
             const updatedFile = this.file
             updatedFile.content = this.editorContent
+            updatedFile.syntax = this.syntax
             await this.$store.dispatch('updateFile', { file: updatedFile, projectID: this.projectID })
             this.saving = false
 
@@ -224,5 +241,10 @@ export default {
 
     .pad-left {
         padding-left: 5px;
+    }
+
+    .fileName {
+        width: 15%;
+        overflow: auto;
     }
 </style>

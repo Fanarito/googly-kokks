@@ -28,10 +28,6 @@
                 Save
             </button>
         </div>
-
-        
-
-        
     </div>
 
     <h1 v-else class="ui header">
@@ -46,7 +42,6 @@ export default {
     components: {
         CollaboratorList
     },
-       
 
     data () {
         return {
@@ -70,9 +65,7 @@ export default {
                 name: this.currentUser.userName
             }
             this.$store.dispatch('updateUser', updatedUser)
-        }      
-
-    
+        }
     },
 
     created () {
@@ -83,6 +76,7 @@ export default {
 </script>
 
 <style scoped>
-#dyslexiaicon{color:#FAFAC8;}
-
+#dyslexiaicon{
+    color:#FAFAC8;
+}
 </style>

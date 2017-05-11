@@ -29,22 +29,11 @@ export default {
 
     data () {
         return {
-            permission: this.permissionToNumber()
+            permission: this.collaborator.permission
         }
     },
 
     methods: {
-        permissionToNumber () {
-            switch (this.collaborator.permission) {
-            case 'Owner':
-                return 0
-            case 'ReadWrite':
-                return 1
-            case 'Read':
-                return 2
-            }
-        },
-
         removeCollaborator () {
             this.$store.dispatch('removeCollaborator', this.collaborator)
         },

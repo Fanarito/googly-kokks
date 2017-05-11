@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div @click="hideContextMenu" id="app">
         <nav-menu params="route: route"></nav-menu>
         <div class="ui grid">
             <div class="column">
@@ -32,15 +32,24 @@ export default {
         this.loaded = true
     },
 
+    methods: {
+        hideContextMenu () {
+            // Make sure you are not changing the state needlessly
+            if (this.$store.state.Project.contextObject !== null) {
+                this.$store.dispatch('setContextObject', null)
+            }
+        }
+    },
+
     mounted () {
         // Sadly vue events don't work for this context
         // so we add a listener to the window that closes the
         // context menu when the user presses the escape key anywhere
         var vm = this
         window.addEventListener('keyup', function (event) {
-            // If down arrow was pressed...
+            // If escape was pressed...
             if (event.keyCode === 27) {
-                vm.$store.dispatch('setContextObject', null)
+                vm.hideContextMenu()
             }
         })
     }

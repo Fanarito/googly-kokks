@@ -5,7 +5,7 @@
             <div class="header">{{ file.name }}</div>
         </a>
 
-        <div v-if="file == contextMenuObject" class="ui vertical context menu">
+        <context-menu v-if="file == contextMenuObject">
             <dialog-input class="link item" :func="renameFile">
                 Rename File
 
@@ -22,24 +22,20 @@
                     <i class="corner red remove icon"></i>
                 </i>
             </dialog-confirm>
-
-            <div @click="toggleContext" class="link item">
-                Cancel
-
-                <i class="cancel icon"></i>
-            </div>
-        </div>
+        </context-menu>
     </div>
 </template>
 
 <script>
 import DialogConfirm from 'components/dialog-confirm'
 import DialogInput from 'components/dialog-input'
+import ContextMenu from 'components/context-menu'
 
 export default {
     components: {
         DialogConfirm,
-        DialogInput
+        DialogInput,
+        ContextMenu
     },
 
     props: {

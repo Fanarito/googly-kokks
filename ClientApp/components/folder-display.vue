@@ -7,7 +7,7 @@
                 <i @click="toggleExpanded" v-bind:class="{ minus: expanded, plus: !expanded }" class="icon"></i>
             </div>
             
-            <div v-if="contextMenuObject == folder" class="ui vertical context menu">
+            <context-menu v-if="contextMenuObject == folder">
                 <dialog-input class="link item" :func="createFile">
                     New File
 
@@ -43,13 +43,7 @@
                         <i class="corner red remove icon"></i>
                     </i>
                 </dialog-confirm>
-
-                <div @click="toggleContext" class="link item">
-                    Cancel
-
-                    <i class="cancel icon"></i>
-                </div>
-            </div>
+            </context-menu>
 
             <div v-if="expanded" class="list">
                 <folder-display v-for="folder in folder.folders" :folder="folder"></folder-display>
@@ -65,6 +59,7 @@ import FolderCreateNew from 'components/folder-create-new'
 import FileDisplay from 'components/file-display'
 import DialogConfirm from 'components/dialog-confirm'
 import DialogInput from 'components/dialog-input'
+import ContextMenu from 'components/context-menu'
 
 export default {
     name: 'folder-display',
@@ -74,7 +69,8 @@ export default {
         FolderCreateNew,
         FileDisplay,
         DialogConfirm,
-        DialogInput
+        DialogInput,
+        ContextMenu
     },
 
     props: {
