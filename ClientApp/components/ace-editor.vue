@@ -1,20 +1,28 @@
 <template>
     <div class="ui fluid container">
         <div class="ui top attached menu">
-            <div @click="toggleSidebar" id="sidebarToggler" class="ui link icon item">
+            <div @click="toggleSidebar" id="sidebarToggler" :class="{ active: sidebarVisible }" class="ui link icon item">
                 <i class="sidebar icon"></i>
             </div>
+
+            <div v-if="file" class="item fileName">
+                {{ file.name }}
+            </div>
+
+            <dropdown-syntax v-model="syntax"></dropdown-syntax>
+
             <div @click="saveFile" class="ui link icon item">
                 <i v-bind:class="[savingIcon]" class="icon"></i>
-                <span class="pad-right" v-if="saving">
-                    Saving
+                <span class="pad-left" v-if="saving">
+                    Saving...
                 </span>
-                <span class="pad-right" v-if="recentlySaved">
+                <span class="pad-left" v-if="recentlySaved">
                     Saved...
                 </span>
             </div>
+
             <div class="right menu">
-                <router-link :to="{ name: 'projectSettings', params: { id: projectId }}" class="ui link icon item">
+                <router-link :to="{ name: 'projectSettings', params: { id: projectID }}" class="ui link icon item">
                     <i class="setting icon"></i>
                 </router-link>
             </div>
@@ -41,13 +49,15 @@
 import FileBrowser from 'components/file-browser'
 import CollaboratorList from 'components/collaborator-list'
 import SideBar from 'components/project-sidebar'
+import DropdownSyntax from 'components/dropdown-syntax'
 import _ from 'lodash'
 
 export default {
     components: {
         FileBrowser,
         CollaboratorList,
-        SideBar
+        SideBar,
+        DropdownSyntax
     },
 
     data () {
@@ -56,12 +66,13 @@ export default {
             editorContent: '',
             sidebarVisible: false,
             saving: false,
-            recentlySaved: false
+            recentlySaved: false,
+            syntax: 'JavaScript'
         }
     },
 
     computed: {
-        projectId () {
+        projectID () {
             return parseInt(this.$route.params.id)
         },
 
@@ -70,7 +81,7 @@ export default {
         },
 
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         },
 
         file () {
@@ -95,7 +106,7 @@ export default {
             }
         },
 
-        syntax () {
+        aceSyntax () {
             if (!this.file) {
                 return 'ace/mode/javascript'
             }
@@ -114,7 +125,7 @@ export default {
             case 'CSharp':
                 return 'ace/mode/csharp'
             default:
-                return 'ace/mode/text'
+                return 'ace/mode/plain_text'
             }
         },
 
@@ -130,31 +141,39 @@ export default {
     watch: {
         file (val) {
             if (val !== null) {
+                this.syntax = val.syntax
                 this.editor.getSession().setValue(val.content)
             }
         },
 
         // Whenever syntax updated, update ace syntax highlighting
-        syntax (val) {
+        aceSyntax (val) {
             this.editor.getSession().setMode(val)
         },
 
         editorContent () {
             this.debounceSaveFile()
+        },
+
+        syntax (val) {
+            this.saveFile()
         }
     },
 
     methods: {
         async saveFile () {
             // If the user does not have write privileges just ignore the save request
-            if (this.currentCollaborator.permission === 'Read') {
+            // or if the file has not loaded
+            // or if the user has recently saved
+            if (this.currentCollaborator.permission === 'Read' || this.file === null) {
                 return
             }
 
             this.saving = true
             const updatedFile = this.file
             updatedFile.content = this.editorContent
-            await this.$store.dispatch('updateFile', { file: updatedFile, projectId: this.projectId })
+            updatedFile.syntax = this.syntax
+            await this.$store.dispatch('updateFile', { file: updatedFile, projectID: this.projectID })
             this.saving = false
 
             // Changes Saving text to Saved...
@@ -167,7 +186,7 @@ export default {
 
         debounceSaveFile: _.debounce(function () {
             this.saveFile()
-        }, 2000),
+        }, 1500),
 
         toggleSidebar () {
             $('.ui.sidebar').sidebar({
@@ -176,6 +195,7 @@ export default {
                 closable: false
             })
             .sidebar('toggle')
+            this.sidebarVisible = !this.sidebarVisible
         },
 
         startEditor () {
@@ -219,7 +239,12 @@ export default {
         min-height: 600px;
     }
 
-    .pad-right {
+    .pad-left {
         padding-left: 5px;
+    }
+
+    .fileName {
+        width: 15%;
+        overflow: auto;
     }
 </style>

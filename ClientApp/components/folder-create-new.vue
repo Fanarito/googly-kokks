@@ -24,7 +24,7 @@
                 <div class="ui form">
                     <div class="field">
                         <label>Name</label>
-                        <input @keyup.enter="createFolder" v-model="folderName" placeholder="Name" type="text" />
+                        <input v-focus @keyup.enter="createFolder" v-model="folderName" placeholder="Name" type="text" />
                     </div>
                 </div>
             </div>
@@ -50,13 +50,17 @@ export default {
         return {
             creating: false,
             folderName: '',
-            projectId: parseInt(this.$route.params.id),
+            projectID: parseInt(this.$route.params.id),
             modalClass: 'folderModal' + this.parent.id
         }
     },
     methods: {
         showModal () {
-            $('.ui.modal' + '.' + this.modalClass).modal('show')
+            $('.ui.modal' + '.' + this.modalClass)
+                .modal({
+                    detachable: false
+                })
+                .modal('show')
         },
 
         clearInput () {
@@ -81,7 +85,7 @@ export default {
             const folder = {
                 name: this.folderName,
                 parentID: this.parent.id,
-                projectID: this.projectId,
+                projectID: this.projectID,
                 folders: [],
                 files: []
             }

@@ -32,9 +32,9 @@ namespace Kokks.Models
             return projects.ToList();
         }
 
-        public bool UserHasAccess(long projectId, string userId)
+        public bool UserHasAccess(long projectID, string userId)
         {
-            bool hasAccess = _context.Collaborators.Any(c => c.ProjectID == projectId && c.UserID == userId);
+            bool hasAccess = _context.Collaborators.Any(c => c.ProjectID == projectID && c.UserID == userId);
             return hasAccess;
         }
         

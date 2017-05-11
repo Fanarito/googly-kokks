@@ -40,23 +40,25 @@ namespace Kokks.Models
             _context.SaveChanges();
         }
 
-        public void Create(string userId, long projectId, Permissions permission)
+        public void Create(string userId, long projectID, Permissions permission)
         {
             var col = new Collaborator();
             col.UserID = userId;
-            col.ProjectID = projectId;
+            col.ProjectID = projectID;
             col.Permission = permission;
             Add(col);
         }
 
         public Collaborator Find(long id)
         {
-            return _context.Collaborators.FirstOrDefault(c => c.Id == id);
+            return _context.Collaborators
+                .Include(c => c.User)
+                .FirstOrDefault(c => c.Id == id);
         }
 
-        public Collaborator Find(long projectId, string userId)
+        public Collaborator Find(long projectID, string userId)
         {
-            return _context.Collaborators.FirstOrDefault(c => c.ProjectID == projectId && c.UserID == userId);
+            return _context.Collaborators.FirstOrDefault(c => c.ProjectID == projectID && c.UserID == userId);
         }
 
         public IEnumerable<Collaborator> FindForProject(long id)
@@ -64,9 +66,9 @@ namespace Kokks.Models
             return _context.Collaborators.Where(c => c.ProjectID == id);
         }
 
-        public bool AlreadyConnected(long projectId, string userId)
+        public bool AlreadyConnected(long projectID, string userId)
         {
-            return _context.Collaborators.Any(c => c.ProjectID == projectId && c.UserID == userId);
+            return _context.Collaborators.Any(c => c.ProjectID == projectID && c.UserID == userId);
         }
 
         public void Remove(long id)

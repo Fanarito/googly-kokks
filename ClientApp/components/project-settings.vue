@@ -45,10 +45,7 @@
                         </div>
                         <div class="field">
                             <label>Permission</label>
-                            <select v-model="newCollaboratorPermission" class="ui compact selection dropdown">
-                                <option value="1">Read/Write</option>
-                                <option value="2">Read</option>
-                            </select>
+                            <permission-input v-model="newCollaboratorPermission"></permission-input>
                         </div>
                     </div>
                 </div>
@@ -63,8 +60,12 @@
         </div>
 
         <!-- Leave or delete project -->
-        <div class="ui segment">
-            <button @click="leaveProject" class="ui negative button">Leave Project</button>
+        <div class="ui center aligned segment">
+            <dialog-confirm :func="leaveProject">
+                <button class="ui red button">
+                    Leave/Delete Project
+                </button>
+            </dialog-confirm>
         </div>
     </div>
 
@@ -75,10 +76,14 @@
 
 <script>
 import CollaboratorList from './collaborator-list'
+import PermissionInput from './collaborator-permission-input'
+import DialogConfirm from 'components/dialog-confirm'
 
 export default {
     components: {
-        CollaboratorList
+        CollaboratorList,
+        PermissionInput,
+        DialogConfirm
     },
 
     data () {
@@ -86,13 +91,13 @@ export default {
             projectName: '',
             newCollaboratorEmail: '',
             newCollaboratorPermission: 1,
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
 
     computed: {
         project () {
-            return this.$store.getters.getProjectById(this.projectId)
+            return this.$store.getters.getProjectById(this.projectID)
         },
 
         currentCollaborator () {
@@ -126,7 +131,7 @@ export default {
                 console.log(response)
 
                 const newCollaborator = {
-                    projectId: this.project.id,
+                    projectID: this.project.id,
                     userId: response.data.id,
                     permission: this.newCollaboratorPermission
                 }
@@ -153,8 +158,7 @@ export default {
     },
 
     async created () {
-        await this.$store.dispatch('getProject', this.projectId)
-        console.log(this.project)
+        await this.$store.dispatch('getProject', this.projectID)
         this.projectName = this.project.name
     }
 }

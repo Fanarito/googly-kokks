@@ -29,10 +29,6 @@
                 Save
             </button>
         </div>
-
-        
-
-        
     </div>
 
     <h1 v-else class="ui header">
@@ -47,14 +43,13 @@ export default {
     components: {
         CollaboratorList
     },
-       
 
     data () {
         return {
             userName: '',
             newCollaboratorEmail: '',
             newCollaboratorPermission: 1,
-            projectId: parseInt(this.$route.params.id)
+            projectID: parseInt(this.$route.params.id)
         }
     },
 
@@ -71,9 +66,7 @@ export default {
                 name: this.currentUser.userName
             }
             this.$store.dispatch('updateUser', updatedUser)
-        }      
-
-    
+        }
     },
 
     created () {
@@ -84,7 +77,8 @@ export default {
 </script>
 
 <style scoped>
-#dyslexiaicon{color:#FAFAC8;}
-#dyslexialabel{display: inline;}
 
+#dyslexiaicon{
+    color:#FAFAC8;
+}
 </style>

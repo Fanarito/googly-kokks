@@ -19,7 +19,7 @@
                 <div class="ui form">
                     <div class="field">
                         <label>Name</label>
-                        <input @keyup.enter="createProject" v-model="projectName" placeholder="Name" type="text" />
+                        <input v-focus @keyup.enter="createProject" v-model="projectName" placeholder="Name" type="text" />
                     </div>
                 </div>
             </div>
@@ -45,7 +45,11 @@ export default {
     },
     methods: {
         showModal () {
-            $('.ui.modal.newProject').modal('show')
+            $('.ui.modal.newProject')
+                .modal({
+                    detachable: false
+                })
+                .modal('show')
         },
         clearInput () {
             this.projectName = ''

@@ -7,26 +7,43 @@
                 <i @click="toggleExpanded" v-bind:class="{ minus: expanded, plus: !expanded }" class="icon"></i>
             </div>
             
-            <div v-if="contextMenuVisible" class="ui vertical context menu">
-                <file-create-new v-on:hideContext="toggleContext" :parent="folder"></file-create-new>
-                <folder-create-new v-on:hideContext="toggleContext" :parent="folder"></folder-create-new>
-                <a @click="renameFolder" class="item">
+            <context-menu v-if="contextMenuObject == folder">
+                <dialog-input class="link item" :func="createFile">
+                    New File
+
+                    <i class="right icons">
+                        <i class="file icon"></i>
+                        <i class="corner green plus icon"></i>
+                    </i>
+                </dialog-input>
+
+                <dialog-input class="link item" :func="createFolder">
+                    New Folder
+
+                    <i class="right icons">
+                        <i class="folder icon"></i>
+                        <i class="corner green plus icon"></i>
+                    </i>
+                </dialog-input>
+
+                <dialog-input class="link item" :func="renameFolder">
                     Rename Folder
 
                     <i class="right icons">
                         <i class="folder icon"></i>
                         <i class="corner yellow radio icon"></i>
                     </i>
-                </a>
-                <a @click="confirmFolderDeletion" class="item">
+                </dialog-input>
+
+                <dialog-confirm class="link item" :func="deleteFolder">
                     Delete Folder
 
                     <i class="right icons">
                         <i class="folder icon"></i>
                         <i class="corner red remove icon"></i>
                     </i>
-                </a>
-            </div>
+                </dialog-confirm>
+            </context-menu>
 
             <div v-if="expanded" class="list">
                 <folder-display v-for="folder in folder.folders" :folder="folder"></folder-display>
@@ -40,6 +57,9 @@
 import FileCreateNew from 'components/file-create-new'
 import FolderCreateNew from 'components/folder-create-new'
 import FileDisplay from 'components/file-display'
+import DialogConfirm from 'components/dialog-confirm'
+import DialogInput from 'components/dialog-input'
+import ContextMenu from 'components/context-menu'
 
 export default {
     name: 'folder-display',
@@ -47,7 +67,10 @@ export default {
     components: {
         FileCreateNew,
         FolderCreateNew,
-        FileDisplay
+        FileDisplay,
+        DialogConfirm,
+        DialogInput,
+        ContextMenu
     },
 
     props: {
@@ -57,14 +80,23 @@ export default {
     data () {
         return {
             folderClass: 'folderItem' + this.folder.id,
-            contextMenuVisible: false,
             expanded: true
+        }
+    },
+
+    computed: {
+        contextMenuObject () {
+            return this.$store.state.Project.contextObject
         }
     },
 
     methods: {
         toggleContext () {
-            this.contextMenuVisible = !this.contextMenuVisible
+            if (this.contextMenuObject === this.folder) {
+                this.$store.dispatch('setContextObject', null)
+            } else {
+                this.$store.dispatch('setContextObject', this.folder)
+            }
         },
 
         toggleExpanded () {
@@ -74,22 +106,57 @@ export default {
         newFile () {
         },
 
-        async confirmFolderDeletion () {
-            const answer = confirm('Are you sure you want to delete "' + this.folder.name + '"?')
+        async deleteFolder () {
             this.toggleContext()
-
-            if (answer) {
-                await this.$store.dispatch('deleteFolder', this.folder)
-            }
+            await this.$store.dispatch('deleteFolder', this.folder)
         },
 
-        async renameFolder () {
-            const answer = prompt('Input new name')
+        async renameFolder (name) {
+            this.toggleContext()
+            const newFolder = this.folder
+            newFolder.name = name
+            await this.$store.dispatch('updateFolder', newFolder)
+        },
+
+        async createFile (name) {
             this.toggleContext()
 
-            if (answer.length > 0) {
-                await this.$store.dispatch('updateFolder', this.folder)
+            const sameName = this.folder.files.some(f => f.name === name)
+            if (sameName) {
+                alert('File by that name already exists, ignoring')
+                return
             }
+
+            const file = {
+                name: name,
+                parentID: this.folder.id,
+                content: '',
+                syntax: 0
+            }
+
+            // Tell the store to add the project and wait for it to finish
+            await this.$store.dispatch('addFile', { file, projectID: this.folder.projectID })
+        },
+
+        async createFolder (name) {
+            this.toggleContext()
+
+            const sameName = this.folder.folders.some(p => p.name === name)
+            if (sameName) {
+                alert('Folder by that name already exists, ignoring')
+                return
+            }
+
+            const folder = {
+                name: name,
+                parentID: this.folder.id,
+                projectID: this.folder.projectID,
+                folders: [],
+                files: []
+            }
+
+            // Tell the store to add the project and wait for it to finish
+            await this.$store.dispatch('addFolder', folder)
         }
     }
 }

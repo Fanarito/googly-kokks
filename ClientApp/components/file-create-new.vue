@@ -2,7 +2,7 @@
     <div>
         <a @click="showModal" class="item">
             New File
-            
+    
             <i class="right icons">
                 <i class="file icon"></i>
                 <i class="corner green plus icon"></i>
@@ -25,7 +25,7 @@
                     <div class="two fields">
                         <div class="field">
                             <label>Name</label>
-                            <input @keyup.enter="createFile" v-model="fileName" placeholder="Name" type="text" />
+                            <input v-focus @keyup.enter="createFile" v-model="fileName" placeholder="Name" type="text" />
                         </div>
                         <div class="field">
                             <label>Syntax</label>
@@ -59,25 +59,29 @@ export default {
         parent: null
     },
 
-    data () {
+    data() {
         return {
             creating: false,
             fileName: '',
-            projectId: parseInt(this.$route.params.id),
+            projectID: parseInt(this.$route.params.id),
             modalClass: 'fileModal' + this.parent.id,
             syntax: 0
         }
     },
     methods: {
-        showModal () {
-            $('.ui.modal' + '.' + this.modalClass).modal('show')
+        showModal() {
+            $('.ui.modal' + '.' + this.modalClass)
+                .modal({
+                    detachable: false
+                })
+                .modal('show')
         },
 
-        clearInput () {
+        clearInput() {
             this.fileName = ''
         },
 
-        async createFile () {
+        async createFile() {
             // Hide modal
             $('.ui.modal' + '.' + this.modalClass).modal('hide')
             // Hide parent context menu
@@ -102,7 +106,7 @@ export default {
             // Clear text box
             this.fileName = ''
             // Tell the store to add the project and wait for it to finish
-            await this.$store.dispatch('addFile', { file, projectId: this.projectId })
+            await this.$store.dispatch('addFile', { file, projectID: this.projectID })
             // Hide loader
             this.creating = false
         }
@@ -114,8 +118,7 @@ export default {
 /* Fix for the modal being stuck to bottom */
 
 .modal {
-    bottom: auto !important;
-}
+    bottom: auto !important;}
 
 .ui.fullpage.segment {
     position: fixed;
