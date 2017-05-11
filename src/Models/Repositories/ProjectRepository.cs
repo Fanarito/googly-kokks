@@ -37,7 +37,7 @@ namespace Kokks.Models
             bool hasAccess = _context.Collaborators.Any(c => c.ProjectID == projectID && c.UserID == userId);
             return hasAccess;
         }
-        
+
         public void Add(Project item)
         {
             _context.Projects.Add(item);

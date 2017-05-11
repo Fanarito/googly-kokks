@@ -31,14 +31,6 @@ namespace Kokks.Controllers.Api
             _logger = logger.CreateLogger<ProjectController>();
         }
 
-        [HttpGet]
-        public IEnumerable<Collaborator> GetAll()
-        {
-            var userId = _userManager.GetUserId(HttpContext.User);
-            var collaborators = _collaboratorRepository.GetAllConnectedToUser(userId);
-            return collaborators;
-        }
-
         [HttpGet("{id}", Name = "GetCollaborator")]
         public IActionResult GetById(long id)
         {

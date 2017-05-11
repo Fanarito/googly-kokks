@@ -11,7 +11,7 @@ namespace Kokks.Models
         public bool IsComplete { get; set; }
         public string UserID { get; set; }
         public long ProjectID { get; set; }
-        
+
         public ApplicationUser Owner { get; set; }
         public Project Project { get; set; }
     }

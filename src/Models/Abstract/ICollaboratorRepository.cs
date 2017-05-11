@@ -7,7 +7,6 @@ namespace Kokks.Models
         void Add(Collaborator item);
         void Create(string userId, long projectID, Permissions permissions);
         IEnumerable<Collaborator> GetAll();
-        IEnumerable<Collaborator> GetAllConnectedToUser(string uid);
         Collaborator Find(long id);
         Collaborator Find(long projectID, string userId);
         IEnumerable<Collaborator> FindForProject(long id);

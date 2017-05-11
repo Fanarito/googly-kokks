@@ -20,20 +20,6 @@ namespace Kokks.Models
             return _context.Collaborators.ToList();
         }
 
-        public IEnumerable<Collaborator> GetAllConnectedToUser(string uid)
-        {
-            var collabs = _context.Collaborators.Where(c => c.UserID == uid)
-                                                .Include(c => c.Project);
-            
-            // Go through all connected projects and return all connected users
-            var connected = new List<Collaborator>();
-            foreach (var collab in collabs)
-            {
-                connected.Concat(collab.Project.Collaborators.Where(c => c.UserID != uid).ToList());
-            }
-            return connected;
-        }
-
         public void Add(Collaborator item)
         {
             _context.Collaborators.Add(item);

@@ -8,9 +8,9 @@ using System.Linq;
 
 namespace Tests
 {
-    public class FileRepositoryTests : IDisposable
+    public class FolderRepositoryTests : IDisposable
     {
-        public FileRepositoryTests()
+        public FolderRepositoryTests()
         {
             var connectionStringBuilder =
                 new SqliteConnectionStringBuilder { DataSource = ":memory:" };
@@ -29,26 +29,21 @@ namespace Tests
             var project = new Project { Name = "TestProject" };
             context.Add(project);
 
-            // Add folder for the files to use
-            var folder = new Folder { Name = "TestFolder", ProjectID = project.Id };
-            context.Add(folder);
-
-            // Add test files
-            var files = Enumerable.Range(1, fileCount)
-                        .Select(i => new File 
+            // Add test Folders
+            var folders = Enumerable.Range(1, folderCount)
+                        .Select(i => new Folder 
                         {
                             Id = i,
-                            Name = $"Name{i}",
-                            Content = $"Content{i}",
-                            ParentID = folder.Id
+                            ProjectID = project.Id,
+                            Name = $"Name{i}"
                         });
 
-            context.AddRange(files);
+            context.AddRange(folders);
             int changed = context.SaveChanges();
             _context = context;
         }
 
-        private const int fileCount = 10;
+        private const int folderCount = 10;
         private readonly ApplicationDbContext _context;
 
         public void Dispose()
@@ -61,7 +56,7 @@ namespace Tests
         public void FindById()
         {
             const string expectedName = "Name5";
-            var repo = new FileRepository(_context);
+            var repo = new FolderRepository(_context);
             var res = repo.Find(5);
             Assert.Equal(expectedName, res.Name);
         }
@@ -69,70 +64,66 @@ namespace Tests
         [Fact]
         public void GetAll()
         {
-            const int expectedLength = fileCount;
-            var repo =  new FileRepository(_context);
+            const int expectedLength = folderCount;
+            var repo =  new FolderRepository(_context);
             var res = repo.GetAll();
             Assert.Equal(expectedLength, res.Count());
         }
 
         [Fact]
-        public void RemoveRemovedFile()
+        public void RemoveRemovedFolder()
         {
             const int itemId = 1;
-            const int expectedLength = fileCount - 1;
-            var repo = new FileRepository(_context);
+            const int expectedLength = folderCount - 1;
+            var repo = new FolderRepository(_context);
             repo.Remove(itemId);
             var res = repo.GetAll();
             Assert.Equal(expectedLength, res.Count());
         }
 
         [Fact]
-        public void CreateCorrectlyAddedFile()
+        public void CreateCorrectlyAddedFolder()
         {
             const long parentId = 1;
-            const Syntax syntax = Syntax.JavaScript;
-            const string name = "NewFileTest";
-            const string content = "NewFileTestContent";
-            const int expectedLength = fileCount + 1;
+            const long projectId = 1;
+            const string name = "NewFolderTest";
+            const int expectedLength = folderCount + 1;
             
-            var repo = new FileRepository(_context);
-            repo.Create(parentId, syntax, name, content);
+            var repo = new FolderRepository(_context);
+            repo.Create(name, parentId, projectId);
             var res = repo.GetAll();
             Assert.Equal(expectedLength, res.Count());
         }
 
         [Fact]
-        public void AddCorrectlyAddedFile()
+        public void AddCorrectlyAddedFolder()
         {
-            var file = new File {
+            var Folder = new Folder {
+                ProjectID = 1,
                 ParentID = 1,
-                Syntax = Syntax.JavaScript,
-                Name = "NewTestFile",
-                Content = "NewTestFileContent"
+                Name = "NewNestedTestFolder"
             };
 
-            var repo = new FileRepository(_context);
-            repo.Add(file);
-            var res = repo.Find(file.Id);
-            Assert.Equal(file, res);
+            var repo = new FolderRepository(_context);
+            repo.Add(Folder);
+            var res = repo.Find(Folder.Id);
+            Assert.Equal(Folder, res);
         }
 
         [Fact]
-        public void UpdateUpdatesFile()
+        public void UpdateUpdatesFolder()
         {
-            const long fileId = 4;
+            const long FolderId = 4;
             const string updatedName = "UpdatedName";
-            const string updatedContent = "UpdatedContent";
-            var repo = new FileRepository(_context);
+            var repo = new FolderRepository(_context);
 
-            var file = repo.Find(fileId);
-            file.Name = updatedName;
-            file.Content = updatedContent;
-            repo.Update(file);
+            var Folder = repo.Find(FolderId);
+            Folder.Name = updatedName;
+            repo.Update(Folder);
 
-            var updatedFile = repo.Find(fileId);
+            var updatedFolder = repo.Find(FolderId);
 
-            Assert.Equal(file, updatedFile);
+            Assert.Equal(Folder, updatedFolder);
         }
     }
 }
