@@ -1,4 +1,5 @@
-<template>
+
+<template><!-- user settings not in use, could be used in future -->
     <div v-if="currentUser" class="ui container">
         <h1 class="ui header">
             {{ currentUser.userName }}
