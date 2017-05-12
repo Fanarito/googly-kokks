@@ -3,6 +3,11 @@ import Vue from 'vue'
 const state = {
     projects: [],
     currentFile: null,
+    latestChange: {
+        fileID: null,
+        userID: null,
+        change: null
+    },
     contextObject: null
 }
 
@@ -121,8 +126,12 @@ const mutations = {
 
         if (index > -1) {
             const parentFolder = findFolderById(state.projects[index].folders, folder.parentID)
-            const folIndex = parentFolder.folders.indexOf(folder)
-            parentFolder.folders.splice(folIndex, 1)
+            if (parentFolder) {
+                const folIndex = parentFolder.folders.indexOf(folder)
+                if (folIndex > -1) {
+                    parentFolder.folders.splice(folIndex, 1)
+                }
+            }
         }
     },
 
@@ -160,6 +169,14 @@ const mutations = {
 
     setContextObject: (state, { object }) => {
         state.contextObject = object
+    },
+
+    setLatestChange: (state, { fileID, userID, change }) => {
+        state.latestChange = {
+            fileID,
+            userID,
+            change
+        }
     }
 }
 
@@ -348,6 +365,10 @@ const actions = {
 
     async setContextObject ({ commit, state }, object) {
         await commit('setContextObject', { object })
+    },
+
+    setLatestChange ({ commit, state }, { fileID, userID, change }) {
+        commit('setLatestChange', { fileID, userID, change })
     }
 }
 

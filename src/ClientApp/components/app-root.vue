@@ -70,18 +70,17 @@ export default {
         },
 
         setupFileSocket () {
-            const connection = new WebSocketManager.Connection('ws://' + window.location.host + '/file')
-            connection.enableLogging = true
-            connection.connectionMethods.onConnected = () => {
+            window.fileSocket = new WebSocketManager.Connection('ws://' + window.location.host + '/file')
+            window.fileSocket.enableLogging = true
+            window.fileSocket.connectionMethods.onConnected = () => {
                 // optional
-                console.log('File Socket Connected! Connection ID: ' + connection.connectionId)
+                console.log('File Socket Connected! Connection ID: ' + window.fileSocket.connectionId)
             }
-            connection.connectionMethods.onDisconnected = () => {
+            window.fileSocket.connectionMethods.onDisconnected = () => {
                 // optional
                 console.log('Disconnected!')
             }
-            connection.clientMethods['add'] = (id, name, content, syntax, parentID, projectID) => {
-                console.log('adding local file')
+            window.fileSocket.clientMethods['add'] = (id, name, content, syntax, parentID, projectID) => {
                 const file = {
                     id: parseInt(id),
                     name: name,
@@ -92,15 +91,17 @@ export default {
                 this.$store.dispatch('addLocalFile', { file, projectID: parseInt(projectID) })
                 this.$store.dispatch('updateCurrentFile', { file, projectID: parseInt(projectID) })
             }
-            connection.clientMethods['delete'] = (id, parentID, projectID) => {
-                console.log('deleting local file')
+            window.fileSocket.clientMethods['delete'] = (id, parentID, projectID) => {
                 const file = {
                     id: parseInt(id),
                     parentID: parseInt(parentID)
                 }
                 this.$store.dispatch('deleteLocalFile', { file, projectID: parseInt(projectID) })
             }
-            connection.start()
+            window.fileSocket.clientMethods['change'] = (id, parentID, projectID, userID, change) => {
+                this.$store.dispatch('setLatestChange', { fileID: id, userID, change })
+            }
+            window.fileSocket.start()
         }
     },
 

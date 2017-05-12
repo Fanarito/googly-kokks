@@ -67,7 +67,8 @@ export default {
             sidebarVisible: false,
             saving: false,
             recentlySaved: false,
-            syntax: 'JavaScript'
+            syntax: 'JavaScript',
+            silent: false
         }
     },
 
@@ -135,14 +136,20 @@ export default {
             } else {
                 return 'save'
             }
+        },
+
+        latestChange () {
+            return this.$store.state.Project.latestChange
         }
     },
 
     watch: {
         file (val) {
-            if (val !== null) {
+            if (val !== null && this.editor.getSession().getValue() !== val.content) {
+                this.silent = true
                 this.syntax = val.syntax
                 this.editor.getSession().setValue(val.content)
+                this.silent = false
             }
         },
 
@@ -151,12 +158,17 @@ export default {
             this.editor.getSession().setMode(val)
         },
 
-        editorContent () {
-            this.debounceSaveFile()
-        },
-
         syntax (val) {
             this.saveFile()
+        },
+
+        latestChange (val) {
+            if (this.file !== null && this.file.id === val.fileID && val.userID !== this.currentUser.id) {
+                console.log(val)
+                this.silent = true
+                this.editor.getSession().getDocument().applyDelta(val.change)
+                this.silent = false
+            }
         }
     },
 
@@ -171,7 +183,7 @@ export default {
 
             this.saving = true
             const updatedFile = this.file
-            updatedFile.content = this.editorContent
+            updatedFile.content = this.editor.getSession().getValue()
             updatedFile.syntax = this.syntax
             await this.$store.dispatch('updateFile', { file: updatedFile, projectID: this.projectID })
             this.saving = false
@@ -183,10 +195,6 @@ export default {
                 self.recentlySaved = false
             }, 2000)
         },
-
-        debounceSaveFile: _.debounce(function () {
-            this.saveFile()
-        }, 1500),
 
         toggleSidebar () {
             $('.ui.sidebar').sidebar({
@@ -210,8 +218,9 @@ export default {
 
             const self = this
             this.editor.on('change', function (obj) {
-                console.log(obj)
-                self.editorContent = self.editor.getSession().getValue()
+                if (self.silent === false) {
+                    window.fileSocket.invoke('Change', self.file.id, self.file.parentID, self.projectID, self.currentUser.id, obj)
+                }
             })
         }
     },
