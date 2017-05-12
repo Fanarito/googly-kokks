@@ -15,6 +15,8 @@ using Kokks.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.AspNetCore.Http;
+using Kokks.Handlers;
+using WebSocketManager;
 
 namespace Kokks
 {
@@ -55,14 +57,8 @@ namespace Kokks
                     .AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddCors();
-            /*
-            //possible fix for returning to the right url when not logged in
-            services.Configure<IdentityOptions>(opt =>
-            {
-                opt.Cookies.ApplicationCookie.LoginPath = new PathString("/aa");
-                opt.Cookies.ApplicationCookie.AccessDeniedPath = new PathString("/home  ");
-                opt.Cookies.ApplicationCookie.LogoutPath = new PathString("/");
-            }); */
+
+            services.AddWebSocketManager();
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -76,7 +72,7 @@ namespace Kokks
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -107,10 +103,14 @@ namespace Kokks
             });
 
             app.UseCookieAuthentication(new CookieAuthenticationOptions
-{
-         LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login"),
-         AutomaticChallenge = true
-});
+            {
+                    LoginPath = new Microsoft.AspNetCore.Http.PathString("/"),
+                    AutomaticChallenge = true
+            });
+
+            app.UseWebSockets();
+            app.MapWebSocketManager("/todo", serviceProvider.GetService<TodoItemHandler>());
+            app.MapWebSocketManager("/file", serviceProvider.GetService<FileHandler>());
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 

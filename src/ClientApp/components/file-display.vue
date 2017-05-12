@@ -63,7 +63,7 @@ export default {
 
     methods: {
         displayFile () {
-            this.$store.dispatch('selectFile', this.file)
+            this.$store.dispatch('selectFile', { file: this.file, projectID: this.projectID })
         },
 
         toggleContext () {

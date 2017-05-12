@@ -4,6 +4,8 @@ using Kokks.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using Kokks.Handlers;
+using WebSocketManager.Common;
 
 namespace Kokks.Controllers.Api
 {
@@ -14,16 +16,19 @@ namespace Kokks.Controllers.Api
         private readonly ITodoRepository _todoRepository;
         private readonly IProjectRepository _projectRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private TodoItemHandler _todoHandler;
 
         public TodoController(
             ITodoRepository todoRepository,
             IProjectRepository projectRepository,
-            UserManager<ApplicationUser> userManager
+            UserManager<ApplicationUser> userManager,
+            TodoItemHandler todoHandler
         )
         {
             _todoRepository = todoRepository;
             _projectRepository = projectRepository;
             _userManager = userManager;
+            _todoHandler = todoHandler;
         }
 
         [HttpGet]
@@ -65,6 +70,8 @@ namespace Kokks.Controllers.Api
             if (_projectRepository.UserHasAccess(item.ProjectID, userId))
             {
                 _todoRepository.Add(item);
+                // Broadcast the new todo
+                _todoHandler.AddTodo(item.Id, item.Name, item.ProjectID);
                 return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
             }
             else
@@ -112,6 +119,8 @@ namespace Kokks.Controllers.Api
             }
             else if (_projectRepository.UserHasAccess(todo.ProjectID, userId))
             {
+                // Broadcast todo remove
+                _todoHandler.DeleteTodo(todo.Id, todo.ProjectID);
                 _todoRepository.Remove(id);
                 return new NoContentResult();
             }

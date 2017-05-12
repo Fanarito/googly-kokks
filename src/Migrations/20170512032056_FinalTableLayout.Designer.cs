@@ -9,8 +9,8 @@ using Kokks.Models;
 namespace Kokks.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20170509162501_CreateTables")]
-    partial class CreateTables
+    [Migration("20170512032056_FinalTableLayout")]
+    partial class FinalTableLayout
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -98,8 +98,6 @@ namespace Kokks.Migrations
                     b.Property<long>("ParentID");
 
                     b.Property<int>("Syntax");
-
-                    b.Property<long>("SyntaxID");
 
                     b.HasKey("Id");
 

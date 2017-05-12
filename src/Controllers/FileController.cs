@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Kokks.Models;
 using Kokks.Services;
+using Kokks.Handlers;
+using System.Threading.Tasks;
 
 namespace Kokks.Controllers.Api
 {
@@ -18,6 +20,7 @@ namespace Kokks.Controllers.Api
         private readonly ICollaboratorRepository _collaboratorRepository;
         private readonly IFileRepository _fileRepository;
         private readonly PermissionServices _permissionServices;
+        private FileHandler _fileHandler;
 
         public FileController(
             IProjectRepository projectRepository,
@@ -26,7 +29,8 @@ namespace Kokks.Controllers.Api
             IFolderRepository folderRepository,
             ICollaboratorRepository collaboratorRepository,
             IFileRepository fileRepository,
-            PermissionServices permissionServices
+            PermissionServices permissionServices,
+            FileHandler fileHandler
         )
         {
             _userManager = userManager;
@@ -36,6 +40,7 @@ namespace Kokks.Controllers.Api
             _collaboratorRepository = collaboratorRepository;
             _fileRepository = fileRepository;
             _permissionServices = permissionServices;
+            _fileHandler = fileHandler;
         }
 
         [HttpGet("{id}", Name = "GetFile")]
@@ -59,7 +64,7 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] File item)
+        public async Task<IActionResult> Create([FromBody] File item)
         {
             if (item == null)
             {
@@ -73,17 +78,20 @@ namespace Kokks.Controllers.Api
             }
 
             var userId = _userManager.GetUserId(HttpContext.User);
-            if (_permissionServices.HasWriteAccess(parent, userId))
+            if (!_permissionServices.HasWriteAccess(parent.ProjectID, userId))
             {
-                return new UnauthorizedResult();
+                return Unauthorized();
             }
-
-            _fileRepository.Add(item);
-            return CreatedAtAction("GetFile", new { id = item.Id }, item);
+            else
+            {
+                _fileRepository.Add(item);
+                await _fileHandler.Add(item.Id, item.Name, item.Content, item.Syntax, item.ParentID, parent.ProjectID);
+                return CreatedAtAction("GetFile", new { id = item.Id }, item);
+            }
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] File item)
+        public async Task<IActionResult> Update(long id, [FromBody] File item)
         {
             if (item == null || item.Id != id)
             {
@@ -99,19 +107,22 @@ namespace Kokks.Controllers.Api
             }
             else if (!_permissionServices.HasWriteAccess(file, userId))
             {
-                return new UnauthorizedResult();
+                return Unauthorized();
             }
-
-            file.Content = item.Content;
-            file.Name = item.Name;
-            file.ParentID = item.ParentID;
-            file.Syntax = item.Syntax;
-            _fileRepository.Update(file);
-            return NoContent();
+            else
+            {
+                file.Content = item.Content;
+                file.Name = item.Name;
+                file.ParentID = item.ParentID;
+                file.Syntax = item.Syntax;
+                _fileRepository.Update(file);
+                await _fileHandler.Add(file.Id, file.Name, file.Content, file.Syntax, file.ParentID, file.Parent.ProjectID);
+                return NoContent();
+            }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
             var file = _fileRepository.Find(id);
@@ -122,6 +133,7 @@ namespace Kokks.Controllers.Api
 
             if (_permissionServices.HasWriteAccess(file, userId))
             {
+                await _fileHandler.Remove(file.Id, file.ParentID, file.Parent.ProjectID);
                 _fileRepository.Remove(id);
                 return NoContent();
             }

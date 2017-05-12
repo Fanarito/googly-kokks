@@ -98,8 +98,6 @@ namespace Kokks.Migrations
 
                     b.Property<int>("Syntax");
 
-                    b.Property<long>("SyntaxID");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ParentID");

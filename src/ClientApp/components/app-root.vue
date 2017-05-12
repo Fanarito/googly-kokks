@@ -38,6 +38,69 @@ export default {
             if (this.$store.state.Project.contextObject !== null) {
                 this.$store.dispatch('setContextObject', null)
             }
+        },
+
+        setupTodoSocket () {
+            const connection = new WebSocketManager.Connection('ws://' + window.location.host + '/todo')
+            connection.enableLogging = true
+            connection.connectionMethods.onConnected = () => {
+                // optional
+                console.log('Todo Socket Connected! Connection ID: ' + connection.connectionId)
+            }
+            connection.connectionMethods.onDisconnected = () => {
+                // optional
+                console.log('Disconnected!')
+            }
+            connection.clientMethods['add'] = (id, name, projectID) => {
+                const newTodo = {
+                    id: parseInt(id),
+                    name: name,
+                    projectID: parseInt(projectID)
+                }
+                this.$store.dispatch('addLocalTodo', newTodo)
+            }
+            connection.clientMethods['delete'] = (id, projectID) => {
+                const todo = {
+                    id: parseInt(id),
+                    projectID: parseInt(projectID)
+                }
+                this.$store.dispatch('deleteLocalTodo', todo)
+            }
+            connection.start()
+        },
+
+        setupFileSocket () {
+            const connection = new WebSocketManager.Connection('ws://' + window.location.host + '/file')
+            connection.enableLogging = true
+            connection.connectionMethods.onConnected = () => {
+                // optional
+                console.log('File Socket Connected! Connection ID: ' + connection.connectionId)
+            }
+            connection.connectionMethods.onDisconnected = () => {
+                // optional
+                console.log('Disconnected!')
+            }
+            connection.clientMethods['add'] = (id, name, content, syntax, parentID, projectID) => {
+                console.log('adding local file')
+                const file = {
+                    id: parseInt(id),
+                    name: name,
+                    content: content,
+                    syntax: syntax,
+                    parentID: parseInt(parentID)
+                }
+                this.$store.dispatch('addLocalFile', { file, projectID: parseInt(projectID) })
+                this.$store.dispatch('updateCurrentFile', { file, projectID: parseInt(projectID) })
+            }
+            connection.clientMethods['delete'] = (id, parentID, projectID) => {
+                console.log('deleting local file')
+                const file = {
+                    id: parseInt(id),
+                    parentID: parseInt(parentID)
+                }
+                this.$store.dispatch('deleteLocalFile', { file, projectID: parseInt(projectID) })
+            }
+            connection.start()
         }
     },
 
@@ -52,6 +115,9 @@ export default {
                 vm.hideContextMenu()
             }
         })
+
+        this.setupTodoSocket()
+        this.setupFileSocket()
     }
 }
 </script>

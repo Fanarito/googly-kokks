@@ -209,7 +209,8 @@ export default {
             })
 
             const self = this
-            this.editor.on('change', function () {
+            this.editor.on('change', function (obj) {
+                console.log(obj)
                 self.editorContent = self.editor.getSession().getValue()
             })
         }

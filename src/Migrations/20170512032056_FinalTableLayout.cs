@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Kokks.Migrations
 {
-    public partial class CreateTables : Migration
+    public partial class FinalTableLayout : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -252,8 +252,7 @@ namespace Kokks.Migrations
                     Content = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     ParentID = table.Column<long>(nullable: false),
-                    Syntax = table.Column<int>(nullable: false),
-                    SyntaxID = table.Column<long>(nullable: false)
+                    Syntax = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

@@ -14,6 +14,7 @@ function findFolderById (folders, id) {
             return findFolderById(folders[i].folders, id)
         }
     }
+    return null
 }
 
 const mutations = {
@@ -74,23 +75,30 @@ const mutations = {
         }
     },
 
-    setCurrentFile: (state, { file }) => {
-        state.currentFile = file
-    },
+    setCurrentFile: (state, { file, projectID }) => {
+        const project = state.projects.find(p => p.id === projectID)
 
-    setFile: (state, { file, projectID }) => {
-        const index = state.projects.findIndex(p => p.id === projectID)
-        const folder = findFolderById(state.projects[index].folders, file.parentID)
-        const fileIndex = folder.files.findIndex(f => f.id === file.id)
-        Vue.set(folder.files, fileIndex, file)
+        if (project) {
+            const folder = findFolderById(project.folders, file.parentID)
+            if (folder) {
+                state.currentFile = folder.files.find(f => f.id === file.id)
+            }
+        }
     },
 
     addFile: (state, { file, projectID }) => {
-        const index = state.projects.findIndex(p => p.id === projectID)
+        const project = state.projects.find(p => p.id === projectID)
 
-        if (index > -1) {
-            const folder = findFolderById(state.projects[index].folders, file.parentID)
-            folder.files.push(file)
+        if (project) {
+            const folder = findFolderById(project.folders, file.parentID)
+            if (folder) {
+                const fileIndex = folder.files.findIndex(f => f.id === file.id)
+                if (fileIndex > -1) {
+                    Vue.set(folder.files, fileIndex, file)
+                } else {
+                    folder.files.push(file)
+                }
+            }
         }
     },
 
@@ -133,7 +141,9 @@ const mutations = {
 
         if (project) {
             const todoIndex = project.todoItems.indexOf(todo)
-            project.todoItems.splice(todoIndex, 1)
+            if (todoIndex > -1) {
+                project.todoItems.splice(todoIndex, 1)
+            }
         }
     },
 
@@ -141,7 +151,10 @@ const mutations = {
         const project = state.projects.find(p => p.id === todo.projectID)
 
         if (project) {
-            project.todoItems.push(todo)
+            const exists = project.todoItems.find(t => t.id === todo.id)
+            if (!exists) {
+                project.todoItems.push(todo)
+            }
         }
     },
 
@@ -235,7 +248,7 @@ const actions = {
         }
     },
 
-    async selectFile ({ commit, state }, file) {
+    async selectFile ({ commit, state }, { file, projectID }) {
         if (file === null) {
             await commit('setCurrentFile', { file: null })
             return
@@ -244,7 +257,13 @@ const actions = {
         const response = await Vue.prototype.$http.get('/api/file/' + file.id)
         console.log(response)
 
-        await commit('setCurrentFile', { file: response.data })
+        await commit('setCurrentFile', { file: response.data, projectID })
+    },
+
+    async updateCurrentFile ({ commit, state }, { file, projectID }) {
+        if (state.currentFile.id === file.id) {
+            await commit('setCurrentFile', { file, projectID })
+        }
     },
 
     async addFile ({ commit, state }, { file, projectID }) {
@@ -254,11 +273,15 @@ const actions = {
         await commit('addFile', { file: response.data, projectID })
     },
 
+    addLocalFile ({ commit, state }, { file, projectID }) {
+        commit('addFile', { file: file, projectID })
+    },
+
     async updateFile ({ commit, state }, { file, projectID }) {
         const response = await Vue.prototype.$http.put('/api/file/' + file.id, file)
         console.log(response)
 
-        await commit('setFile', { file, projectID })
+        await commit('addFile', { file, projectID })
     },
 
     async deleteFile ({ commit, state }, { file, projectID }) {
@@ -266,6 +289,10 @@ const actions = {
         console.log(response)
 
         await commit('removeFile', { file, projectID })
+    },
+
+    deleteLocalFile ({ commit, state }, { file, projectID }) {
+        commit('removeFile', { file, projectID })
     },
 
     async addFolder ({ commit, state }, folder) {
@@ -294,10 +321,14 @@ const actions = {
         console.log(response)
 
         if (response.status === 204) {
-            await commit('deleteTodo', { todo: todo })
+            await commit('deleteTodo', { todo })
         } else {
             // error handling
         }
+    },
+
+    deleteLocalTodo ({ commit, state }, todo) {
+        commit('deleteTodo', { todo })
     },
 
     async addTodo ({ commit, state }, todo) {
@@ -309,6 +340,10 @@ const actions = {
         } else {
             // error msg
         }
+    },
+
+    addLocalTodo ({ commit, state }, todo) {
+        commit('addTodo', { todo })
     },
 
     async setContextObject ({ commit, state }, object) {

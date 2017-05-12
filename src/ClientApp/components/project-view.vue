@@ -21,7 +21,8 @@ export default {
     data () {
         return {
             projectID: parseInt(this.$route.params.id),
-            loading: true
+            loading: true,
+            connection: null
         }
     },
 
