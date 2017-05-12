@@ -1,13 +1,16 @@
 <template>
     <div @click="hideContextMenu" id="app">
         <nav-menu params="route: route"></nav-menu>
-        <div class="ui grid">
+        <div v-if="loaded" class="ui grid">
             <div class="column">
                 <transition name="slide-fade" mode="out-in">
-                    <router-view v-if="loaded"></router-view>
+                    <router-view></router-view>
                 </transition>
             </div>
         </div>
+        <h3 v-else>
+            Preparing data...
+        </h3>
     </div>
 </template>
 
@@ -23,13 +26,6 @@ export default {
         return {
             loaded: false
         }
-    },
-
-    async created () {
-        if (this.$store.getters.currentUser === null) {
-            await this.$store.dispatch('getUser')
-        }
-        this.loaded = true
     },
 
     methods: {
@@ -105,27 +101,27 @@ export default {
         },
 
         setupProjectSocket () {
-            window.fileSocket = new WebSocketManager.Connection('ws://' + window.location.host + '/project')
-            window.fileSocket.enableLogging = true
-            window.fileSocket.connectionMethods.onConnected = () => {
+            const projectSocket = new WebSocketManager.Connection('ws://' + window.location.host + '/project')
+            projectSocket.enableLogging = true
+            projectSocket.connectionMethods.onConnected = () => {
                 // optional
-                console.log('File Socket Connected! Connection ID: ' + window.fileSocket.connectionId)
+                console.log('File Socket Connected! Connection ID: ' + projectSocket.connectionId)
             }
-            window.fileSocket.connectionMethods.onDisconnected = () => {
+            projectSocket.connectionMethods.onDisconnected = () => {
                 // optional
                 console.log('Disconnected!')
             }
-            window.fileSocket.clientMethods['add'] = (id) => {
+            projectSocket.clientMethods['add'] = (id) => {
                 this.$store.dispatch('getProject', id)
             }
-            window.fileSocket.clientMethods['delete'] = (id, name) => {
+            projectSocket.clientMethods['delete'] = (id, name) => {
                 const project = {
                     id: parseInt(id),
                     name
                 }
                 this.$store.dispatch('deleteLocalProject', project)
             }
-            window.fileSocket.start()
+            projectSocket.start()
         }
     },
 
@@ -144,6 +140,11 @@ export default {
         this.setupTodoSocket()
         this.setupFileSocket()
         this.setupProjectSocket()
+    },
+
+    async created () {
+        await this.$store.dispatch('getUser')
+        this.loaded = true
     }
 }
 </script>
