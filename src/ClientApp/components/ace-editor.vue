@@ -164,7 +164,6 @@ export default {
 
         latestChange (val) {
             if (this.file !== null && this.file.id === val.fileID && val.userID !== this.currentUser.id) {
-                console.log(val)
                 this.silent = true
                 this.editor.getSession().getDocument().applyDelta(val.change)
                 this.silent = false
