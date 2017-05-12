@@ -45,7 +45,10 @@ const mutations = {
     },
 
     deleteProject: (state, { project }) => {
+        console.log(project)
         const index = state.projects.findIndex(p => p.id === project.id)
+        console.log(index)
+        console.log(project.project)
 
         if (index > -1) {
             state.projects.splice(index, 1)
@@ -140,8 +143,12 @@ const mutations = {
 
         if (index > -1) {
             const parentFolder = findFolderById(state.projects[index].folders, file.parentID)
-            const fileIndex = parentFolder.files.indexOf(file)
-            parentFolder.files.splice(fileIndex, 1)
+            if (parentFolder) {
+                const fileIndex = parentFolder.files.findIndex(f => f.id === file.id)
+                if (fileIndex > -1) {
+                    parentFolder.files.splice(fileIndex, 1)
+                }
+            }
         }
     },
 
@@ -185,66 +192,50 @@ const actions = {
         const response = await Vue.prototype.$http.get('/api/project')
         console.log(response)
 
-        if (response.status === 200) {
-            await commit('setProjects', { projects: response.data })
-        } else {
-            // error handling
-        }
+        await commit('setProjects', { projects: response.data })
     },
 
     async getProject ({ commit }, id) {
         const response = await Vue.prototype.$http.get('/api/project/' + id)
         console.log(response)
 
-        if (response.status === 200) {
-            await commit('addProject', { project: response.data })
-        } else {
-            // error handling
-        }
+        await commit('addProject', { project: response.data })
     },
 
     async updateProject ({ commit, state }, project) {
         const response = await Vue.prototype.$http.put('/api/project/' + project.id, project)
         console.log(response)
 
-        if (response.status === 204) {
-            await commit('addProject', { project: project })
-        } else {
-            // error handling
-        }
+        await commit('addProject', { project })
     },
 
     async deleteProject ({ commit, state }, project) {
         const response = await Vue.prototype.$http.delete('/api/project/' + project.id)
         console.log(response)
 
-        if (response.status === 204) {
-            await commit('deleteProject', { project: project })
-        } else {
-            // error handling
-        }
+        await commit('deleteProject', { project })
+    },
+
+    deleteLocalProject ({ commit, state }, project) {
+        commit('deleteProject', { project })
     },
 
     async addProject ({ commit, state }, project) {
         const response = await Vue.prototype.$http.post('/api/project', project)
         console.log(response)
 
-        if (response.status === 201) {
-            await commit('addProject', { project: response.data })
-        } else {
-            // error handling
-        }
+        await commit('addProject', { project: response.data })
+    },
+
+    addLocalProject ({ commit, state }, project) {
+        commit('addProject', { project })
     },
 
     async addCollaborator ({ commit, state }, collaborator) {
         const response = await Vue.prototype.$http.post('/api/collaborator', collaborator)
         console.log(response)
 
-        if (response.status === 201) {
-            await commit('addCollaborator', { collaborator: response.data })
-        } else {
-            // error handling
-        }
+        await commit('addCollaborator', { collaborator: response.data })
     },
 
     async updateCollaborator ({ commit, state }, collaborator) {
@@ -258,11 +249,7 @@ const actions = {
         const response = await Vue.prototype.$http.delete('/api/collaborator/' + collaborator.id)
         console.log(response)
 
-        if (response.status === 204) {
-            await commit('removeCollaborator', { collaborator: collaborator })
-        } else {
-            // error handling
-        }
+        await commit('removeCollaborator', { collaborator: collaborator })
     },
 
     async selectFile ({ commit, state }, { file, projectID }) {
@@ -337,11 +324,7 @@ const actions = {
         const response = await Vue.prototype.$http.delete('/api/todo/' + todo.id, todo)
         console.log(response)
 
-        if (response.status === 204) {
-            await commit('deleteTodo', { todo })
-        } else {
-            // error handling
-        }
+        await commit('deleteTodo', { todo })
     },
 
     deleteLocalTodo ({ commit, state }, todo) {
@@ -352,11 +335,7 @@ const actions = {
         const response = await Vue.prototype.$http.post('/api/todo', todo)
         console.log(response)
 
-        if (response.status === 201) {
-            await commit('addTodo', { todo: response.data })
-        } else {
-            // error msg
-        }
+        await commit('addTodo', { todo: response.data })
     },
 
     addLocalTodo ({ commit, state }, todo) {

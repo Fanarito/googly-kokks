@@ -91,18 +91,8 @@ export default {
 
         currentCollaborator () {
             if (this.project) {
-                // Fetch the currentCollaborator for the project
-                const collaborator = this.$store.getters.getCurrentProjectCollaborator(this.project)
-                // Check permissions and set the editor readonly if needed
-                if (collaborator.permission === 'Read') {
-                    this.editor.setReadOnly(true)
-                } else {
-                    this.editor.setReadOnly(false)
-                }
-                return collaborator
+                return this.$store.getters.getCurrentProjectCollaborator(this.project)
             } else {
-                // Assume editor readonly
-                this.editor.setReadOnly(true)
                 return null
             }
         },
@@ -167,6 +157,20 @@ export default {
                 this.silent = true
                 this.editor.getSession().getDocument().applyDelta(val.change)
                 this.silent = false
+            }
+        },
+
+        currentCollaborator (val) {
+            if (val === null) {
+                this.editor.setReadOnly(true)
+                return
+            }
+
+            // Check permissions and set the editor readonly if needed
+            if (val.permission === 'Read') {
+                this.editor.setReadOnly(true)
+            } else {
+                this.editor.setReadOnly(false)
             }
         }
     },
