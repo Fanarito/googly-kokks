@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Kokks.Data;
 using Microsoft.EntityFrameworkCore;
+using Z.EntityFramework.Plus;
 
 namespace Kokks.Models
 {
@@ -44,7 +45,10 @@ namespace Kokks.Models
 
         public Collaborator Find(long projectID, string userId)
         {
-            return _context.Collaborators.FirstOrDefault(c => c.ProjectID == projectID && c.UserID == userId);
+            return _context.Collaborators
+                .AsNoTracking()
+                .FromCache()
+                .FirstOrDefault(c => c.ProjectID == projectID && c.UserID == userId);
         }
 
         public IEnumerable<Collaborator> FindForProject(long id)

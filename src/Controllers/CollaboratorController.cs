@@ -18,7 +18,7 @@ namespace Kokks.Controllers.Api
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
         private readonly ICollaboratorRepository _collaboratorRepository;
-        private ProjectHandler _projectHandler;
+        private ProjectAndCollaboratorHandler _projAndCollabHandler;
         private readonly PermissionServices _permissionServices;
         private readonly ILogger _logger;
 
@@ -26,7 +26,7 @@ namespace Kokks.Controllers.Api
             IProjectRepository projectRepository,
             ICollaboratorRepository collaboratorRepository,
             UserManager<ApplicationUser> userManager,
-            ProjectHandler projectHandler,
+            ProjectAndCollaboratorHandler projAndCollabHandler,
             PermissionServices permissionServices,
             ILoggerFactory logger
         )
@@ -35,7 +35,7 @@ namespace Kokks.Controllers.Api
             _projectRepository = projectRepository;
             _collaboratorRepository = collaboratorRepository;
             _permissionServices = permissionServices;
-            _projectHandler = projectHandler;
+            _projAndCollabHandler = projAndCollabHandler;
             _logger = logger.CreateLogger<ProjectController>();
         }
 
@@ -70,7 +70,7 @@ namespace Kokks.Controllers.Api
             _collaboratorRepository.Add(item);
             // Broadcast new collaborator
             var project = _projectRepository.Find(item.ProjectID);
-            await _projectHandler.Add(project.Id);
+            await _projAndCollabHandler.Add(project.Id);
             var newCollaborator = _collaboratorRepository.Find(item.Id);
             return CreatedAtAction("GetCollaborator", new { id = item.Id }, newCollaborator);
         }
@@ -106,7 +106,7 @@ namespace Kokks.Controllers.Api
             _collaboratorRepository.Update(collaborator);
             // Broadcast new collaborator
             var project = _projectRepository.Find(collaborator.ProjectID);
-            await _projectHandler.Add(project.Id);
+            await _projAndCollabHandler.Add(project.Id);
             return NoContent();
         }
 
@@ -128,9 +128,10 @@ namespace Kokks.Controllers.Api
             {
                 // Broadcast new collaborator
                 var project = _projectRepository.Find(collaborator.ProjectID);
-                await _projectHandler.Remove(
+                await _projAndCollabHandler.Remove(
                     project.Id,
-                    project.Name
+                    project.Name,
+                    collaborator.Id
                 );
                 _collaboratorRepository.Remove(id);
                 return NoContent();

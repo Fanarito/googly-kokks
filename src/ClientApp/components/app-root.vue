@@ -114,12 +114,22 @@ export default {
             projectSocket.clientMethods['add'] = (id) => {
                 this.$store.dispatch('getProject', id)
             }
-            projectSocket.clientMethods['delete'] = (id, name) => {
+            projectSocket.clientMethods['delete'] = (id, name, collaboratorId) => {
                 const project = {
                     id: parseInt(id),
                     name
                 }
-                this.$store.dispatch('deleteLocalProject', project)
+                // Only delete project if the delete is ment for you
+                const projectToDelete = this.$store.getters.getProjectById(id)
+                console.log(projectToDelete)
+                if (projectToDelete) {
+                    const currCollab = this.$store.getters.getCurrentProjectCollaborator(projectToDelete)
+                    console.log(collaboratorId)
+                    console.log(currCollab.id)
+                    if (currCollab.id === collaboratorId) {
+                        this.$store.dispatch('deleteLocalProject', project)
+                    }
+                }
             }
             projectSocket.start()
         }

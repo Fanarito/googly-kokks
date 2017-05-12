@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace Kokks.Handlers
 {
-    public class ProjectHandler : WebSocketHandler
+    public class ProjectAndCollaboratorHandler : WebSocketHandler
     {
-        public ProjectHandler(
+        public ProjectAndCollaboratorHandler(
             WebSocketConnectionManager webSocketConnectionManager,
             ICollaboratorRepository collaboratorRepository
             ) : base(webSocketConnectionManager)
@@ -36,9 +36,9 @@ namespace Kokks.Handlers
             await InvokeClientMethodToAllAsync("add", projectId);
         }
 
-        public async Task Remove(long projectId, string name)
+        public async Task Remove(long projectId, string name, long collaboratorId)
         {
-            await InvokeClientMethodToAllAsync("delete", projectId, name);
+            await InvokeClientMethodToAllAsync("delete", projectId, name, collaboratorId);
         }
 
         public override async Task OnDisconnected(WebSocket socket)

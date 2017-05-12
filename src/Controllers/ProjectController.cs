@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Kokks.Models;
+using Kokks.Handlers;
 using Kokks.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +19,7 @@ namespace Kokks.Controllers.Api
         private readonly ICollaboratorRepository _collaboratorRepository;
         private readonly IFolderRepository _folderRepository;
         private readonly IFileRepository _fileRepository;
+        private readonly ProjectAndCollaboratorHandler _projAndCollabHandler;
         private readonly ILogger _logger;
 
         public ProjectController(
@@ -26,6 +28,7 @@ namespace Kokks.Controllers.Api
             IFolderRepository folderRepository,
             IFileRepository fileRepository,
             UserManager<ApplicationUser> userManager,
+            ProjectAndCollaboratorHandler projAndCollabHandler,
             ILoggerFactory logger
         )
         {
@@ -34,6 +37,7 @@ namespace Kokks.Controllers.Api
             _collaboratorRepository = collaboratorRepository;
             _folderRepository = folderRepository;
             _fileRepository = fileRepository;
+            _projAndCollabHandler = projAndCollabHandler;
             _logger = logger.CreateLogger<ProjectController>();
         }
 
@@ -92,7 +96,7 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody] Project item)
+        public async Task<IActionResult> Update(int id, [FromBody] Project item)
         {
             if (item == null || item.Id != id)
             {
@@ -116,6 +120,8 @@ namespace Kokks.Controllers.Api
             {
                 project.Name = item.Name;
                 _projectRepository.Update(project);
+                // Broadcast update
+                await _projAndCollabHandler.Add(project.Id);
                 return new NoContentResult();
             }
         }

@@ -3,16 +3,19 @@ using System.Threading.Tasks;
 using WebSocketManager;
 using WebSocketManager.Common;
 using Kokks.Models;
+using Kokks.Services;
 
 namespace Kokks.Handlers
 {
     public class FileHandler : WebSocketHandler
     {
+        private readonly PermissionServices _permissionServices;
         public FileHandler(
             WebSocketConnectionManager webSocketConnectionManager,
-            ICollaboratorRepository collaboratorRepository
+            PermissionServices permissionServices
             ) : base(webSocketConnectionManager)
         {
+            _permissionServices = permissionServices;
         }
 
         public override async Task OnConnected(WebSocket socket)
@@ -42,7 +45,11 @@ namespace Kokks.Handlers
 
         public async Task Change(long fileId, long parentId, long projectId, string userId, object change)
         {
-            await InvokeClientMethodToAllAsync("change", fileId, parentId, projectId, userId, change);
+            // Make sure the user can actually change the project
+            if (_permissionServices.HasWriteAccess(projectId, userId))
+            {
+                await InvokeClientMethodToAllAsync("change", fileId, parentId, projectId, userId, change);
+            }
         }
 
         public async Task Disconnect(string socketId)

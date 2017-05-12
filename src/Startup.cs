@@ -111,7 +111,7 @@ namespace Kokks
             app.UseWebSockets();
             app.MapWebSocketManager("/todo", serviceProvider.GetService<TodoItemHandler>());
             app.MapWebSocketManager("/file", serviceProvider.GetService<FileHandler>());
-            app.MapWebSocketManager("/project", serviceProvider.GetService<ProjectHandler>());
+            app.MapWebSocketManager("/project", serviceProvider.GetService<ProjectAndCollaboratorHandler>());
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
 

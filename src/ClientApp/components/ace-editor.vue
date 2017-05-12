@@ -50,7 +50,7 @@ import FileBrowser from 'components/file-browser'
 import CollaboratorList from 'components/collaborator-list'
 import SideBar from 'components/project-sidebar'
 import DropdownSyntax from 'components/dropdown-syntax'
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
 
 export default {
     components: {
@@ -160,22 +160,26 @@ export default {
             }
         },
 
-        currentCollaborator (val) {
-            if (val === null) {
+        currentCollaborator () {
+            this.setEditorPermissions()
+        }
+    },
+
+    methods: {
+        setEditorPermissions () {
+            if (this.currentCollaborator === null) {
                 this.editor.setReadOnly(true)
                 return
             }
 
             // Check permissions and set the editor readonly if needed
-            if (val.permission === 'Read') {
+            if (this.currentCollaborator.permission === 'Read') {
                 this.editor.setReadOnly(true)
             } else {
                 this.editor.setReadOnly(false)
             }
-        }
-    },
+        },
 
-    methods: {
         async saveFile () {
             // If the user does not have write privileges just ignore the save request
             // or if the file has not loaded
@@ -199,6 +203,10 @@ export default {
             }, 2000)
         },
 
+        debounceSaveFile: debounce(function () {
+            this.saveFile()
+        }, 1500),
+
         toggleSidebar () {
             $('.ui.sidebar').sidebar({
                 context: $('.ui.bottom.attached.segment.pushable'),
@@ -218,11 +226,13 @@ export default {
                 maxLines: 50,
                 minLines: 50
             })
+            this.setEditorPermissions()
 
             const self = this
             this.editor.on('change', function (obj) {
                 if (self.silent === false) {
                     window.fileSocket.invoke('Change', self.file.id, self.file.parentID, self.projectID, self.currentUser.id, obj)
+                    self.debounceSaveFile()
                 }
             })
         }
