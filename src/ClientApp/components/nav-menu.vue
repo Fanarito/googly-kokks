@@ -7,9 +7,9 @@
                 <i class="user icon"></i>
                 <div class="menu">
 
-                    <router-link :to="{ name: 'userSettings'}" class="link item">
+                    <!--<router-link :to="{ name: 'userSettings'}" class="link item">
                         Settings
-                    </router-link>
+                    </router-link>-->
                     
                     <form action="/Account/LogOut" method="post" id="logoutForm">
                         <div class="link item" type="submit" onclick="javascript:document.getElementById('logoutForm').submit();">
