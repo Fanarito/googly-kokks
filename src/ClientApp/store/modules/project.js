@@ -140,8 +140,12 @@ const mutations = {
 
         if (index > -1) {
             const parentFolder = findFolderById(state.projects[index].folders, file.parentID)
-            const fileIndex = parentFolder.files.indexOf(file)
-            parentFolder.files.splice(fileIndex, 1)
+            if (parentFolder) {
+                const fileIndex = parentFolder.files.findIndex(f => f.id === file.id)
+                if (fileIndex > -1) {
+                    parentFolder.files.splice(fileIndex, 1)
+                }
+            }
         }
     },
 
