@@ -45,7 +45,10 @@ const mutations = {
     },
 
     deleteProject: (state, { project }) => {
+        console.log(project)
         const index = state.projects.findIndex(p => p.id === project.id)
+        console.log(index)
+        console.log(project.project)
 
         if (index > -1) {
             state.projects.splice(index, 1)
@@ -212,7 +215,7 @@ const actions = {
         console.log(response)
 
         if (response.status === 204) {
-            await commit('addProject', { project: project })
+            await commit('addProject', { project })
         } else {
             // error handling
         }
@@ -223,10 +226,14 @@ const actions = {
         console.log(response)
 
         if (response.status === 204) {
-            await commit('deleteProject', { project: project })
+            await commit('deleteProject', { project })
         } else {
             // error handling
         }
+    },
+
+    deleteLocalProject ({ commit, state }, project) {
+        commit('deleteProject', { project })
     },
 
     async addProject ({ commit, state }, project) {
@@ -238,6 +245,10 @@ const actions = {
         } else {
             // error handling
         }
+    },
+
+    addLocalProject ({ commit, state }, project) {
+        commit('addProject', { project })
     },
 
     async addCollaborator ({ commit, state }, collaborator) {

@@ -99,7 +99,31 @@ export default {
                 this.$store.dispatch('deleteLocalFile', { file, projectID: parseInt(projectID) })
             }
             window.fileSocket.clientMethods['change'] = (id, parentID, projectID, userID, change) => {
-                this.$store.dispatch('setLatestChange', { fileID: id, userID, change })
+                this.$store.dispatch('setLatestChange', { fileID: parseInt(id), userID, change })
+            }
+            window.fileSocket.start()
+        },
+
+        setupProjectSocket () {
+            window.fileSocket = new WebSocketManager.Connection('ws://' + window.location.host + '/project')
+            window.fileSocket.enableLogging = true
+            window.fileSocket.connectionMethods.onConnected = () => {
+                // optional
+                console.log('File Socket Connected! Connection ID: ' + window.fileSocket.connectionId)
+            }
+            window.fileSocket.connectionMethods.onDisconnected = () => {
+                // optional
+                console.log('Disconnected!')
+            }
+            window.fileSocket.clientMethods['add'] = (id) => {
+                this.$store.dispatch('getProject', id)
+            }
+            window.fileSocket.clientMethods['delete'] = (id, name) => {
+                const project = {
+                    id: parseInt(id),
+                    name
+                }
+                this.$store.dispatch('deleteLocalProject', project)
             }
             window.fileSocket.start()
         }
@@ -119,6 +143,7 @@ export default {
 
         this.setupTodoSocket()
         this.setupFileSocket()
+        this.setupProjectSocket()
     }
 }
 </script>

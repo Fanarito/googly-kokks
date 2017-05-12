@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using WebSocketManager;
 using WebSocketManager.Common;
 using Kokks.Models;
+using System.Collections.Generic;
 
 namespace Kokks.Handlers
 {
@@ -30,20 +31,14 @@ namespace Kokks.Handlers
             await SendMessageToAllAsync(message);
         }
 
-        public async Task Add(Project project)
+        public async Task Add(long projectId)
         {
-            await InvokeClientMethodToAllAsync("add", project);
+            await InvokeClientMethodToAllAsync("add", projectId);
         }
 
-        public async Task Remove(Project project)
+        public async Task Remove(long projectId, string name)
         {
-            await InvokeClientMethodToAllAsync("delete", project);
-        }
-
-        public async Task Disconnect(string socketId)
-        {
-            var socket = WebSocketConnectionManager.GetSocketById(socketId);
-            await OnDisconnected(socket);
+            await InvokeClientMethodToAllAsync("delete", projectId, name);
         }
 
         public override async Task OnDisconnected(WebSocket socket)

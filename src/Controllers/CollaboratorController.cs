@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Kokks.Handlers;
+using Kokks.Services;
 
 namespace Kokks.Controllers.Api
 {
@@ -16,18 +18,24 @@ namespace Kokks.Controllers.Api
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IProjectRepository _projectRepository;
         private readonly ICollaboratorRepository _collaboratorRepository;
+        private ProjectHandler _projectHandler;
+        private readonly PermissionServices _permissionServices;
         private readonly ILogger _logger;
 
         public CollaboratorController(
             IProjectRepository projectRepository,
             ICollaboratorRepository collaboratorRepository,
             UserManager<ApplicationUser> userManager,
+            ProjectHandler projectHandler,
+            PermissionServices permissionServices,
             ILoggerFactory logger
         )
         {
             _userManager = userManager;
             _projectRepository = projectRepository;
             _collaboratorRepository = collaboratorRepository;
+            _permissionServices = permissionServices;
+            _projectHandler = projectHandler;
             _logger = logger.CreateLogger<ProjectController>();
         }
 
@@ -39,7 +47,7 @@ namespace Kokks.Controllers.Api
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Collaborator item)
+        public async Task<IActionResult> Create([FromBody] Collaborator item)
         {
             if (item == null)
             {
@@ -60,12 +68,15 @@ namespace Kokks.Controllers.Api
             }
 
             _collaboratorRepository.Add(item);
+            // Broadcast new collaborator
+            var project = _projectRepository.Find(item.ProjectID);
+            await _projectHandler.Add(project.Id);
             var newCollaborator = _collaboratorRepository.Find(item.Id);
             return CreatedAtAction("GetCollaborator", new { id = item.Id }, newCollaborator);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] Collaborator item)
+        public async Task<IActionResult> Update(long id, [FromBody] Collaborator item)
         {
             if (item == null || item.Id != id)
             {
@@ -77,7 +88,7 @@ namespace Kokks.Controllers.Api
 
             if (currentCollaborator == null || currentCollaborator.Permission != Permissions.Owner)
             {
-                return new UnauthorizedResult();
+                return Unauthorized();
             }
 
             if (!_projectRepository.UserHasAccess(item.ProjectID, userId))
@@ -93,11 +104,14 @@ namespace Kokks.Controllers.Api
 
             collaborator.Permission = item.Permission;
             _collaboratorRepository.Update(collaborator);
+            // Broadcast new collaborator
+            var project = _projectRepository.Find(collaborator.ProjectID);
+            await _projectHandler.Add(project.Id);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> Delete(long id)
         {
             var userId = _userManager.GetUserId(HttpContext.User);
             var collaborator = _collaboratorRepository.Find(id);
@@ -108,15 +122,19 @@ namespace Kokks.Controllers.Api
 
 
             var currentCollaborator = _collaboratorRepository.Find(collaborator.ProjectID, userId);
-
             // You can only delete if you exist and are trying to delete yourself
             // or when you are the owner of the project
             if (currentCollaborator != null && (currentCollaborator == collaborator || currentCollaborator.Permission == Permissions.Owner))
             {
+                // Broadcast new collaborator
+                var project = _projectRepository.Find(collaborator.ProjectID);
+                await _projectHandler.Remove(
+                    project.Id,
+                    project.Name
+                );
                 _collaboratorRepository.Remove(id);
                 return NoContent();
             }
-
             return Unauthorized();
         }
     }
